@@ -1,15 +1,19 @@
 package model;
 
+/*  This class represents a passenger. The passenger has a passenger ID, first name,
+    last name, and the travel class. A passenger is the smallest abstraction in the program
+    that can be added to a plane  */
+
 public class Passenger {
-    private int passengerID;
-    private String fName;
-    private String lName;
+    private final int passengerID;
+    private final String firstName;
+    private final String lastName;
     private TravelClasses travelClass;
 
-    public Passenger(int passengerID, String fName, String lName, TravelClasses travelClass) {
+    public Passenger(int passengerID, String firstName, String lastName, TravelClasses travelClass) {
         this.passengerID = passengerID;
-        this.fName = fName;
-        this.lName = lName;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.travelClass = travelClass;
     }
 
@@ -17,12 +21,12 @@ public class Passenger {
         return passengerID;
     }
 
-    public String getfName(){
-        return fName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public String getlName(){
-        return lName;
+    public String getLastName() {
+        return lastName;
     }
 
     public TravelClasses getTravelClass() {
@@ -30,11 +34,15 @@ public class Passenger {
     }
 
     @Override
-    public String toString(){
-        return "Passenger ID: " + passengerID +
-                " First Name: " + fName +
-                " Last Name: " + lName +
-                " Travel Class: " + travelClass;
+    public String toString() {
+        return "Passenger ID: "
+                + passengerID
+                + " First Name: "
+                + firstName
+                + " Last Name: "
+                + lastName
+                + " Travel Class: "
+                + travelClass;
 
     }
 
