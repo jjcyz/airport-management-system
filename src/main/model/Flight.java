@@ -1,21 +1,21 @@
 package model;
 
-/* This class represents a flight. A flight is made of a plane, an origin, a destination,
+/* This class represents a flight. A flight is made of an aircraft, an origin, a destination,
     the duration of flight, and the list of passengers registered on this flight. */
 
 import java.util.ArrayList;
 
 public class Flight {
-    private String flightID;
-    private final Plane plane;
+    private final String flightID;
+    private final Aircraft aircraft;
     private Airports origin;
     private Airports destination;
     private int duration;
-    private ArrayList<Passenger> passengersOnFlight;
+    private final ArrayList<Passenger> passengersOnFlight;
 
-    public Flight(String flightID, Plane plane, Airports origin, Airports destination, int duration) {
+    public Flight(String flightID, Aircraft aircraft, Airports origin, Airports destination, int duration) {
         this.flightID = flightID;
-        this.plane = plane;
+        this.aircraft = aircraft;
         this.origin = origin;
         this.destination = destination;
         this.duration = duration;
@@ -26,8 +26,8 @@ public class Flight {
         return flightID;
     }
 
-    public Plane getPlane() {
-        return plane;
+    public Aircraft getAircraft() {
+        return aircraft;
     }
 
     public Airports getOrigin() {
@@ -43,28 +43,37 @@ public class Flight {
     }
 
     // EFFECTS: returns the list of passengers on this flight
-    public void getListOfPassengers() {
+    public String getListOfPassengers() {
         for (Passenger passenger : passengersOnFlight) {
-            System.out.println(passenger.toString());
+            return passenger.toString();
         }
+        return passengersOnFlight.toString();
     }
 
-    // EFFECTS: add a passenger from the plane
+    // EFFECTS: add a passenger from the aircraft
     public void addPassenger(Passenger passenger) {
-        passengersOnFlight.add(passenger);
+        if (getCurrentCapacity() < aircraft.getMaxCapacity()) {
+            passengersOnFlight.add(passenger);
+            passenger.getBookedFlights().add(this);
+            System.out.println(passenger.getFirstName() + " has been added to this flight");
+        } else {
+            System.out.println("The aircraft for this flight is at maximum capacity.");
+        }
+
     }
 
-    // EFFECTS: remove a passenger from the plane
-    public void remove(int passengerID) {
+    // EFFECTS: remove a passenger from the aircraft
+    public void removePassenger(int passengerID) {
         for (Passenger passenger : passengersOnFlight) {
             if (passenger.getPassengerID() == passengerID) {
-                System.out.println(passenger.getFirstName() + " has been removed from this flight");
                 passengersOnFlight.remove(passenger);
+                passenger.getBookedFlights().remove(this);
+                System.out.println(passenger.getFirstName() + " has been removed from this flight");
             }
         }
     }
 
-    // EFFECTS: checks if a passenger is registered on the plane
+    // EFFECTS: checks if a passenger is registered on the aircraft
     public boolean isPassengerOnFlight(int passengerID) {
         for (Passenger passenger : passengersOnFlight) {
             if (passenger.getPassengerID() == passengerID) {
@@ -75,15 +84,14 @@ public class Flight {
         return false;
     }
 
-
-    // EFFECTS: returns the size of passenger on the plane
+    // EFFECTS: returns the size of passenger on the aircraft
     public int getCurrentCapacity() {
         return passengersOnFlight.size();
     }
 
-    // EFFECTS: returns the number of seats available on the plane
+    // EFFECTS: returns the number of seats available on the aircraft
     public int getAvailableSeats() {
-        return plane.getMaxCapacity() - passengersOnFlight.size();
+        return aircraft.getMaxCapacity() - passengersOnFlight.size();
     }
 
     public void setOrigin(Airports origin) {
@@ -92,13 +100,23 @@ public class Flight {
 
     public void setDestination(Airports destination) {
         this.destination = destination;
-        // chgDuration(); (calculate this)
+        this.duration += 2; // or chgDuration(); (calculate this, would be a cool feature)
     }
 
+    @Override
+    public String toString() {
+        return "Flight ID: "
+                + flightID
+                + " Aircraft: "
+                + aircraft
+                + " Origin: "
+                + origin
+                + " Destination: "
+                + destination
+                + " Duration: "
+                + duration;
+    }
 
-//    public void chgDuration() {
-//        this.duration =
-//    }
 
 
 
