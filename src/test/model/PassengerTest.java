@@ -10,7 +10,8 @@ class PassengerTest {
 
     @BeforeEach
     void runBefore() {
-        testPassenger = new Passenger(12345,"Jessica","Zhou",TravelClasses.FIRSTCLASS);
+        testPassenger = new Passenger(12345,"Jessica",
+                "Zhou",TravelClasses.FIRSTCLASS);
     }
 
     @Test

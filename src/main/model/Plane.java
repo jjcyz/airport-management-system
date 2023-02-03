@@ -14,7 +14,6 @@ public class Plane {
     public Plane(String name, int maxCapacity) {
         this.name = name;
         this.maxCapacity = maxCapacity;
-
     }
 
     // EFFECTS: returns the name of the plane

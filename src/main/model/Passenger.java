@@ -43,7 +43,6 @@ public class Passenger {
                 + lastName
                 + " Travel Class: "
                 + travelClass;
-
     }
 
 

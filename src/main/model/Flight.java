@@ -75,7 +75,6 @@ public class Flight {
         return false;
     }
 
-
     // EFFECTS: returns the size of passenger on the plane
     public int getCurrentCapacity() {
         return passengersOnFlight.size();

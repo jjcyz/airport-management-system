@@ -9,7 +9,6 @@ public class PlaneTest {
     private Plane testPlane1;
     private Plane testPlane2;
 
-
     @BeforeEach
     void runBefore() {
         testPlane1 = new Plane("ABC",150);

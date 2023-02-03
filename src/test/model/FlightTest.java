@@ -29,6 +29,10 @@ public class FlightTest {
         assertEquals(4,testFlight1.getDuration());
     }
 
+    @Test
+    void getListOfPassenger() {
+
+    }
 
     @Test
     void addEmptyBeforeTest() {
@@ -51,7 +55,7 @@ public class FlightTest {
     }
 
     @Test
-    void containsPassengerTest() {
+    void isPassengerOnFlightTest() {
         testFlight1.addPassenger(p1);
         assertTrue(testFlight1.isPassengerOnFlight(p1.getPassengerID()));
         assertFalse(testFlight1.isPassengerOnFlight(p2.getPassengerID()));
