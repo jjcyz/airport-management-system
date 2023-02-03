@@ -4,17 +4,24 @@ package model;
     last name, and the travel class. A passenger is the smallest abstraction in the program
     that can be added to a plane  */
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
 public class Passenger {
     private final int passengerID;
     private final String firstName;
     private final String lastName;
-    private TravelClasses travelClass;
+    private final TravelClasses travelClass;
+    private final ArrayList<Flight> bookedFlights;
 
+    // Creates a passenger
     public Passenger(int passengerID, String firstName, String lastName, TravelClasses travelClass) {
         this.passengerID = passengerID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.travelClass = travelClass;
+        this.bookedFlights = new ArrayList<>();
     }
 
     public int getPassengerID() {
@@ -33,6 +40,10 @@ public class Passenger {
         return travelClass;
     }
 
+    public ArrayList<Flight> getBookedFlights() {
+        return bookedFlights;
+    }
+
     @Override
     public String toString() {
         return "Passenger ID: "
@@ -43,7 +54,32 @@ public class Passenger {
                 + lastName
                 + " Travel Class: "
                 + travelClass;
+    }
 
+    public StringBuilder getBoardingTickets() {
+        StringBuilder s = new StringBuilder();
+        if (!bookedFlights.isEmpty()) {
+            for (Flight flight : bookedFlights) {
+                s.append("---------------------------------------------------------------------------\n");
+                s.append("                         ELECTRONIC BOARDING PASS                          \n");
+                s.append("---------------------------------------------------------------------------\n");
+                s.append("Name of Passenger: ").append(lastName).append(" ").append(firstName).append("\n");
+                s.append(String.format("%-20s %-20s %-20s %-20s\n", "Origin: ", flight.getOrigin(),
+                        "Destination: ", flight.getDestination()));
+                s.append(String.format("%-20s %-20s %-20s %-20s\n", "Class: ", travelClass, "Seat No. ", "25A"));
+                Date date = new Date();
+                SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+                String formattedDate = formatter.format(date);
+                s.append(String.format("%-20s %-20s %-20s %-20s\n", "Flight ID: ", flight.getFlightID(),
+                        "Date: ", formattedDate));
+                s.append(String.format("%-20s %-20s %-20s %-20s\n", "Departure: ", "11:30 am","Arrival: ", "10:00 am"));
+                s.append("---------------------------------------------------------------------------\n");
+            }
+        } else {
+            StringBuilder e = new StringBuilder();
+            return e.append(firstName).append(" ").append(lastName).append(" is not currently booked on any flights.");
+        }
+        return s;
     }
 
 

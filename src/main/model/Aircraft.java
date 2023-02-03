@@ -2,19 +2,15 @@ package model;
 
 /* This class represents a plane. A plane has a name and maximum capacity */
 
-import java.util.ArrayList;
+public class Aircraft {
 
-public class Plane {
-    // delete or rename this class!
     private final String name;
     private final int maxCapacity;
 
-
-    // Creates a new plane
-    public Plane(String name, int maxCapacity) {
+    // Creates a new aircraft
+    public Aircraft(String name, int maxCapacity) {
         this.name = name;
         this.maxCapacity = maxCapacity;
-
     }
 
     // EFFECTS: returns the name of the plane
@@ -26,6 +22,16 @@ public class Plane {
     public int getMaxCapacity() {
         return maxCapacity;
     }
+
+    @Override
+    public String toString() {
+        return "Name of Aircraft: "
+                + name
+                + " Maximum Capacity: "
+                + maxCapacity;
+    }
+
+
 
 
 

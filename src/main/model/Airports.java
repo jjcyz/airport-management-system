@@ -4,6 +4,9 @@ package model;
     and country */
 
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum Airports {
     YVR("Vancouver International Airport","Vancouver","Canada"),
     YYZ("Toronto Pearson International Airport","Toronto","Canada"),
@@ -41,6 +44,10 @@ public enum Airports {
 
     public String getCountry() {
         return country;
+    }
+
+    public static List<Airports> getAirports() {
+        return Arrays.asList(values());
     }
 
 

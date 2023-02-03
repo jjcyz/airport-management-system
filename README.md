@@ -9,7 +9,7 @@ mimics the internal operations that happen at an international
 airport. It lets the user enter information about new passenger, 
 planes, and create new flights. Possible features include different 
 planes; adding passengers to the flight; listing all the passengers 
-on the plane; and searching up flights to a given destination. 
+on the aircraft; and searching up flights to a given destination. 
 
 
 **Task 2:**
@@ -38,13 +38,15 @@ surface level.</p>
 
 **Task 3:**
 
-- As a user, I want to be able to add a new passenger to a plane
-- As a user, I want to be able to add a new plane
+- As a user, I want to be able to add a new passenger to a aircraft
+- As a user, I want to be able to add a new aircraft
 - As a user, I want to be able to add a new flight
-- As a user, I want to be able to view the passengers on the plane
-- As a user, I want to be able to remove a passenger on the plane
+- As a user, I want to be able to view the passengers on the aircraft
+- As a user, I want to be able to remove a passenger on the aircraft
 - As a user, I want to be able to assign a passenger to a seat class: 
 economy, premium, business, or first class
 - As a user, I want to be able to search up flight(s) with a destination
 
- 
+ Disclaimers: 
+ 1. The date printed on the boarding tickets when passenger.printBoardingTickets(); 
+is adjusted to the real date.
