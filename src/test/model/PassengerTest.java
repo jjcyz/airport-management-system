@@ -4,6 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import static model.TravelClasses.FIRSTCLASS;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,5 +61,11 @@ class PassengerTest {
     void toStringTest() {
         assertEquals("Passenger ID: 12345 First Name: Jessica Last Name: Zhou Travel Class: FIRSTCLASS", testPassenger.toString());
     }
+
+    @Test
+    void getBoardingTicketsTest() {
+
+    }
+
 
 }

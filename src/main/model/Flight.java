@@ -44,9 +44,6 @@ public class Flight {
 
     // EFFECTS: returns the list of passengers on this flight
     public String getListOfPassengers() {
-        for (Passenger passenger : passengersOnFlight) {
-            return passenger.toString();
-        }
         return passengersOnFlight.toString();
     }
 

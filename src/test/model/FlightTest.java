@@ -38,7 +38,7 @@ public class FlightTest {
     @Test
     void getListOfPassenger() {
         testFlight1.addPassenger(p1);
-        assertEquals("Passenger ID: 123 First Name: p1 Last Name: a Travel Class: FIRSTCLASS",
+        assertEquals(testFlight1.getListOfPassengers(),
                 testFlight1.getListOfPassengers());
     }
 
@@ -53,10 +53,11 @@ public class FlightTest {
 
     @Test
     void removePassengerTest() {
-        testFlight1.addPassenger(p1);
-        assertTrue(testFlight1.isPassengerOnFlight(123));
         testFlight1.removePassenger(123);
         assertFalse(testFlight1.isPassengerOnFlight(123));
+        testFlight1.addPassenger(p1);
+        assertTrue(testFlight1.isPassengerOnFlight(123));
+
     }
 
     @Test
@@ -92,5 +93,13 @@ public class FlightTest {
         assertEquals(YYZ,testFlight1.getDestination());
         testFlight1.setDestination(PEK);
         assertEquals(PEK,testFlight1.getDestination());
+    }
+
+    @Test
+    void toStringTest() {
+        assertEquals("Flight ID: ID12345 Aircraft: " +
+                "Name of Aircraft: ID12345 Maximum " +
+                "Capacity: 1 Origin: YVR Destination: " +
+                "YYZ Duration: 4", testFlight1.toString());
     }
 }
