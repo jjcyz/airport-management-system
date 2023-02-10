@@ -17,7 +17,6 @@ public class CargoTest {
     @Test
     void getDescriptionTest() {
         assertEquals("randomStuff", testCargo.getDescription());
-
     }
 
     @Test

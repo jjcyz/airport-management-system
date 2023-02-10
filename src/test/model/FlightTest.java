@@ -40,7 +40,6 @@ public class FlightTest {
         testFlight1.addPassenger(p1);
         assertEquals("Passenger ID: 123 First Name: p1 Last Name: a Travel Class: FIRSTCLASS",
                 testFlight1.getListOfPassengers());
-
     }
 
     @Test

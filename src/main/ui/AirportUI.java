@@ -29,7 +29,7 @@ public class AirportUI {
         init();
 
         while (!exitApplication) {
-            testMethod();
+            // testMethod();
             try {
                 displayMainMenu();
                 userInput = input.next();
@@ -188,11 +188,11 @@ public class AirportUI {
             } catch (Exception e) {
                 System.out.println("Error: Invalid Aircraft type. Please try again");
                 error = true;
-                userInput = input.nextInt();
             }
             System.out.println(aircraftName + " is now in the system!");
-
+            break;
         }
+
     }
 
     // MODIFIES: this
