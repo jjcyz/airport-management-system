@@ -7,15 +7,15 @@ import java.util.ArrayList;
 
 public class Flight {
     private String flightID;
-    private final Plane plane;
+    private final Aircraft aircraft;
     private Airports origin;
     private Airports destination;
     private int duration;
     private ArrayList<Passenger> passengersOnFlight;
 
-    public Flight(String flightID, Plane plane, Airports origin, Airports destination, int duration) {
+    public Flight(String flightID, Aircraft aircraft, Airports origin, Airports destination, int duration) {
         this.flightID = flightID;
-        this.plane = plane;
+        this.aircraft = aircraft;
         this.origin = origin;
         this.destination = destination;
         this.duration = duration;
@@ -26,8 +26,8 @@ public class Flight {
         return flightID;
     }
 
-    public Plane getPlane() {
-        return plane;
+    public Aircraft getAircraft() {
+        return aircraft;
     }
 
     public Airports getOrigin() {
@@ -43,10 +43,8 @@ public class Flight {
     }
 
     // EFFECTS: returns the list of passengers on this flight
-    public void getListOfPassengers() {
-        for (Passenger passenger : passengersOnFlight) {
-            System.out.println(passenger.toString());
-        }
+    public ArrayList<Passenger> getListOfPassengers() {
+        return passengersOnFlight;
     }
 
     // EFFECTS: add a passenger from the plane
@@ -55,7 +53,7 @@ public class Flight {
     }
 
     // EFFECTS: remove a passenger from the plane
-    public void remove(int passengerID) {
+    public void removePassenger(int passengerID) {
         for (Passenger passenger : passengersOnFlight) {
             if (passenger.getPassengerID() == passengerID) {
                 System.out.println(passenger.getFirstName() + " has been removed from this flight");
@@ -83,7 +81,7 @@ public class Flight {
 
     // EFFECTS: returns the number of seats available on the plane
     public int getAvailableSeats() {
-        return plane.getMaxCapacity() - passengersOnFlight.size();
+        return aircraft.getMaxCapacity() - passengersOnFlight.size();
     }
 
     public void setOrigin(Airports origin) {

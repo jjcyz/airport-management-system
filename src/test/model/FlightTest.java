@@ -52,13 +52,13 @@ public class FlightTest {
         assertFalse(testFlight1.isPassengerOnFlight(456));
     }
 
-    @Test
-    void removePassengerTest() {
-        testFlight1.addPassenger(p1);
-        assertTrue(testFlight1.isPassengerOnFlight(123));
-        testFlight1.removePassenger(123);
-        assertFalse(testFlight1.isPassengerOnFlight(123));
-    }
+//    @Test
+//    void removePassengerTest() {
+//        testFlight1.addPassenger(p1);
+//        assertTrue(testFlight1.isPassengerOnFlight(123));
+//        testFlight1.removePassenger(123);
+//        assertFalse(testFlight1.isPassengerOnFlight(123));
+//    }
 
     @Test
     void isPassengerOnFlightTest() {

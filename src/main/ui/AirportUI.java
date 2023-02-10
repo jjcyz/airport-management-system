@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class AirportUI {
     private Scanner input;
     private ArrayList<Passenger> listOfPassengers;
-    private ArrayList<Plane> listOfPlanes;
+    private ArrayList<Aircraft> listOfAircraft;
     private ArrayList<Flight> listOfFlights;
 
     // EFFECTS: runs the airport management information system
@@ -44,7 +44,7 @@ public class AirportUI {
     // EFFECTS: initiates the system
     private void init() {
         listOfPassengers = new ArrayList<>();
-        listOfPlanes = new ArrayList<>();
+        listOfAircraft = new ArrayList<>();
         listOfFlights = new ArrayList<>();
         input = new Scanner(System.in);
 
@@ -98,7 +98,7 @@ public class AirportUI {
         String planeName = input.next();
         System.out.print("Maximum Capacity: ");
         int maxCapacity = input.nextInt();
-        listOfPlanes.add(new Plane(planeName, maxCapacity));
+        listOfAircraft.add(new Aircraft(planeName, maxCapacity));
         System.out.println(planeName + " is now in the system!");
     }
 
@@ -108,7 +108,7 @@ public class AirportUI {
         String flightID = input.next();
 
         System.out.print("Assign a plane: ");
-        Plane workPlane = null;
+        Aircraft workPlane = null;
         while (workPlane == null) {
             workPlane = searchForPlane(input.next());
             if (workPlane == null) {
@@ -162,11 +162,11 @@ public class AirportUI {
         return null;
     }
 
-    private Plane searchForPlane(String userInput) {
-        for (Plane plane : listOfPlanes) {
-            if (userInput.equals(plane.getName())) {
-                System.out.println("Flight " + plane.getName() + " found.");
-                return plane;
+    private Aircraft searchForPlane(String userInput) {
+        for (Aircraft aircraft : listOfAircraft) {
+            if (userInput.equals(aircraft.getName())) {
+                System.out.println("Flight " + aircraft.getName() + " found.");
+                return aircraft;
             }
         }
         System.out.println("Plane " + userInput + " not found.");
@@ -184,7 +184,7 @@ public class AirportUI {
         if (userInput == 1) {
             getListOfPassengers();
         } else if (userInput == 2) {
-            getListOfPlanes();
+            getListOfAircraft();
         } else if (userInput == 3) {
             getListOfFlights();
         } else {
@@ -197,8 +197,8 @@ public class AirportUI {
         return listOfPassengers;
     }
 
-    private ArrayList<Plane> getListOfPlanes() {
-        return listOfPlanes;
+    private ArrayList<Aircraft> getListOfAircraft() {
+        return listOfAircraft;
     }
 
     private ArrayList<Flight> getListOfFlights() {
