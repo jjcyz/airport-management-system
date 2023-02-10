@@ -94,7 +94,6 @@ public class AirportUI {
                 modifyFlight();
             } else if (userInput == 5) {
                 managePassengerFlights();
-                addPassengerToFlight();
             } else if (userInput == 6) {
                 viewData(); // fix later, does not process userInput after
             }
@@ -206,7 +205,7 @@ public class AirportUI {
             Aircraft workAircraft = searchForAircraft(input.next());
 
             System.out.print("Origin: ");
-            System.out.println("(ie. YVR, YYZ, BEK, LAX, HKG)");
+            System.out.print("(ie. YVR, YYZ, BEK, LAX, HKG)");
             Airports origin = getAirports(input.next());
 
             System.out.print("Destination: ");
