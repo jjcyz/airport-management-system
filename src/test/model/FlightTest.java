@@ -56,6 +56,7 @@ public class FlightTest {
         int before = testFlight1.getListOfPassengers().size();
         testFlight1.removePassenger(123);
         assertEquals(before - 1, testFlight1.getListOfPassengers().size());
+        testFlight1.removePassenger(999);
 
     }
 
