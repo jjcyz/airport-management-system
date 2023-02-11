@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import static model.TravelClasses.FIRSTCLASS;
@@ -22,7 +23,11 @@ class PassengerTest {
                 new PassengerAirline("test", 100),
                 Airports.YVR, Airports.PEK, 2);
         testFlight.addPassenger(testPassenger);
+
     }
+
+
+
 
     @Test
     void constructorTest() {
@@ -54,12 +59,15 @@ class PassengerTest {
 
     @Test
     void getBookedFlights() {
-        // cannot test []
+        ArrayList<Flight> testForBookedFlight = new ArrayList<>();
+        testForBookedFlight.add(testFlight);
+        assertEquals(testForBookedFlight, testPassenger.getBookedFlights());
     }
 
     @Test
     void toStringTest() {
-        assertEquals("Passenger ID: 12345 First Name: Jessica Last Name: Zhou Travel Class: FIRSTCLASS", testPassenger.toString());
+        assertEquals("Passenger ID: 12345 First Name: Jessica Last Name: Zhou Travel Class: FIRSTCLASS",
+                testPassenger.toString());
     }
 
     @Test
@@ -73,7 +81,7 @@ class PassengerTest {
                 +"Flight ID:           123                  Date:                11-02-2023          \n"
                 +"Departure:           11:30 am             Arrival:             10:00 am            \n"
                 +"---------------------------------------------------------------------------\n"
-                , testPassenger.getBoardingTickets());
+                , testPassenger.getBoardingTickets().toString());
 
     }
 

@@ -20,7 +20,7 @@ public class PrivateJetTest {
 
     @Test
     void getClassTest() {
-       // assertEquals(, pj.getClass());
+        assertEquals(PrivateJet.class, pj.getClass());
     }
 
 

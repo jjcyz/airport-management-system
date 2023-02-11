@@ -5,7 +5,7 @@ public class PrivateJet extends Aircraft {
 
     public PrivateJet(String name, int maxCapacity) {
         super(name, maxCapacity);
-        this.maxCapacity = 12;
+        this.maxCapacity = maxCapacity;
     }
 
     public int getMaxCapacity() {
