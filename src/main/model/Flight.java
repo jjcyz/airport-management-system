@@ -49,33 +49,40 @@ public class Flight {
     }
 
     // EFFECTS: add a passenger from the aircraft
-    public void addPassenger(Passenger passenger) {
+    public String addPassenger(Passenger passenger) {
         if (getCurrentCapacity() < aircraft.getMaxCapacity()) {
             passengersOnFlight.add(passenger);
             passenger.getBookedFlights().add(this);
-            System.out.println(passenger.getFirstName() + " has been added to this flight");
+            return passenger.getFirstName()
+                    + " " + passenger.getLastName()
+                    + " has been added to this flight";
         } else {
-            System.out.println("The aircraft for this flight is at maximum capacity.");
+            return "The aircraft for this flight is at maximum capacity.";
         }
     }
 
     // EFFECTS: remove a passenger from the aircraft
-    public void removePassenger(int passengerID) {
+    public String removePassenger(int passengerID) {
         Iterator<Passenger> p = passengersOnFlight.iterator();
         while (p.hasNext()) {
             Passenger passenger = p.next();
             if (passenger.getPassengerID() == passengerID) {
                 p.remove();
-                System.out.println(passenger.getFirstName() + " has been removed from this flight");
+                return passenger.getFirstName()
+                        + " "
+                        + passenger.getLastName()
+                        + " has been removed from this flight";
             }
         }
+        return "Passenger " + passengerID + " is not found on this flight";
+
     }
 
     // EFFECTS: checks if a passenger is registered on the aircraft
     public boolean isPassengerOnFlight(int passengerID) {
         for (Passenger passenger : passengersOnFlight) {
             if (passenger.getPassengerID() == passengerID) {
-                System.out.println(passenger.getFirstName() + " is on registered on this flight");
+                // System.out.println(passenger.getFirstName() + " is on registered on this flight");
                 return true;
             }
         }
