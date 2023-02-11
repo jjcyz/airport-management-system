@@ -10,7 +10,6 @@ public class FlightTest {
     private Passenger p1;
     private Passenger p2;
     private Flight testFlight1;
-    private Flight testFlight2;
     private Aircraft testAircraft1;
 
 
@@ -22,7 +21,6 @@ public class FlightTest {
         testAircraft1 = new Aircraft("ID12345", 1);
 
         testFlight1 = new Flight("ID12345", testAircraft1, YVR,Airports.YYZ,4);
-        testFlight2 = new Flight("ID67890", testAircraft1,Airports.YYZ, YVR,4);
 
     }
 
@@ -53,10 +51,11 @@ public class FlightTest {
 
     @Test
     void removePassengerTest() {
-        testFlight1.removePassenger(123);
-        assertFalse(testFlight1.isPassengerOnFlight(123));
         testFlight1.addPassenger(p1);
         assertTrue(testFlight1.isPassengerOnFlight(123));
+        int before = testFlight1.getListOfPassengers().size();
+        testFlight1.removePassenger(123);
+        assertEquals(before - 1, testFlight1.getListOfPassengers().size());
 
     }
 

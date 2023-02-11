@@ -7,12 +7,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AircraftTest {
     private Aircraft testAircraft1;
-    private Aircraft testAircraft2;
 
     @BeforeEach
     void runBefore() {
         testAircraft1 = new CargoAircraft("ABC",150);
-        testAircraft2 = new PassengerAirline("CDE",200);
     }
 
     @Test

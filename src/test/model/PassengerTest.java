@@ -2,17 +2,15 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
+import static model.TravelClasses.ECONOMY;
 import static model.TravelClasses.FIRSTCLASS;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PassengerTest {
     private Passenger testPassenger;
+    private Passenger testPassenger2;
     private Flight testFlight;
 
     @BeforeEach
@@ -24,9 +22,8 @@ class PassengerTest {
                 Airports.YVR, Airports.PEK, 2);
         testFlight.addPassenger(testPassenger);
 
+        testPassenger2 = new Passenger(67890, "Elon", "Musk", ECONOMY);
     }
-
-
 
 
     @Test
@@ -82,6 +79,8 @@ class PassengerTest {
                 +"Departure:           11:30 am             Arrival:             10:00 am            \n"
                 +"---------------------------------------------------------------------------\n"
                 , testPassenger.getBoardingTickets().toString());
+        assertEquals("Elon Musk is not currently booked on any flights.",
+                testPassenger2.getBoardingTickets().toString());
 
     }
 

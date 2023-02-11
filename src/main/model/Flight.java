@@ -4,6 +4,7 @@ package model;
     the duration of flight, and the list of passengers registered on this flight. */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Flight {
     private final String flightID;
@@ -43,8 +44,8 @@ public class Flight {
     }
 
     // EFFECTS: returns the list of passengers on this flight
-    public String getListOfPassengers() {
-        return passengersOnFlight.toString();
+    public ArrayList<Passenger> getListOfPassengers() {
+        return passengersOnFlight;
     }
 
     // EFFECTS: add a passenger from the aircraft
@@ -56,15 +57,15 @@ public class Flight {
         } else {
             System.out.println("The aircraft for this flight is at maximum capacity.");
         }
-
     }
 
     // EFFECTS: remove a passenger from the aircraft
     public void removePassenger(int passengerID) {
-        for (Passenger passenger : passengersOnFlight) {
+        Iterator<Passenger> p = passengersOnFlight.iterator();
+        while (p.hasNext()) {
+            Passenger passenger = p.next();
             if (passenger.getPassengerID() == passengerID) {
-                passengersOnFlight.remove(passenger);
-                passenger.getBookedFlights().remove(this);
+                p.remove();
                 System.out.println(passenger.getFirstName() + " has been removed from this flight");
             }
         }

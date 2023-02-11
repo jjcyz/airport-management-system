@@ -1,12 +1,11 @@
 package model;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PrivateJetTest {
-    private PrivateJet pj = new PrivateJet("Private", 10);
+    private final PrivateJet pj = new PrivateJet("Private", 10);
 
     @Test
     void getName() {
