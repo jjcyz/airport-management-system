@@ -4,8 +4,8 @@ package model;
  and the weight of the cargo in tons, 1 ton = 2205 lbs */
 
 public class Cargo {
-    private String description;
-    private int weight;
+    private final String description;
+    private final int weight;
 
     public Cargo(String description, int weight) {
         this.description = description;

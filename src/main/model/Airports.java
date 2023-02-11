@@ -24,9 +24,9 @@ public enum Airports {
     HKG("Hong Kong International Airport","Hong Kong","Republic of China"),
     MIA("Miami International Airport","Miami","United States");
 
-    private String name;
-    private String city;
-    private String country;
+    private final String name;
+    private final String city;
+    private final String country;
 
     Airports(String name, String city, String country) {
         this.name = name;

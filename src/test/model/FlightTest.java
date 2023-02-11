@@ -15,8 +15,8 @@ public class FlightTest {
 
     @BeforeEach
     void runBefore() {
-        p1 = new Passenger(123,"p1","a",TravelClasses.FIRSTCLASS);
-        p2 = new Passenger(456,"p2","b",TravelClasses.FIRSTCLASS);
+        p1 = new Passenger(123,"Ada","Lovelace",TravelClasses.FIRSTCLASS);
+        p2 = new Passenger(456,"Alan","Turing",TravelClasses.FIRSTCLASS);
 
         testAircraft1 = new Aircraft("ID12345", 1);
 
@@ -42,10 +42,10 @@ public class FlightTest {
 
     @Test
     void addPassengerTest() {
-        testFlight1.addPassenger(p1);
+        assertEquals("Ada Lovelace has been added to this flight",testFlight1.addPassenger(p1) );
         assertTrue(testFlight1.isPassengerOnFlight(123));
         assertFalse(testFlight1.isPassengerOnFlight(999));
-        testFlight1.addPassenger(p2);
+        assertEquals("The aircraft for this flight is at maximum capacity.",testFlight1.addPassenger(p2));
         assertFalse(testFlight1.isPassengerOnFlight(456));
     }
 
@@ -54,10 +54,11 @@ public class FlightTest {
         testFlight1.addPassenger(p1);
         assertTrue(testFlight1.isPassengerOnFlight(123));
         int before = testFlight1.getListOfPassengers().size();
-        testFlight1.removePassenger(123);
+        assertEquals("Ada Lovelace has been removed from this flight",
+                testFlight1.removePassenger(123));
         assertEquals(before - 1, testFlight1.getListOfPassengers().size());
-        testFlight1.removePassenger(999);
-
+        assertEquals("Passenger 999 is not found on this flight",
+                testFlight1.removePassenger(999));
     }
 
     @Test

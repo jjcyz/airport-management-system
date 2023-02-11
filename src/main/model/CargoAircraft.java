@@ -5,12 +5,17 @@ package model;
 import java.util.ArrayList;
 
 public class CargoAircraft extends Aircraft {
-    private final ArrayList<Cargo> cargoOnBoard;
+    private ArrayList<Cargo> cargoOnBoard;
 
     // Creates a new aircraft for cargos
     public CargoAircraft(String name, int maxCapacity) {
         super(name, maxCapacity);
         this.cargoOnBoard = new ArrayList<>();
+    }
+
+    public String addCargoToAircraft(Cargo cargo) {
+        cargoOnBoard.add(cargo);
+        return "Cargo has been added to " + getName();
     }
 
 }
