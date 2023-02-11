@@ -205,7 +205,7 @@ public class AirportUI {
             Aircraft workAircraft = searchForAircraft(input.next());
 
             System.out.print("Origin: ");
-            System.out.print("(ie. YVR, YYZ, BEK, LAX, HKG)");
+            System.out.println("(ie. YVR, YYZ, PEK, LAX, HKG)");
             Airports origin = getAirports(input.next());
 
             System.out.print("Destination: ");
@@ -333,7 +333,7 @@ public class AirportUI {
         System.out.println("Enter passenger (passengerID) to book: ");
         Passenger passenger = searchForPassenger(input.nextInt());
         flight.addPassenger(passenger);
-        System.out.println(passenger + " has been booked onto " + flight);
+        System.out.println(passenger.getFirstName() + " has been booked onto " + flight.getFlightID());
     }
 
     // MODIFIES: the list of passengers on a flight
