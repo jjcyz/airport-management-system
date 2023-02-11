@@ -64,6 +64,16 @@ class PassengerTest {
 
     @Test
     void getBoardingTicketsTest() {
+        assertEquals("---------------------------------------------------------------------------\n"
+                +"                         ELECTRONIC BOARDING PASS                          \n"
+                +"---------------------------------------------------------------------------\n"
+                +"Name of Passenger: Zhou Jessica\n"
+                +"Origin:              YVR                  Destination:         PEK                 \n"
+                +"Class:               FIRSTCLASS           Seat No.             25A                 \n"
+                +"Flight ID:           123                  Date:                11-02-2023          \n"
+                +"Departure:           11:30 am             Arrival:             10:00 am            \n"
+                +"---------------------------------------------------------------------------\n"
+                , testPassenger.getBoardingTickets());
 
     }
 
