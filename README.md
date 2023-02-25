@@ -38,7 +38,7 @@ surface level.</p>
 
 **Task 3:**
 
-- As a user, I want to be able to add a new passenger to a aircraft
+- As a user, I want to be able to add a new passenger to an aircraft
 - As a user, I want to be able to add a new aircraft
 - As a user, I want to be able to add a new flight
 - As a user, I want to be able to view the passengers on the aircraft
@@ -46,6 +46,8 @@ surface level.</p>
 - As a user, I want to be able to assign a passenger to a seat class: 
 economy, premium, business, or first class
 - As a user, I want to be able to search up flight(s) with a destination
+- As a user, I want to be able to save the all the data that I have inputted (if I so choose)
+- As a user, I want to be able to reload airport inputs from the file 
 
  Disclaimers: 
  1. The date printed on the boarding tickets when passenger.printBoardingTickets(); 

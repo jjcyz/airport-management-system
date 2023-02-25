@@ -1,6 +1,8 @@
 package model;
 
-public class PrivateJet extends Aircraft {
+import persistence.Writable;
+
+public class PrivateJet extends Aircraft implements Writable {
     private int maxCapacity;
 
     public PrivateJet(String name, int maxCapacity) {

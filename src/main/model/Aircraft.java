@@ -2,10 +2,14 @@ package model;
 
 /* This class represents a plane. A plane has a name and maximum capacity */
 
-public class Aircraft {
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
 
-    private final String name;
-    private final int maxCapacity;
+public class Aircraft implements Writable {
+
+    protected final String name;
+    protected final int maxCapacity;
 
     // Creates a new aircraft
     public Aircraft(String name, int maxCapacity) {
@@ -27,18 +31,15 @@ public class Aircraft {
     public String toString() {
         return "Name of Aircraft: "
                 + name
-                + " Maximum Capacity: "
+                + "Maximum Capacity: "
                 + maxCapacity;
     }
 
-
-
-
-
-
-
-
-
-
-
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("Name", this.name);
+        json.put("Max Capacity", this.maxCapacity);
+        return json;
+    }
 }

@@ -3,10 +3,14 @@ package model;
 /* This class represents a flight. A flight is made of an aircraft, an origin, a destination,
     the duration of flight, and the list of passengers registered on this flight. */
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Flight {
+public class Flight implements Writable {
     private final String flightID;
     private final Aircraft aircraft;
     private Airports origin;
@@ -122,9 +126,15 @@ public class Flight {
                 + duration;
     }
 
-
-
-
-
-
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("Flight", this.flightID);
+        json.put("Aircraft", this.aircraft);
+        json.put("Origin", this.origin);
+        json.put("Destination", this.destination);
+        json.put("Duration", this.duration);
+        json.put("Passengers", this.passengersOnFlight);
+        return json;
+    }
 }

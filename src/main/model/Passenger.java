@@ -4,11 +4,15 @@ package model;
     last name, and the travel class. A passenger is the smallest abstraction in the program
     that can be added to a plane  */
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Passenger {
+public class Passenger implements Writable {
     private final int passengerID;
     private final String firstName;
     private final String lastName;
@@ -83,4 +87,14 @@ public class Passenger {
     }
 
 
+    @Override
+    public JSONObject toJson() {
+        JSONObject json  = new JSONObject();
+        json.put("Passenger ID", passengerID);
+        json.put("First name", this.firstName);
+        json.put("Last name", this.lastName);
+        json.put("Travel class", this.travelClass);
+        json.put("Booked Flights", this.bookedFlights);
+        return json;
+    }
 }

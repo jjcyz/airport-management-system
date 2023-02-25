@@ -3,20 +3,35 @@ package ui;
 /* This is the UI class of the program */
 
 import model.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.JsonReader;
+import persistence.JsonWriter;
+import persistence.Writable;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class AirportUI {
+// Represents the airport application
+public class AirportUI implements Writable {
+    private static final String JSON_STORE = "./data/airport.json";
     private Scanner input;
     private ArrayList<Passenger> listOfPassengers;
     private ArrayList<Aircraft> listOfAircraft;
     private ArrayList<Flight> listOfFlights;
     boolean error = false;
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
 
     // EFFECTS: runs the airport management information system
-    public AirportUI() {
+    public AirportUI() throws FileNotFoundException {
+        input = new Scanner(System.in);
+
+        jsonWriter = new JsonWriter(JSON_STORE);
+        jsonReader = new JsonReader(JSON_STORE);
         runAirportUI();
     }
 
@@ -63,7 +78,7 @@ public class AirportUI {
     private void init() {
         listOfPassengers = new ArrayList<>();
         listOfAircraft = new ArrayList<>();
-        listOfFlights = new ArrayList<>();
+        listOfFlights = new ArrayList<>();   //useful after JSON?
         input = new Scanner(System.in);
 
     }
@@ -77,6 +92,8 @@ public class AirportUI {
                 + "4. Change existing flight\n"
                 + "5. Manage passenger and flight(s)\n"
                 + "6. View data\n"
+                + "7. Save database to file\n"
+                + "8. Load database from file\n"
                 + "Press x to exit");
     }
 
@@ -96,8 +113,12 @@ public class AirportUI {
                 managePassengerFlights();
             } else if (userInput == 6) {
                 viewData(); // fix later, does not process userInput after
+            } else if (userInput == 7) {
+                save();
+            } else if (userInput == 8) {
+                load(); // fix
             }
-
+            // System.out.println("test3"); does not run
         } catch (Exception e) {
             System.out.println("Error: processUserInput");
             error = true;
@@ -391,6 +412,30 @@ public class AirportUI {
         }
     }
 
+    // EFFECTS: saves the airport database to file
+    private void save() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(listOfPassengers, listOfAircraft, listOfFlights);
+            jsonWriter.close();
+            System.out.printf("Saved to " + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file" + JSON_STORE);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: loads workroom from file
+    private void load() {   // need to fix
+        try {
+            listOfPassengers = jsonReader.read();
+            listOfAircraft = jsonReader.read();
+            listOfFlights = jsonReader.read();
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE);
+        }
+    }
+
     // can be refactored, 3 methods repeat here
     // EFFECTS: returns the list of all existing passengers
     private void getListOfPassengers() {
@@ -414,5 +459,29 @@ public class AirportUI {
     }
 
 
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        JSONArray aircraftArray = new JSONArray();
+        JSONArray flightArray = new JSONArray();
+        JSONArray passengerArray = new JSONArray();
 
+        for (Passenger passenger : listOfPassengers) {
+            passengerArray.put(passenger.toJson());
+        }
+
+        for (Aircraft aircraft : listOfAircraft) {
+            aircraftArray.put(aircraft.toJson());
+        }
+
+        for (Flight flight : listOfFlights) {
+            flightArray.put(flight.toJson());
+        }
+
+        json.put("aircrafts", aircraftArray);
+        json.put("flights", flightArray);
+        json.put("passengers", passengerArray);
+
+        return json;
+    }
 }
