@@ -1,0 +1,12 @@
+{
+    "listOfPassengers": [{
+        "firstName": "Jessica",
+        "lastName": "Zhou",
+        "boardingTickets": "Jessica Zhou is not currently booked on any flights.",
+        "passengerID": 1234,
+        "bookedFlights": [],
+        "travelClass": "ECONOMY"
+    }],
+    "flights": [],
+    "listOfAircraft": []
+}

@@ -424,17 +424,20 @@ public class AirportUI implements Writable {
         }
     }
 
+
     // MODIFIES: this
     // EFFECTS: loads workroom from file
     private void load() {   // need to fix
         try {
-            listOfPassengers = jsonReader.read();
-            listOfAircraft = jsonReader.read();
-            listOfFlights = jsonReader.read();
+            JsonReader reader = new JsonReader(JSON_STORE);
+            listOfPassengers = reader.read("listOfPassengers", Passenger.class);
+            listOfAircraft = reader.read("listOfAircraft", Aircraft.class);
+            listOfFlights = reader.read("listOfFlights", Flight.class);
         } catch (IOException e) {
             System.out.println("Unable to read from file: " + JSON_STORE);
         }
     }
+
 
     // can be refactored, 3 methods repeat here
     // EFFECTS: returns the list of all existing passengers

@@ -1,0 +1,58 @@
+{
+  "flights": [
+    {
+      "flightNumber": "AC100",
+      "aircraft": {
+        "model": "Boeing 747",
+        "capacity": 416
+      },
+      "departureAirport": {
+        "code": "YYZ",
+        "name": "Toronto Pearson International Airport"
+      },
+      "destinationAirport": {
+        "code": "YVR",
+        "name": "Vancouver International Airport"
+      },
+      "passengersOnBoard": [
+        {
+          "firstName": "John",
+          "lastName": "Doe",
+          "seatNumber": "27A"
+        },
+        {
+          "firstName": "Jane",
+          "lastName": "Doe",
+          "seatNumber": "27B"
+        }
+      ]
+    },
+    {
+      "flightNumber": "AC101",
+      "aircraft": {
+        "model": "Boeing 747",
+        "capacity": 416
+      },
+      "departureAirport": {
+        "code": "YVR",
+        "name": "Vancouver International Airport"
+      },
+      "destinationAirport": {
+        "code": "YYZ",
+        "name": "Toronto Pearson International Airport"
+      },
+      "passengersOnBoard": [
+        {
+          "firstName": "Bob",
+          "lastName": "Smith",
+          "seatNumber": "12C"
+        },
+        {
+          "firstName": "Alice",
+          "lastName": "Johnson",
+          "seatNumber": "12D"
+        }
+      ]
+    }
+  ]
+}
