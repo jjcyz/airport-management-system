@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class JsonReader {
     private final String source;
@@ -47,7 +48,8 @@ public class JsonReader {
 
     // EFFECTS: reads source file as string and returns it
     private String readFile(String source) throws IOException {
-        return Files.readString(Paths.get(source));
+        return Files.lines(Paths.get(source))
+                .collect(Collectors.joining(System.lineSeparator()));
     }
 
     // EFFECTS: parses list of passengers from JSON array and returns it
