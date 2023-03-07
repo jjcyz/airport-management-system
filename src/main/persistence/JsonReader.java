@@ -48,8 +48,7 @@ public class JsonReader {
 
     // EFFECTS: reads source file as string and returns it
     private String readFile(String source) throws IOException {
-        return Files.lines(Paths.get(source))
-                .collect(Collectors.joining(System.lineSeparator()));
+        return Files.readString(Paths.get(source));
     }
 
     // EFFECTS: parses list of passengers from JSON array and returns it
