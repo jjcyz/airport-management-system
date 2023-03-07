@@ -1,12 +1,1 @@
-{
-    "listOfPassengers": [{
-        "firstName": "Jessica",
-        "lastName": "Zhou",
-        "boardingTickets": "Jessica Zhou is not currently booked on any flights.",
-        "passengerID": 1234,
-        "bookedFlights": [],
-        "travelClass": "ECONOMY"
-    }],
-    "ListOfFlights": [],
-    "listOfAircraft": []
-}
+{"listOfPassengers":[{"firstName":"Jennifer","lastName":"Zhou","boardingTickets":"Jennifer Zhou is not currently booked on any flights.","passengerID":34,"bookedFlights":[],"travelClass":"FIRSTCLASS"},{"firstName":"Max","lastName":"Z","boardingTickets":"Max Z is not currently booked on any flights.","passengerID":56,"bookedFlights":[],"travelClass":"BUSINESSCLASS"}],"listOfFlights":[],"listOfAircraft":[]}

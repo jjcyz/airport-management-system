@@ -24,7 +24,7 @@ public class AirportUI implements Writable {
     private ArrayList<Flight> listOfFlights;
     boolean error = false;
     private final JsonWriter jsonWriter;
-    private JsonReader jsonReader;
+    private final JsonReader jsonReader;
 
     // EFFECTS: runs the airport management information system
     public AirportUI() throws FileNotFoundException {
@@ -399,6 +399,7 @@ public class AirportUI implements Writable {
                 + "\n4. Go back to Main Menu");
 
         int userInput = input.nextInt();
+        input.nextLine(); // newline character
         if (userInput == 1) {
             getListOfPassengers();
         } else if (userInput == 2) {
@@ -412,13 +413,15 @@ public class AirportUI implements Writable {
         }
     }
 
+
+
     // EFFECTS: saves the airport database to file
     private void save() {
         try {
             jsonWriter.open();
             jsonWriter.write(listOfPassengers, listOfAircraft, listOfFlights);
             jsonWriter.close();
-            System.out.printf("Saved to " + JSON_STORE);
+            System.out.print("Saved to " + JSON_STORE);
         } catch (FileNotFoundException e) {
             System.out.println("Unable to write to file" + JSON_STORE);
         }
@@ -430,9 +433,10 @@ public class AirportUI implements Writable {
     private void load() {   // need to fix
         try {
             JsonReader reader = new JsonReader(JSON_STORE);
-            reader.readPassengerList(listOfPassengers);
-            reader.readAircraftList(listOfAircraft);
-            reader.readFlightList(listOfFlights);
+            listOfPassengers = reader.readPassengerList(listOfPassengers);
+            listOfAircraft = reader.readAircraftList(listOfAircraft);
+            listOfFlights = reader.readFlightList(listOfFlights);
+            System.out.println("Data from " + JSON_STORE + " is loaded");
         } catch (IOException e) {
             System.out.println("Unable to read from file: " + JSON_STORE);
         }
@@ -445,6 +449,11 @@ public class AirportUI implements Writable {
         for (Passenger passenger : listOfPassengers) {
             System.out.println(passenger.toString());
         }
+
+        if (listOfPassengers.isEmpty()) {
+            System.out.println("Passenger list is empty");
+        }
+
     }
 
     // EFFECTS: returns the list of all existing aircraft
@@ -452,12 +461,20 @@ public class AirportUI implements Writable {
         for (Aircraft aircraft : listOfAircraft) {
             System.out.println(aircraft.toString());
         }
+
+        if (listOfAircraft.isEmpty()) {
+            System.out.println("Aircraft list is empty");
+        }
     }
 
     // EFFECTS: returns the list of all existing flights
     private void getListOfFlights() {
         for (Flight flight : listOfFlights) {
             System.out.println(flight.toString());
+        }
+
+        if (listOfFlights.isEmpty()) {
+            System.out.println("Flights list is empty");
         }
     }
 
