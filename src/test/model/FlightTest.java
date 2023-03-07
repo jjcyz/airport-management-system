@@ -38,8 +38,8 @@ public class FlightTest {
     @Test
     void getListOfPassenger() {
         testFlight1.addPassenger(p1);
-        assertEquals(testFlight1.getListOfPassengers(),
-                testFlight1.getListOfPassengers());
+        assertEquals(testFlight1.getPassengersOnFlight(),
+                testFlight1.getPassengersOnFlight());
     }
 
     @Test
@@ -59,10 +59,10 @@ public class FlightTest {
         testFlight1.addPassenger(p2);
         testFlight1.addPassenger(p1);
         assertTrue(testFlight1.isPassengerOnFlight(123));
-        int before = testFlight1.getListOfPassengers().size();
+        int before = testFlight1.getPassengersOnFlight().size();
         assertEquals("Ada Lovelace has been removed from this flight",
                 testFlight1.removePassenger(123));
-        assertEquals(before - 1, testFlight1.getListOfPassengers().size());
+        assertEquals(before - 1, testFlight1.getPassengersOnFlight().size());
         assertEquals("Passenger 999 is not found on this flight",
                 testFlight1.removePassenger(999));
     }

@@ -3,7 +3,6 @@ package model;
 /* This class represents a cargo shipment. Each cargo has a description of what it is
  and the weight of the cargo in tons, 1 ton = 2205 lbs */
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
 

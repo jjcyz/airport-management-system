@@ -9,7 +9,7 @@ import persistence.Writable;
 import java.util.ArrayList;
 
 public class CargoAircraft extends Aircraft implements Writable {
-    private ArrayList<Cargo> cargoOnBoard;
+    private final ArrayList<Cargo> cargoOnBoard;
 
     // Creates a new aircraft for cargos
     public CargoAircraft(String name, int maxCapacity) {

@@ -48,7 +48,7 @@ public class Flight implements Writable {
     }
 
     // EFFECTS: returns the list of passengers on this flight
-    public ArrayList<Passenger> getListOfPassengers() {
+    public ArrayList<Passenger> getPassengersOnFlight() {
         return passengersOnFlight;
     }
 
@@ -129,12 +129,12 @@ public class Flight implements Writable {
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        json.put("Flight", this.flightID);
-        json.put("Aircraft", this.aircraft);
-        json.put("Origin", this.origin);
-        json.put("Destination", this.destination);
-        json.put("Duration", this.duration);
-        json.put("Passengers On Flight", this.passengersOnFlight);
+        json.put("flightID", this.flightID);
+        json.put("aircraft", this.aircraft.toJson());
+        json.put("origin", this.origin);
+        json.put("destination", this.destination);
+        json.put("duration", this.duration);
+        json.put("passengersOnFlight", this.passengersOnFlight);
         return json;
     }
 }

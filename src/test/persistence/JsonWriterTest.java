@@ -1,6 +1,7 @@
 package persistence;
 
 import model.*;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,13 +15,19 @@ public class JsonWriterTest extends JsonTest{
     private ArrayList<Passenger> pl;
     private ArrayList<Aircraft> al;
     private ArrayList<Flight> fl;
-
+    private Passenger testPassenger;
+    private Aircraft testAircraft;
+    private Flight testFlight;
 
     @BeforeEach
     void runBefore() {
         pl = new ArrayList<>();
         al = new ArrayList<>();
         fl = new ArrayList<>();
+        this.testPassenger = new Passenger(1,"Jessica", "Zhou",
+                TravelClasses.FIRSTCLASS);
+        this.testAircraft = new Aircraft("Airplane",100);
+        this.testFlight = new Flight("A", testAircraft, Airports.YVR, Airports.YYZ, 3);
     }
 
     @Test
@@ -73,6 +80,13 @@ public class JsonWriterTest extends JsonTest{
             reader.readAircraftList(al);
             reader.readFlightList(fl);
 
+            testPassengerToJson();
+            testAircraftToJson();
+            testFlightToJson();
+            testCargoAircraftToJson();
+            testPassengerAirlineToJson();
+            testPrivateJetToJson();
+
             assertEquals(0, pl.get(0).getBookedFlights().size());
             checkPassenger(0, "Jessica", "Zhou", TravelClasses.FIRSTCLASS,
                     new ArrayList<>(), pl.get(0));
@@ -82,5 +96,62 @@ public class JsonWriterTest extends JsonTest{
         } catch (IOException e) {
             fail("Exception should not have been thrown");
         }
+    }
+
+    private void testFlightToJson() {
+        JSONObject expectedFlight = new JSONObject()
+                .put("flightID", "A")
+                .put("aircraft", testAircraft.toJson())
+                .put("origin", "YVR")
+                .put("destination", "YYZ")
+                .put("duration", 3)
+                .put("passengersOnFlight", new ArrayList<>());
+        JSONObject actualFlight = testFlight.toJson();
+        assertEquals(expectedFlight.toString(), actualFlight.toString());
+    }
+
+    private void testAircraftToJson() {
+        JSONObject expectedAircraft = new JSONObject()
+                .put("name", "Airplane")
+                .put("maxCapacity", 100);
+        JSONObject actualAircraft = testAircraft.toJson();
+        assertEquals(expectedAircraft.toString(), actualAircraft.toString());
+    }
+
+    private void testPassengerToJson() {
+        JSONObject expectedPassenger = new JSONObject()
+                .put("firstName", "Jessica")
+                .put("lastName", "Zhou")
+                .put("passengerID", 1)
+                .put("bookedFlights", new ArrayList<>())
+                .put("travelClass", "FIRSTCLASS");
+        JSONObject actualPassenger = testPassenger.toJson();
+        assertEquals(expectedPassenger.toString(), actualPassenger.toString());
+    }
+
+    private void testCargoAircraftToJson() {
+        JSONObject expectedCargoAirline = new JSONObject()
+                .put("name", "forCargo")
+                .put("maxCargoWeight", 100)
+                .put("cargoList", new ArrayList<>());
+        JSONObject actualCargoAirline = new CargoAircraft("forCargo",100).toJson();
+        assertEquals(expectedCargoAirline.toString(), actualCargoAirline.toString());
+    }
+
+    private void testPassengerAirlineToJson() {
+        JSONObject expectedPassengerAirline = new JSONObject()
+                .put("name", "forPassenger")
+                .put("maxCapacity", 100)
+                .put("listOfPassenger", new ArrayList<>());
+        JSONObject actualPassengerAirline = new PassengerAirline("forPassenger",100).toJson();
+        assertEquals(expectedPassengerAirline.toString(), actualPassengerAirline.toString());
+    }
+
+    private void testPrivateJetToJson() {
+        JSONObject expectedPrivateJet = new JSONObject()
+                .put("name", "forPrivate")
+                .put("maxCapacity", 100);
+        JSONObject actualPrivateJet = new PrivateJet("forPrivate", 100).toJson();
+        assertEquals(expectedPrivateJet.toString(), actualPrivateJet.toString());
     }
 }
