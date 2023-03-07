@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class JsonReader {
     private final String source;
@@ -45,11 +46,19 @@ public class JsonReader {
         return parseFlightList(jsonObject.getJSONArray("listOfFlights"));
     }
 
-
-    // EFFECTS: reads source file as string and returns it
     private String readFile(String source) throws IOException {
-        return Files.readString(Paths.get(source));
+        StringBuilder contentBuilder = new StringBuilder();
+        try (Stream<String> stream = Files.lines(Paths.get(source))) {
+            stream.forEach(line -> contentBuilder.append(line));
+        }
+        return contentBuilder.toString();
     }
+
+
+//    // EFFECTS: reads source file as string and returns it
+//    private String readFile(String source) throws IOException {
+//        return Files.readString(Paths.get(source));
+//    }
 
     // EFFECTS: parses list of passengers from JSON array and returns it
     private ArrayList<Passenger> parsePassengerList(JSONArray jsonArray) {
