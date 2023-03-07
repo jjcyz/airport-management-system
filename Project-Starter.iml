@@ -11,7 +11,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="" scope="TEST">
+    <orderEntry type="module-library" scope="TEST">
       <library name="JUnit5.4">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/junit-jupiter-5.4.2.jar!/" />
@@ -27,8 +27,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" exported="" name="lib" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="JSON" level="project" />
-    <orderEntry type="library" exported="" name="json-20210307" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
   </component>
 </module>
