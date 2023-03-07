@@ -23,7 +23,7 @@ public class AirportUI implements Writable {
     private ArrayList<Aircraft> listOfAircraft;
     private ArrayList<Flight> listOfFlights;
     boolean error = false;
-    private JsonWriter jsonWriter;
+    private final JsonWriter jsonWriter;
     private JsonReader jsonReader;
 
     // EFFECTS: runs the airport management information system
@@ -78,7 +78,7 @@ public class AirportUI implements Writable {
     private void init() {
         listOfPassengers = new ArrayList<>();
         listOfAircraft = new ArrayList<>();
-        listOfFlights = new ArrayList<>();   //useful after JSON?
+        listOfFlights = new ArrayList<>();
         input = new Scanner(System.in);
 
     }
@@ -430,9 +430,9 @@ public class AirportUI implements Writable {
     private void load() {   // need to fix
         try {
             JsonReader reader = new JsonReader(JSON_STORE);
-            listOfPassengers = reader.read("listOfPassengers", Passenger.class);
-            listOfAircraft = reader.read("listOfAircraft", Aircraft.class);
-            listOfFlights = reader.read("listOfFlights", Flight.class);
+            reader.readPassengerList(listOfPassengers);
+            reader.readAircraftList(listOfAircraft);
+            reader.readFlightList(listOfFlights);
         } catch (IOException e) {
             System.out.println("Unable to read from file: " + JSON_STORE);
         }
@@ -481,7 +481,7 @@ public class AirportUI implements Writable {
             flightArray.put(flight.toJson());
         }
 
-        json.put("aircrafts", aircraftArray);
+        json.put("aircraft", aircraftArray);
         json.put("flights", flightArray);
         json.put("passengers", passengerArray);
 

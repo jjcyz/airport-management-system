@@ -134,7 +134,7 @@ public class Flight implements Writable {
         json.put("Origin", this.origin);
         json.put("Destination", this.destination);
         json.put("Duration", this.duration);
-        json.put("Passengers", this.passengersOnFlight);
+        json.put("Passengers On Flight", this.passengersOnFlight);
         return json;
     }
 }

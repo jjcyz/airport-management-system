@@ -1,10 +1,6 @@
 package persistence;
 
-import model.Aircraft;
-import model.Airports;
-import model.Flight;
-import model.Passenger;
-import org.junit.jupiter.api.Assertions;
+import model.*;
 
 import java.util.ArrayList;
 
@@ -12,12 +8,26 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JsonTest {
 
-    public void checkFlight(String flightNum, Aircraft aircraft, Airports origin, Airports destination,
-                               ArrayList<Passenger> listOfPassengers, Flight flight) {
-        assertEquals(flightNum, flight.getFlightID());
+    protected void checkPassenger(int passengerID, String firstName, String lastName, TravelClasses travelClass,
+                               ArrayList<Flight> bookedFlights, Passenger passenger) {
+        assertEquals(passengerID, passenger.getPassengerID());
+        assertEquals(firstName, passenger.getFirstName());
+        assertEquals(lastName, passenger.getLastName());
+        assertEquals(travelClass, passenger.getTravelClass());
+        assertEquals(bookedFlights, passenger.getBookedFlights());
+    }
+
+    protected void checkAircraft(String name, int maxCapacity, Aircraft aircraft) {
+        assertEquals(name, aircraft.getName());
+        assertEquals(maxCapacity, aircraft.getMaxCapacity());
+    }
+
+    protected void checkFlight(String flightID, Aircraft aircraft, Airports origin,
+                               Airports destination, int duration, Flight flight) {
+        assertEquals(flightID, flight.getFlightID());
         assertEquals(aircraft, flight.getAircraft());
         assertEquals(origin, flight.getOrigin());
         assertEquals(destination, flight.getDestination());
-        assertEquals(listOfPassengers, flight.getListOfPassengers());
+        assertEquals(duration, flight.getDuration());
     }
 }

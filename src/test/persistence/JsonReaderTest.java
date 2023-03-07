@@ -8,27 +8,34 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static model.Airports.YVR;
-import static model.Airports.YYZ;
 import static org.junit.jupiter.api.Assertions.*;
 
 class JsonReaderTest extends JsonTest {
 
     private Aircraft aircraft;
-    private ArrayList<Passenger> passengersOnBoard;
+    private ArrayList<Passenger> listOfPassengers;
+    private ArrayList<Aircraft> listOfAircraft;
+    private ArrayList<Flight> listOfFlights;
+
 
     @BeforeEach
     void runBefore() {
         aircraft = new Aircraft("Boeing", 200);
-        passengersOnBoard = new ArrayList<>();
-        passengersOnBoard.add(new Passenger(1234,"Elon", "Musk", TravelClasses.FIRSTCLASS));
+        listOfPassengers = new ArrayList<>();
+        listOfAircraft = new ArrayList<>();
+        listOfFlights = new ArrayList<>();
+        listOfPassengers.add(new Passenger(1,"Elon", "Musk",
+                TravelClasses.FIRSTCLASS));
+        listOfPassengers.add(new Passenger(2, "Ada", "Lovelace",
+                TravelClasses.FIRSTCLASS));
+
     }
 
     @Test
     void testReaderNonExistentFile() {
         JsonReader reader = new JsonReader("./data/noSuchFile.json");
         try {
-            ArrayList<Flight> flights = reader.read();
+            ArrayList<Passenger> passengers = reader.readPassengerList(listOfPassengers);
             fail("IOException expected");
         } catch (IOException e) {
             // pass
@@ -37,10 +44,10 @@ class JsonReaderTest extends JsonTest {
 
     @Test
     void testReaderEmptyFlightList() {
-        JsonReader reader = new JsonReader("./data/testReaderEmptyFlightList.json");
+        JsonReader reader = new JsonReader("./data/testReaderEmptyPassengerList.json");
         try {
-            List<Flight> flights = reader.read();
-            assertEquals(0, flights.size());
+            ArrayList<Passenger> listOfPassenger = reader.readPassengerList(listOfPassengers);
+            assertEquals(0, listOfPassenger.size());
         } catch (IOException e) {
             fail("Couldn't read from file");
         }
@@ -48,12 +55,12 @@ class JsonReaderTest extends JsonTest {
 
     @Test
     void testReaderGeneralFlightList() {
-        JsonReader reader = new JsonReader("./data/testReaderGeneralFlightList.json");
+        JsonReader reader = new JsonReader("./data/testReaderGeneralPassengerList.json");
         try {
-            List<Flight> flights = reader.read();
-            assertEquals(2, flights.size());
-            checkFlight("AC100", aircraft, YYZ, YVR, passengersOnBoard, flights.get(0));
-            checkFlight("AC101", aircraft, YVR, YYZ, passengersOnBoard, flights.get(1));
+            List<Passenger> passengers = reader.readPassengerList(listOfPassengers);
+            assertEquals(2, passengers.size());
+            checkPassenger(1, "Elon", "Musk", TravelClasses.FIRSTCLASS,
+                    new ArrayList<>(), passengers.get(0));
         } catch (IOException e) {
             fail("Couldn't read from file");
         }

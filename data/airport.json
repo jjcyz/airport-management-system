@@ -7,6 +7,6 @@
         "bookedFlights": [],
         "travelClass": "ECONOMY"
     }],
-    "flights": [],
+    "ListOfFlights": [],
     "listOfAircraft": []
 }

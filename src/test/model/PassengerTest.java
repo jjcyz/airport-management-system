@@ -2,7 +2,10 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static model.TravelClasses.ECONOMY;
 import static model.TravelClasses.FIRSTCLASS;
@@ -69,13 +72,17 @@ class PassengerTest {
 
     @Test
     void getBoardingTicketsTest() {
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = formatter.format(date);
+
         assertEquals("---------------------------------------------------------------------------\n"
                 +"                         ELECTRONIC BOARDING PASS                          \n"
                 +"---------------------------------------------------------------------------\n"
                 +"Name of Passenger: Zhou Jessica\n"
                 +"Origin:              YVR                  Destination:         PEK                 \n"
                 +"Class:               FIRSTCLASS           Seat No.             25A                 \n"
-                +"Flight ID:           123                  Date:                11-02-2023          \n"
+                +"Flight ID:           123                  Date:                " + formattedDate + "          \n"
                 +"Departure:           11:30 am             Arrival:             10:00 am            \n"
                 +"---------------------------------------------------------------------------\n"
                 , testPassenger.getBoardingTickets().toString());

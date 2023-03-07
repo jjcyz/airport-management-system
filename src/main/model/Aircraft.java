@@ -31,7 +31,7 @@ public class Aircraft implements Writable {
     public String toString() {
         return "Name of Aircraft: "
                 + name
-                + "Maximum Capacity: "
+                + " Maximum Capacity: "
                 + maxCapacity;
     }
 

@@ -30,14 +30,14 @@ public class JsonWriter {
 
     // MODIFIES: this
     // EFFECTS: writes JSON representation of workroom to file
-    public void write(ArrayList<Passenger> passengers,
+    public void write(ArrayList<Passenger> listOfPassengers,
                       ArrayList<Aircraft> listOfAircraft,
                       ArrayList<Flight> listOfFlights) {
         JSONObject json = new JSONObject();
-        json.put("listOfPassengers", new JSONArray(passengers));
+        json.put("listOfPassengers", new JSONArray(listOfPassengers));
         json.put("listOfAircraft", new JSONArray(listOfAircraft));
-        json.put("flights", new JSONArray(listOfFlights));
-        saveToFile(json.toString(TAB));
+        json.put("listOfFlights", new JSONArray(listOfFlights));
+        saveToFile(json.toString());
     }
 
     // MODIFIES: this
