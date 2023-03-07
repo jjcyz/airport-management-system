@@ -1,0 +1,18 @@
+{
+  "listOfPassengers": [
+    {
+      "passengerID": 1,
+      "firstName": "Elon",
+      "lastName": "Musk",
+      "travelClass": "FIRSTCLASS",
+      "bookedFlights": []
+    },
+    {
+      "passengerID": 2,
+      "firstName": "Ada",
+      "lastName": "Lovelace",
+      "travelClass": "FIRSTCLASS",
+      "bookedFlights": []
+    }
+  ]
+}
