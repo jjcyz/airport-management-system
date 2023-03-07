@@ -24,10 +24,18 @@ class JsonReaderTest extends JsonTest {
         listOfPassengers = new ArrayList<>();
         listOfAircraft = new ArrayList<>();
         listOfFlights = new ArrayList<>();
-        listOfPassengers.add(new Passenger(1,"Elon", "Musk",
-                TravelClasses.FIRSTCLASS));
-        listOfPassengers.add(new Passenger(2, "Ada", "Lovelace",
-                TravelClasses.FIRSTCLASS));
+
+        Passenger testPassenger1 = new Passenger(1,"Elon", "Musk",
+                TravelClasses.FIRSTCLASS);
+        Passenger testPassenger2 = new Passenger(2, "Ada", "Lovelace",
+                TravelClasses.FIRSTCLASS);
+
+        Aircraft testAircraft = new Aircraft("Airplane", 100);
+        Flight testFlight = new Flight("A", testAircraft, Airports.YVR, Airports.YYZ, 3);
+        testPassenger1.getBookedFlights().add(testFlight);
+
+        listOfPassengers.add(testPassenger1);
+        listOfPassengers.add(testPassenger2);
 
     }
 
@@ -58,6 +66,9 @@ class JsonReaderTest extends JsonTest {
         JsonReader reader = new JsonReader("./data/testReaderGeneralPassengerList.json");
         try {
             List<Passenger> passengers = reader.readPassengerList(listOfPassengers);
+
+            List<Flight> bookedFlight = passengers.get(0).getBookedFlights();
+            assertEquals(0, bookedFlight.size());
             assertEquals(2, passengers.size());
             checkPassenger(1, "Elon", "Musk", TravelClasses.FIRSTCLASS,
                     new ArrayList<>(), passengers.get(0));

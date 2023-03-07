@@ -5,14 +5,39 @@
       "firstName": "Elon",
       "lastName": "Musk",
       "travelClass": "FIRSTCLASS",
-      "bookedFlights": []
+      "bookedFlights": [
+        {
+          "flightID": "A",
+          "aircraft": {
+            "name": "Airplane",
+            "maxCapacity": 100
+          },
+          "origin": "YVR",
+          "destination": "YYZ",
+          "duration": 3,
+          "listOfPassengers": []
+        }
+      ]
     },
     {
       "passengerID": 2,
       "firstName": "Ada",
       "lastName": "Lovelace",
       "travelClass": "FIRSTCLASS",
-      "bookedFlights": []
+      "bookedFlights": [
+        {
+          "flightID": "A",
+          "aircraft": {
+            "name": "Airplane",
+            "maxCapacity": 100
+          },
+          "maxCapacity": 100,
+          "origin": "YVR",
+          "destination": "YYZ",
+          "duration": 3,
+          "listOfPassengers": []
+        }
+      ]
     }
   ]
 }

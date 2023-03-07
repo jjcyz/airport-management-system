@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class JsonReader {
@@ -49,16 +48,10 @@ public class JsonReader {
     private String readFile(String source) throws IOException {
         StringBuilder contentBuilder = new StringBuilder();
         try (Stream<String> stream = Files.lines(Paths.get(source))) {
-            stream.forEach(line -> contentBuilder.append(line));
+            stream.forEach(contentBuilder::append);
         }
         return contentBuilder.toString();
     }
-
-
-//    // EFFECTS: reads source file as string and returns it
-//    private String readFile(String source) throws IOException {
-//        return Files.readString(Paths.get(source));
-//    }
 
     // EFFECTS: parses list of passengers from JSON array and returns it
     private ArrayList<Passenger> parsePassengerList(JSONArray jsonArray) {
@@ -84,7 +77,8 @@ public class JsonReader {
         for (int i = 0; i < jsonBookedFlights.length(); i++) {
             JSONObject jsonFlight = jsonBookedFlights.getJSONObject(i);
             Flight flight = parseFlight(jsonFlight);
-            passenger.getBookedFlights().add(flight); // does this actually add each flight?
+            //passenger.getBookedFlights().add(flight); // does this actually add each flight?
+            flight.getPassengersOnFlight().add(passenger); // add passenger to flight
         }
         return passenger;
     }
@@ -130,7 +124,8 @@ public class JsonReader {
         for (int i = 0; i < jsonPassengersOnFlight.length(); i++) {
             JSONObject jsonPassenger = jsonPassengersOnFlight.getJSONObject(i);
             Passenger passenger = parsePassenger(jsonPassenger);
-            flight.getListOfPassengers().add(passenger);
+            flight.getPassengersOnFlight().add(passenger);
+            // flight.getListOfPassengers().add(passenger);
         }
         return flight;
     }

@@ -25,7 +25,7 @@ public class PassengerAirline extends Aircraft implements Writable {
         for (Passenger passenger : this.listOfPassenger) {
             passengerArray.put(passenger.toJson());
         }
-        json.put("passengerList", passengerArray);
+        json.put("listOfPassenger", passengerArray);
 
         return json;
     }

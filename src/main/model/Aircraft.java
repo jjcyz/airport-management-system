@@ -38,8 +38,8 @@ public class Aircraft implements Writable {
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        json.put("Name", this.name);
-        json.put("Max Capacity", this.maxCapacity);
+        json.put("name", this.name);
+        json.put("maxCapacity", this.maxCapacity);
         return json;
     }
 }

@@ -90,11 +90,11 @@ public class Passenger implements Writable {
     @Override
     public JSONObject toJson() {
         JSONObject json  = new JSONObject();
-        json.put("Passenger ID", passengerID);
-        json.put("First name", this.firstName);
-        json.put("Last name", this.lastName);
-        json.put("Travel class", this.travelClass);
-        json.put("Booked Flights", this.bookedFlights);
+        json.put("passengerID", passengerID);
+        json.put("firstName", this.firstName);
+        json.put("lastName", this.lastName);
+        json.put("travelClass", this.travelClass);
+        json.put("bookedFlights", this.bookedFlights);
         return json;
     }
 }

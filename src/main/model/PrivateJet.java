@@ -1,5 +1,6 @@
 package model;
 
+import org.json.JSONObject;
 import persistence.Writable;
 
 public class PrivateJet extends Aircraft implements Writable {
@@ -12,5 +13,13 @@ public class PrivateJet extends Aircraft implements Writable {
 
     public int getMaxCapacity() {
         return maxCapacity;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("name", this.name);
+        json.put("maxCapacity", this.maxCapacity);
+        return json;
     }
 }
