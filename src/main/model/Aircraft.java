@@ -29,9 +29,9 @@ public class Aircraft implements Writable {
 
     @Override
     public String toString() {
-        return "Name of Aircraft: "
+        return "name: "
                 + name
-                + " Maximum Capacity: "
+                + " maxCapacity: "
                 + maxCapacity;
     }
 

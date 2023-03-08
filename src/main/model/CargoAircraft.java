@@ -29,10 +29,10 @@ public class CargoAircraft extends Aircraft implements Writable {
         json.put("maxCargoWeight", this.maxCapacity);
 
         JSONArray cargoArray = new JSONArray();
-        for (Cargo cargo : this.cargoOnBoard) {
-            cargoArray.put(cargo.toJson());
-        }
-        json.put("cargoList", cargoArray);
+//        for (Cargo cargo : this.cargoOnBoard) {
+//            cargoArray.put(cargo.toJson());
+//        }
+//        json.put("cargoList", cargoArray);
 
         return json;
     }

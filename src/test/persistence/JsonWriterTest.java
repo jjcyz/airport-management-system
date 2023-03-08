@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -86,6 +87,7 @@ public class JsonWriterTest extends JsonTest{
             testCargoAircraftToJson();
             testPassengerAirlineToJson();
             testPrivateJetToJson();
+            testCargo();
 
             assertEquals(0, pl.get(0).getBookedFlights().size());
             checkPassenger(0, "Jessica", "Zhou", TravelClasses.FIRSTCLASS,
@@ -132,8 +134,7 @@ public class JsonWriterTest extends JsonTest{
     private void testCargoAircraftToJson() {
         JSONObject expectedCargoAirline = new JSONObject()
                 .put("name", "forCargo")
-                .put("maxCargoWeight", 100)
-                .put("cargoList", new ArrayList<>());
+                .put("maxCargoWeight", 100);
         JSONObject actualCargoAirline = new CargoAircraft("forCargo",100).toJson();
         assertEquals(expectedCargoAirline.toString(), actualCargoAirline.toString());
     }
@@ -141,8 +142,7 @@ public class JsonWriterTest extends JsonTest{
     private void testPassengerAirlineToJson() {
         JSONObject expectedPassengerAirline = new JSONObject()
                 .put("name", "forPassenger")
-                .put("maxCapacity", 100)
-                .put("listOfPassenger", new ArrayList<>());
+                .put("maxCapacity", 100);
         JSONObject actualPassengerAirline = new PassengerAirline("forPassenger",100).toJson();
         assertEquals(expectedPassengerAirline.toString(), actualPassengerAirline.toString());
     }
@@ -153,5 +153,13 @@ public class JsonWriterTest extends JsonTest{
                 .put("maxCapacity", 100);
         JSONObject actualPrivateJet = new PrivateJet("forPrivate", 100).toJson();
         assertEquals(expectedPrivateJet.toString(), actualPrivateJet.toString());
+    }
+
+    private void testCargo() {
+        JSONObject expectedCargo = new JSONObject()
+                .put("name", "bananas")
+                .put("maxCargoWeight", 100);
+        JSONObject actualCargo = new CargoAircraft("bananas", 100).toJson();
+        assertEquals(expectedCargo.toString(), actualCargo.toString());
     }
 }

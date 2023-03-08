@@ -22,10 +22,10 @@ public class PassengerAirline extends Aircraft implements Writable {
         json.put("maxCapacity", this.maxCapacity);
 
         JSONArray passengerArray = new JSONArray();
-        for (Passenger passenger : this.listOfPassenger) {
-            passengerArray.put(passenger.toJson());
-        }
-        json.put("listOfPassenger", passengerArray);
+//        for (Passenger passenger : this.listOfPassenger) {
+//            passengerArray.put(passenger.toJson());
+//        }
+//        json.put("listOfPassenger", passengerArray);
 
         return json;
     }
