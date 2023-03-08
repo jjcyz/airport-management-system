@@ -1,0 +1,15 @@
+{
+  "listOfFlights": [
+    {
+      "flightID": "A",
+      "aircraft": {
+        "name": "Airplane",
+        "maxCapacity": 100
+      },
+      "origin": "YVR",
+      "destination": "YYZ",
+      "duration": 3,
+      "listOfPassengers": []
+    }
+  ]
+}

@@ -37,6 +37,8 @@ class JsonReaderTest extends JsonTest {
         listOfPassengers.add(testPassenger1);
         listOfPassengers.add(testPassenger2);
 
+        listOfFlights.add(testFlight);
+
     }
 
     @Test
@@ -62,12 +64,13 @@ class JsonReaderTest extends JsonTest {
     }
 
     @Test
-    void testReaderGeneralFlightList() {
+    void testReaderGeneralPassengerList() {
         JsonReader reader = new JsonReader("./data/testReaderGeneralPassengerList.json");
         try {
             List<Passenger> passengers = reader.readPassengerList(listOfPassengers);
 
-            List<Flight> bookedFlight = passengers.get(0).getBookedFlights();
+            ArrayList<Flight> bookedFlight = passengers.get(0).getBookedFlights();
+
             ArrayList<Flight> elonsFlights = new ArrayList<>();
             Aircraft elonsJet = new Aircraft("Airplane", 100);
             elonsFlights.add(new Flight("A", elonsJet, Airports.YVR, Airports.YYZ, 3));
@@ -75,9 +78,13 @@ class JsonReaderTest extends JsonTest {
             assertEquals(1, bookedFlight.size());
             assertEquals(2, passengers.size());
             checkPassenger(1, "Elon", "Musk", TravelClasses.FIRSTCLASS,
-                    elonsFlights, passengers.get(0));
+                    bookedFlight, passengers.get(0));
         } catch (IOException e) {
             fail("Couldn't read from file");
         }
     }
+
+
+
+
 }

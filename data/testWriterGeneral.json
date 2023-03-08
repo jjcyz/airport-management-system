@@ -1,3 +1,1 @@
-{"listOfPassengers":[{
-  "firstName":"Jessica",
-  "lastName":"Zhou","boardingTickets":"Jessica Zhou is not currently booked on any flights.","passengerID":0,"bookedFlights":[],"travelClass":"FIRSTCLASS"}],"listOfFlights":[{"duration":3,"currentCapacity":0,"availableSeats":100,"aircraft":{"name":"Boeing","maxCapacity":100},"origin":"YVR","destination":"YYZ","listOfPassengers":[],"flightID":"1"}],"listOfAircraft":[{"name":"Boeing","maxCapacity":100}]}
+{"listOfPassengers":[{"firstName":"Jessica","lastName":"Zhou","boardingTickets":"Jessica Zhou is not currently booked on any flights.","passengerID":0,"bookedFlights":[],"travelClass":"FIRSTCLASS"}],"listOfFlights":[{"duration":3,"passengersOnFlight":[],"currentCapacity":0,"availableSeats":100,"aircraft":{"name":"Boeing","maxCapacity":100},"origin":"YVR","destination":"YYZ","flightID":"1"}],"listOfAircraft":[{"name":"Boeing","maxCapacity":100}]}

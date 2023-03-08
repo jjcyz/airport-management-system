@@ -105,7 +105,7 @@ public class JsonReader {
         ArrayList<Flight> flightList = new ArrayList<>();
         for (Object o : jsonArray) {
             JSONObject jsonObject = (JSONObject) o;
-            flightList.add(parseFlight(jsonObject));
+            // flightList.add(parseFlight(jsonObject));
         }
         return flightList;
     }
@@ -121,12 +121,12 @@ public class JsonReader {
 
         Flight flight = new Flight(flightNumber, aircraft, origin, destination, duration);
 
-        for (int i = 0; i < jsonPassengersOnFlight.length(); i++) {
-            JSONObject jsonPassenger = jsonPassengersOnFlight.getJSONObject(i);
-            Passenger passenger = parsePassenger(jsonPassenger);
-            flight.addPassenger(passenger);
-            // flight.getListOfPassengers().add(passenger);
-        }
+//        for (int i = 0; i < jsonPassengersOnFlight.length(); i++) {
+//            JSONObject jsonPassenger = jsonPassengersOnFlight.getJSONObject(i);
+//            Passenger passenger = parsePassenger(jsonPassenger);
+//            flight.addPassenger(passenger);
+//            //// flight.getListOfPassengers().add(passenger);
+//        }
         return flight;
     }
 
