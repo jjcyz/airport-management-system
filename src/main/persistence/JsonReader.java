@@ -78,7 +78,7 @@ public class JsonReader {
             JSONObject jsonFlight = jsonBookedFlights.getJSONObject(i);
             Flight flight = parseFlight(jsonFlight);
             //passenger.getBookedFlights().add(flight); // does this actually add each flight?
-            flight.getPassengersOnFlight().add(passenger); // add passenger to flight
+            flight.addPassenger(passenger); // add passenger to flight
         }
         return passenger;
     }
@@ -124,7 +124,7 @@ public class JsonReader {
         for (int i = 0; i < jsonPassengersOnFlight.length(); i++) {
             JSONObject jsonPassenger = jsonPassengersOnFlight.getJSONObject(i);
             Passenger passenger = parsePassenger(jsonPassenger);
-            flight.getPassengersOnFlight().add(passenger);
+            flight.addPassenger(passenger);
             // flight.getListOfPassengers().add(passenger);
         }
         return flight;

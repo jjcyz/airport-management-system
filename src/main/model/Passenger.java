@@ -48,6 +48,11 @@ public class Passenger implements Writable {
         return bookedFlights;
     }
 
+    // EFFECT: Adds flights to passenger's booked flights
+    public void addToBookedFlights(Flight flight) {
+        bookedFlights.add(flight);
+    }
+
     @Override
     public String toString() {
         return "Passenger ID: "

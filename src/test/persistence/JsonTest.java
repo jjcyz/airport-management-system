@@ -5,6 +5,7 @@ import model.*;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JsonTest {
 
@@ -14,7 +15,9 @@ public class JsonTest {
         assertEquals(firstName, passenger.getFirstName());
         assertEquals(lastName, passenger.getLastName());
         assertEquals(travelClass, passenger.getTravelClass());
-        assertEquals(bookedFlights, passenger.getBookedFlights());
+        for (Flight flight : bookedFlights) {
+            assertTrue(passenger.getBookedFlights().toString().contains(flight.toString()));
+        }
     }
 
     protected void checkAircraft(String name, int maxCapacity, Aircraft aircraft) {

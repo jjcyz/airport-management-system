@@ -52,7 +52,7 @@ public class Flight implements Writable {
         return passengersOnFlight;
     }
 
-    // EFFECTS: add a passenger from the aircraft
+    // EFFECTS: add a passenger to flight
     public String addPassenger(Passenger passenger) {
         if (getCurrentCapacity() < aircraft.getMaxCapacity()) {
             passengersOnFlight.add(passenger);
@@ -65,7 +65,7 @@ public class Flight implements Writable {
         }
     }
 
-    // EFFECTS: remove a passenger from the aircraft
+    // EFFECTS: remove a passenger from flight
     public String removePassenger(int passengerID) {
         Iterator<Passenger> p = passengersOnFlight.iterator();
         while (p.hasNext()) {
