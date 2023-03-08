@@ -104,9 +104,11 @@ public class FlightTest {
 
     @Test
     void toStringTest() {
-        assertEquals("Flight ID: ID12345 Aircraft: " +
-                "Name of Aircraft: ID12345 Maximum " +
-                "Capacity: 2 Origin: YVR Destination: " +
-                "YYZ Duration: 4", testFlight1.toString());
+        assertEquals("Flight ID: ID12345 Aircraft: "
+                + "name: ID12345 "
+                + "maxCapacity: 2 "
+                + "Origin: YVR "
+                + "Destination: YYZ" +
+                " Duration: 4", testFlight1.toString());
     }
 }

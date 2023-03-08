@@ -31,7 +31,7 @@ public class AircraftTest {
 
     @Test
     void toStringTest() {
-        assertEquals("Name of Aircraft: ABC Maximum Capacity: 150",testAircraft1.toString());
+        assertEquals("name: ABC maxCapacity: 150",testAircraft1.toString());
     }
 
 
