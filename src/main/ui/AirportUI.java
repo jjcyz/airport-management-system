@@ -430,7 +430,7 @@ public class AirportUI implements Writable {
 
     // MODIFIES: this
     // EFFECTS: loads workroom from file
-    private void load() {   // need to fix
+    private void load() {
         try {
             JsonReader reader = new JsonReader(JSON_STORE);
             listOfPassengers = reader.readPassengerList(listOfPassengers);
@@ -478,7 +478,7 @@ public class AirportUI implements Writable {
         }
     }
 
-
+    // EFFECT: returns the json object
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();

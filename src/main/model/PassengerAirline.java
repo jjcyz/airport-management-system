@@ -1,4 +1,5 @@
 package model;
+/* This class represents a passenger airline object, a subtype of aircraft */
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,6 +16,7 @@ public class PassengerAirline extends Aircraft implements Writable {
         this.listOfPassenger = new ArrayList<>();
     }
 
+    // EFFECTS: returns the json object
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();

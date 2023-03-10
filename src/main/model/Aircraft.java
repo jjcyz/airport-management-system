@@ -35,6 +35,7 @@ public class Aircraft implements Writable {
                 + maxCapacity;
     }
 
+    // EFFECTS: returns json object
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();

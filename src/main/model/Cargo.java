@@ -23,6 +23,7 @@ public class Cargo implements Writable {
         return weight;
     }
 
+    // EFFECTS: returns json object
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();

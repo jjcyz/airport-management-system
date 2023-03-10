@@ -11,8 +11,14 @@ public enum TravelClasses {
     BUSINESSCLASS(600),
     FIRSTCLASS(1000);
 
-    TravelClasses(int ticketCost) {
+    private final int ticketCost;
 
+    TravelClasses(int ticketCost) {
+        this.ticketCost = ticketCost;
+    }
+
+    public int getTicketCost() {
+        return ticketCost;
     }
 
     // EFFECTS: returns the list of travel classes as values

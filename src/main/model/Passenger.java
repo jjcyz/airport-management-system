@@ -53,6 +53,7 @@ public class Passenger implements Writable {
         bookedFlights.add(flight);
     }
 
+    // EFFECT: returns the json object
     @Override
     public String toString() {
         return "Passenger ID: "
@@ -65,6 +66,7 @@ public class Passenger implements Writable {
                 + travelClass;
     }
 
+    // EFFECTS: generates a boarding ticket of a passenger's flights
     public StringBuilder getBoardingTickets() {
         StringBuilder s = new StringBuilder();
         if (!bookedFlights.isEmpty()) {
@@ -91,7 +93,7 @@ public class Passenger implements Writable {
         return s;
     }
 
-
+    // EFFECTS: returns the json object
     @Override
     public JSONObject toJson() {
         JSONObject json  = new JSONObject();

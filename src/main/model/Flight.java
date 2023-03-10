@@ -3,7 +3,6 @@ package model;
 /* This class represents a flight. A flight is made of an aircraft, an origin, a destination,
     the duration of flight, and the list of passengers registered on this flight. */
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
 
@@ -103,15 +102,18 @@ public class Flight implements Writable {
         return aircraft.getMaxCapacity() - passengersOnFlight.size();
     }
 
+    // EFFECTS: sets the origin to given origin
     public void setOrigin(Airports origin) {
         this.origin = origin;
     }
 
+    // EFFECTS: sets destination to given destination
     public void setDestination(Airports destination) {
         this.destination = destination;
         this.duration += 2; // or chgDuration(); (calculate this, would be a cool feature)
     }
 
+    // EFFECTS: return the flight string
     @Override
     public String toString() {
         return "Flight ID: "
@@ -126,6 +128,7 @@ public class Flight implements Writable {
                 + duration;
     }
 
+    // EFFECTS: returns the json object
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();

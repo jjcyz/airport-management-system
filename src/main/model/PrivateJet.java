@@ -1,4 +1,5 @@
 package model;
+/* This class represents a private jet object, a subtype of aircraft */
 
 import org.json.JSONObject;
 import persistence.Writable;
@@ -15,6 +16,7 @@ public class PrivateJet extends Aircraft implements Writable {
         return maxCapacity;
     }
 
+    // EFFECTS: returns the json object
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
