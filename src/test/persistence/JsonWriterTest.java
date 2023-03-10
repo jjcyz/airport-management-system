@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JsonWriterTest extends JsonTest{
     private ArrayList<Passenger> pl;
@@ -155,10 +154,17 @@ public class JsonWriterTest extends JsonTest{
     }
 
     private void testCargo() {
-        JSONObject expectedCargo = new JSONObject()
-                .put("name", "bananas")
+        JSONObject expectedCargoAircraft = new JSONObject()
+                .put("name", "bananasPlane")
                 .put("maxCargoWeight", 100);
-        JSONObject actualCargo = new CargoAircraft("bananas", 100).toJson();
-        assertEquals(expectedCargo.toString(), actualCargo.toString());
+        JSONObject actualCargo = new CargoAircraft("bananasPlane", 100).toJson();
+
+        JSONObject expectedCargo = new JSONObject()
+                .put("description", "bananas")
+                .put("weight", 50);
+        Cargo cargoCargo = new Cargo("bananas", 50);
+
+        assertEquals(expectedCargoAircraft.toString(), actualCargo.toString());
+        assertEquals(expectedCargo.toString(), cargoCargo.toJson().toString());
     }
 }
