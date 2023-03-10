@@ -45,6 +45,7 @@ public class JsonReader {
         return parseFlightList(jsonObject.getJSONArray("listOfFlights"));
     }
 
+    // EFFECTS: reads the source provided
     private String readFile(String source) throws IOException {
         StringBuilder contentBuilder = new StringBuilder();
         try (Stream<String> stream = Files.lines(Paths.get(source))) {
@@ -77,7 +78,6 @@ public class JsonReader {
         for (int i = 0; i < jsonBookedFlights.length(); i++) {
             JSONObject jsonFlight = jsonBookedFlights.getJSONObject(i);
             Flight flight = parseFlight(jsonFlight);
-            //passenger.getBookedFlights().add(flight); // does this actually add each flight?
             flight.addPassenger(passenger); // add passenger to flight
         }
         return passenger;
@@ -105,7 +105,7 @@ public class JsonReader {
         ArrayList<Flight> flightList = new ArrayList<>();
         for (Object o : jsonArray) {
             JSONObject jsonObject = (JSONObject) o;
-            // flightList.add(parseFlight(jsonObject));
+//            flightList.add(parseFlight(jsonObject));
         }
         return flightList;
     }

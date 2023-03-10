@@ -337,7 +337,7 @@ public class AirportUI implements Writable {
                 } else if (userInput == 3) {
                     viewPassengerFlights();
                 } else if (userInput == 4) {
-                    displayMainMenu();
+                    break;
                 }
             } catch (Exception e) {
                 System.out.println("Error: UserInput invalid");
