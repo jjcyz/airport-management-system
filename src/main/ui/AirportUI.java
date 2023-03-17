@@ -9,6 +9,12 @@ import persistence.JsonReader;
 import persistence.JsonWriter;
 import persistence.Writable;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,24 +22,241 @@ import java.util.List;
 import java.util.Scanner;
 
 // Represents the airport application
-public class AirportUI implements Writable {
+public class AirportUI extends JFrame implements Writable {
     private static final String JSON_STORE = "./data/airport.json";
     private Scanner input;
     private ArrayList<Passenger> listOfPassengers;
     private ArrayList<Aircraft> listOfAircraft;
     private ArrayList<Flight> listOfFlights;
     boolean error = false;
-    private final JsonWriter jsonWriter;
-    private final JsonReader jsonReader;
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
 
-    // EFFECTS: runs the airport management information system
-    public AirportUI() throws FileNotFoundException {
+    private JPanel mainMenu;
+    private JLabel label;
+
+    // Makes a new JFrame with different attributes
+    public AirportUI() {
+        super("Airport Management System");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setPreferredSize(new Dimension(600, 500));
+        initializeBackend();
+        initializeHeader();
+        initializeMenu();
+        initializeButtons();
+
+        startLoadPrompt();
+        exitSavePrompt();
+
+        JLabel welcomeLabel = new JLabel("Welcome!");
+        JLabel mainScreenImage = new JLabel();
+        addLabel(welcomeLabel);
+        addImageToLabel(mainScreenImage);
+        mainMenu.setVisible(true);
+        // runAirportUI();
+    }
+
+    private void initializeBackend() {
         input = new Scanner(System.in);
-
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
-        runAirportUI();
     }
+
+    // MODIFIES: this
+    // EFFECTS: initializes header pane for date and calories
+    private void initializeHeader() {
+//        JPanel headerPane = new JPanel();
+//        headerPane.setLayout(new FlowLayout());
+//
+//        JPanel datePane = initializeDatePane();
+//        JPanel caloriePane = initializeCaloriePane();
+//
+//        headerPane.add(datePane);
+//        headerPane.add(Box.createHorizontalStrut(50));
+//        headerPane.add(caloriePane);
+//
+//        add(headerPane, BorderLayout.PAGE_START);
+    }
+
+
+
+    // EFFECTS: Makes the main menu panel and changes the background color
+    public void initializeMenu() {
+        mainMenu = new JPanel();
+        mainMenu.setBackground(Color.lightGray);
+        add(mainMenu);
+        label = new JLabel();
+        label.setText("No Listings available");
+    }
+
+    // MODIFIES: this
+    // EFFECTS: initializes buttons
+    private void initializeButtons() {
+        JPanel buttons = new JPanel();
+        buttons.setLayout(new FlowLayout());
+
+        JButton addNewPassenger = new JButton("Add new passenger");
+        addNewPassenger.setActionCommand("1. Add new passenger");
+        addNewPassenger.addActionListener(new ButtonListener());
+
+        JButton addNewAircraft = new JButton("Add new aircraft");
+        addNewAircraft.setActionCommand("2. Add new aircraft");
+        addNewAircraft.addActionListener(new ButtonListener());
+
+        JButton createNewFlight = new JButton("Create new flight");
+        createNewFlight.setActionCommand("3. Create new flight");
+        createNewFlight.addActionListener(new ButtonListener());
+
+        // other methods here
+
+        JButton saveDatabaseToFile = new JButton("Save database to file");
+        saveDatabaseToFile.setActionCommand("7. Save database to file");
+        saveDatabaseToFile.addActionListener(new ButtonListener());
+
+        JButton loadDatabaseFromFile = new JButton("Load database from file");
+        loadDatabaseFromFile.setActionCommand("8. Load database from file");
+        loadDatabaseFromFile.addActionListener(new ButtonListener());
+
+        buttons.add(addNewPassenger);
+        buttons.add(addNewAircraft);
+        buttons.add(createNewFlight);
+        buttons.add(saveDatabaseToFile);
+        buttons.add(loadDatabaseFromFile);
+        add(buttons, BorderLayout.PAGE_END);
+
+    }
+
+    // creates Action Listener for button presses
+    class ButtonListener implements ActionListener {
+
+        // EFFECTS: processes button clicks and runs appropriate methods
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            System.out.println("\nNavigate by entering the number");
+            switch (actionEvent.getActionCommand()) {
+                case "1. Add new passenger":
+                    addNewPassenger();
+                    break;
+                case "2. Add new aircraft":
+                    addNewAircraft();
+                    break;
+                case "3. Create new flight":
+                    addNewFlight();
+                    break;
+                case "4. Change existing flight":
+                    modifyFlight();
+                    break;
+                case "5. Manage passenger and flight(s)":
+                    managePassengerFlights();
+                    break;
+                case "6. View data":
+                    viewData();
+                    break;
+                case "7. Save database to file":
+                    save();
+                    break;
+                case "8. Load database from file":
+                    load();
+                    break;
+                case "Press x to exit":
+            }
+        }
+    }
+
+    private void startLoadPrompt() {
+        int loadOption = JOptionPane.showConfirmDialog(null,
+                "Would you like to load your last log?", "Load File",
+                JOptionPane.YES_NO_OPTION);
+        if (loadOption == JOptionPane.YES_OPTION) {
+            try {
+                JsonReader reader = new JsonReader(JSON_STORE);
+                listOfPassengers = reader.readPassengerList(listOfPassengers);
+                listOfAircraft = reader.readAircraftList(listOfAircraft);
+                listOfFlights = reader.readFlightList(listOfFlights);
+                System.out.println("Data from " + JSON_STORE + " is loaded");
+            } catch (IOException e) {
+                System.out.println("Unable to read from file: " + JSON_STORE);
+            }
+        }
+    }
+
+    private void exitSavePrompt() {
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent event) {
+                int saveOption = JOptionPane.showConfirmDialog(null,
+                        "Would you like to save your log before exiting?", "Save File Prompt",
+                        JOptionPane.YES_NO_OPTION);
+                if (saveOption == JOptionPane.YES_OPTION) {
+                    try {
+                        jsonWriter.open();
+                        jsonWriter.write(listOfPassengers, listOfAircraft, listOfFlights);
+                        jsonWriter.close();
+                        System.out.print("Saved to " + JSON_STORE);
+                    } catch (FileNotFoundException e) {
+                        System.out.println("Unable to write to file" + JSON_STORE);
+                    }
+                    dispose();
+                }
+            }
+        });
+    }
+
+    // EFFECTS: displays options for the user  ok
+    private void displayMainMenu() {
+        System.out.println("\nNavigate by entering the number\n"
+                + "1. Add new passenger\n"
+                + "2. Add new aircraft\n"
+                + "3. Create new flight\n"
+                + "4. Change existing flight\n"
+                + "5. Manage passenger and flight(s)\n"
+                + "6. View data\n"
+                + "7. Save database to file\n"
+                + "8. Load database from file\n"
+                + "Press x to exit");
+    }
+
+    // MODIFIES: this
+    // EFFECTS: processes user input
+    private void processUserInput(int userInput) {
+        try {
+            if (userInput == 1) {
+                addNewPassenger();
+            } else if (userInput == 2) {
+                addNewAircraft();
+            } else if (userInput == 3) {
+                addNewFlight();
+            } else if (userInput == 4) {
+                modifyFlight();
+            } else if (userInput == 5) {
+                managePassengerFlights();
+            } else if (userInput == 6) {
+                viewData(); // fix later, does not process userInput after
+            } else if (userInput == 7) {
+                save();
+            } else if (userInput == 8) {
+                load();
+            }
+            // System.out.println("test3"); does not run
+        } catch (Exception e) {
+            System.out.println("Error: processUserInput");
+            error = true;
+        }
+    }
+
+    // EFFECTS: Creates the welcome text label and adds it to the main menu panel
+    public void addLabel(JLabel j1) {
+        j1.setFont(new Font("ComicSans", Font.BOLD, 50));
+        mainMenu.add(j1);
+    }
+
+    // EFFECTS: Creates the image on the main menu and its it to the panel
+    public void addImageToLabel(JLabel j1) {
+        j1.setIcon(new ImageIcon("./data/supra1.png"));
+        j1.setMinimumSize(new Dimension(20,20));
+        mainMenu.add(j1);
+    }
+
 
     // MODIFIES: this
     // EFFECTS: processes user input
@@ -83,47 +306,7 @@ public class AirportUI implements Writable {
 
     }
 
-    // EFFECTS: displays options for the user
-    private void displayMainMenu() {
-        System.out.println("\nNavigate by entering the number\n"
-                + "1. Add new passenger\n"
-                + "2. Add new aircraft\n"
-                + "3. Create new flight\n"
-                + "4. Change existing flight\n"
-                + "5. Manage passenger and flight(s)\n"
-                + "6. View data\n"
-                + "7. Save database to file\n"
-                + "8. Load database from file\n"
-                + "Press x to exit");
-    }
 
-    // MODIFIES: this
-    // EFFECTS: processes user input
-    private void processUserInput(int userInput) {
-        try {
-            if (userInput == 1) {
-                addNewPassenger();
-            } else if (userInput == 2) {
-                addNewAircraft();
-            } else if (userInput == 3) {
-                addNewFlight();
-            } else if (userInput == 4) {
-                modifyFlight();
-            } else if (userInput == 5) {
-                managePassengerFlights();
-            } else if (userInput == 6) {
-                viewData(); // fix later, does not process userInput after
-            } else if (userInput == 7) {
-                save();
-            } else if (userInput == 8) {
-                load(); // fix
-            }
-            // System.out.println("test3"); does not run
-        } catch (Exception e) {
-            System.out.println("Error: processUserInput");
-            error = true;
-        }
-    }
 
     // MODIFIES: this
     // EFFECTS: adds new passenger into system
@@ -504,4 +687,6 @@ public class AirportUI implements Writable {
 
         return json;
     }
+
+
 }
