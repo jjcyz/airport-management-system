@@ -17,7 +17,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -25,68 +24,187 @@ import java.util.Scanner;
 public class AirportUI extends JFrame implements Writable {
     private static final String JSON_STORE = "./data/airport.json";
     private Scanner input;
-    private ArrayList<Passenger> listOfPassengers;
-    private ArrayList<Aircraft> listOfAircraft;
-    private ArrayList<Flight> listOfFlights;
+    private DefaultListModel<Passenger> listOfPassengers;
+    private DefaultListModel<Aircraft> listOfAircraft;
+    private DefaultListModel<Flight> listOfFlights;
     boolean error = false;
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
 
-    private JPanel mainMenu;
+    private JPanel mainWindow;
     private JLabel label;
+
+    private ImageIcon airportImage;
 
     // Makes a new JFrame with different attributes
     public AirportUI() {
         super("Airport Management System");
+        setLayout(new BorderLayout());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(600, 500));
+
         initializeBackend();
         initializeHeader();
-        initializeMenu();
+        initializeMainScreen();
         initializeButtons();
+        pack();
+        setVisible(true);
 
         startLoadPrompt();
         exitSavePrompt();
 
-        JLabel welcomeLabel = new JLabel("Welcome!");
-        JLabel mainScreenImage = new JLabel();
-        addLabel(welcomeLabel);
-        addImageToLabel(mainScreenImage);
-        mainMenu.setVisible(true);
-        // runAirportUI();
+        setVisible(true);
+        JScrollPane scrollPane = setUpPassengerPane();
+        add(scrollPane);
     }
 
+    // MODIFIES: this
+    // EFFECTS: initiates the system
     private void initializeBackend() {
         input = new Scanner(System.in);
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
+        listOfPassengers = new DefaultListModel<>();
+        listOfAircraft = new DefaultListModel<>();
+        listOfFlights = new DefaultListModel<>();
+
+        airportImage = new ImageIcon(".fill in later");
+
     }
 
     // MODIFIES: this
-    // EFFECTS: initializes header pane for date and calories
+    // EFFECTS: initializes the 3 header panes
     private void initializeHeader() {
-//        JPanel headerPane = new JPanel();
-//        headerPane.setLayout(new FlowLayout());
-//
-//        JPanel datePane = initializeDatePane();
-//        JPanel caloriePane = initializeCaloriePane();
-//
-//        headerPane.add(datePane);
-//        headerPane.add(Box.createHorizontalStrut(50));
-//        headerPane.add(caloriePane);
-//
-//        add(headerPane, BorderLayout.PAGE_START);
+        JPanel mainMenu = new JPanel();
+        mainMenu.setLayout(new FlowLayout());
+
+        JPanel header1 = initializeTotalPassengerBox();
+        JPanel header2 = initializeTotalAircraftBox();
+        JPanel header3 = initializeTotalFlightsBox();
+
+        mainMenu.add(header1);
+        mainMenu.add(header2);
+        mainMenu.add(header3);
+
+        add(mainMenu, BorderLayout.PAGE_START);
     }
 
-
-
+    // MODIFIES: this
     // EFFECTS: Makes the main menu panel and changes the background color
-    public void initializeMenu() {
-        mainMenu = new JPanel();
-        mainMenu.setBackground(Color.lightGray);
-        add(mainMenu);
-        label = new JLabel();
-        label.setText("No Listings available");
+    public JPanel initializeTotalPassengerBox() {
+        JLabel totalPassengers = new JLabel("Total Passengers: " + listOfPassengers.size());
+        JPanel totalPassengersBox = new JPanel();
+        totalPassengersBox.add(totalPassengers);
+
+        totalPassengersBox.setBackground(Color.lightGray);
+        totalPassengersBox.setPreferredSize(new Dimension(200, 30));
+        add(totalPassengersBox);
+
+        return totalPassengersBox;
+    }
+
+    public JPanel initializeTotalAircraftBox() {
+        JLabel totalAircraft = new JLabel("Total Aircraft: " + listOfAircraft.size());
+        JPanel totalAircraftBox = new JPanel();
+        totalAircraftBox.add(totalAircraft);
+
+        totalAircraftBox.setBackground(Color.lightGray);
+        totalAircraftBox.setPreferredSize(new Dimension(200, 30));
+        add(totalAircraftBox);
+
+        return totalAircraftBox;
+    }
+
+    public JPanel initializeTotalFlightsBox() {
+        JLabel totalFlights = new JLabel("Total Flights: " + listOfFlights.size());
+        JPanel totalFlightsBox = new JPanel();
+        totalFlightsBox.add(totalFlights);
+
+        totalFlightsBox.setBackground(Color.lightGray);
+        totalFlightsBox.setPreferredSize(new Dimension(200, 30));
+        add(totalFlightsBox);
+
+        return totalFlightsBox;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: initializes triple split panes
+    private void initializeMainScreen() {
+        JPanel mainPanel = new JPanel(new GridLayout(1, 3));
+
+        JScrollPane passengerScrollPane = setUpPassengerPane();
+        JScrollPane aircraftScrollPane = setUpAircraftPane();
+        JScrollPane flightsScrollPane = setUpFlightsPane();
+
+        JSplitPane splitPane1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitPane1.setOneTouchExpandable(true);
+        splitPane1.setLeftComponent(passengerScrollPane);
+        splitPane1.setRightComponent(aircraftScrollPane);
+        splitPane1.setDividerLocation(0.33);
+
+        JSplitPane splitPane2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitPane2.setOneTouchExpandable(true);
+        splitPane2.setLeftComponent(splitPane1);
+        splitPane2.setRightComponent(flightsScrollPane);
+        splitPane1.setDividerLocation(0.67);
+
+        mainPanel.add(splitPane2);
+
+        mainPanel.add(passengerScrollPane);
+        mainPanel.add(aircraftScrollPane);
+        mainPanel.add(flightsScrollPane);
+
+        mainPanel.setMinimumSize(new Dimension(700, 300));
+        mainPanel.setPreferredSize(new Dimension(1000, 300));
+        mainPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        add(mainPanel, BorderLayout.CENTER);
+
+    }
+
+    // MODIFIES: this
+    // EFFECTS: setup configurations for passenger pane
+    private JScrollPane setUpPassengerPane() {
+        JList<Passenger> passengerJList = new JList<>(listOfPassengers);
+        passengerJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        passengerJList.setSelectedIndex(0);
+        // passengerJList.addListSelectionListener(this);
+        passengerJList.setVisibleRowCount(10);
+        passengerJList.setCellRenderer(new CellRenderer());
+        JScrollPane passengerScrollPane = new JScrollPane(passengerJList);
+
+        return passengerScrollPane;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: setup configurations for aircraft pane
+    private JScrollPane setUpAircraftPane() {
+        JList<Aircraft> aircraftJList = new JList<>(listOfAircraft);
+        aircraftJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        aircraftJList.setSelectedIndex(0);
+        aircraftJList.setVisibleRowCount(10);
+        aircraftJList.setCellRenderer(new CellRenderer());
+
+        JScrollPane aircraftScrollPane = new JScrollPane(aircraftJList);
+        aircraftScrollPane.createVerticalScrollBar();
+        aircraftScrollPane.setHorizontalScrollBar(null);
+
+        return aircraftScrollPane;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: setup configurations for flights pane
+    private JScrollPane setUpFlightsPane() {
+        JList<Flight> flightsJList = new JList<>(listOfFlights);
+        flightsJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        flightsJList.setSelectedIndex(0);
+        flightsJList.setVisibleRowCount(10);
+        flightsJList.setCellRenderer(new CellRenderer());
+
+        JScrollPane flightsScrollPane = new JScrollPane(flightsJList);
+        flightsScrollPane.createVerticalScrollBar();
+        flightsScrollPane.setHorizontalScrollBar(null);
+
+        return flightsScrollPane;
     }
 
     // MODIFIES: this
@@ -107,22 +225,21 @@ public class AirportUI extends JFrame implements Writable {
         createNewFlight.setActionCommand("3. Create new flight");
         createNewFlight.addActionListener(new ButtonListener());
 
-        // other methods here
+        // add other methods later
 
         JButton saveDatabaseToFile = new JButton("Save database to file");
-        saveDatabaseToFile.setActionCommand("7. Save database to file");
+        saveDatabaseToFile.setActionCommand("7. Save");
         saveDatabaseToFile.addActionListener(new ButtonListener());
-
-        JButton loadDatabaseFromFile = new JButton("Load database from file");
-        loadDatabaseFromFile.setActionCommand("8. Load database from file");
-        loadDatabaseFromFile.addActionListener(new ButtonListener());
 
         buttons.add(addNewPassenger);
         buttons.add(addNewAircraft);
         buttons.add(createNewFlight);
         buttons.add(saveDatabaseToFile);
-        buttons.add(loadDatabaseFromFile);
         add(buttons, BorderLayout.PAGE_END);
+    }
+
+    // updating stuff goes here, backend and gui
+    private void updateMainScreen() {
 
     }
 
@@ -132,7 +249,6 @@ public class AirportUI extends JFrame implements Writable {
         // EFFECTS: processes button clicks and runs appropriate methods
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            System.out.println("\nNavigate by entering the number");
             switch (actionEvent.getActionCommand()) {
                 case "1. Add new passenger":
                     addNewPassenger();
@@ -144,7 +260,7 @@ public class AirportUI extends JFrame implements Writable {
                     addNewFlight();
                     break;
                 case "4. Change existing flight":
-                    modifyFlight();
+                    modifyFlight();   // continue here
                     break;
                 case "5. Manage passenger and flight(s)":
                     managePassengerFlights();
@@ -152,17 +268,14 @@ public class AirportUI extends JFrame implements Writable {
                 case "6. View data":
                     viewData();
                     break;
-                case "7. Save database to file":
+                case "7. Save":
                     save();
                     break;
-                case "8. Load database from file":
-                    load();
-                    break;
-                case "Press x to exit":
             }
         }
     }
 
+    // EFFECTS: initializes load prompt popup window on start
     private void startLoadPrompt() {
         int loadOption = JOptionPane.showConfirmDialog(null,
                 "Would you like to load your last log?", "Load File",
@@ -180,6 +293,7 @@ public class AirportUI extends JFrame implements Writable {
         }
     }
 
+    // EFFECTS: initializes save prompt popup window when quitting
     private void exitSavePrompt() {
         addWindowListener(new WindowAdapter() {
             @Override
@@ -202,229 +316,76 @@ public class AirportUI extends JFrame implements Writable {
         });
     }
 
-    // EFFECTS: displays options for the user  ok
-    private void displayMainMenu() {
-        System.out.println("\nNavigate by entering the number\n"
-                + "1. Add new passenger\n"
-                + "2. Add new aircraft\n"
-                + "3. Create new flight\n"
-                + "4. Change existing flight\n"
-                + "5. Manage passenger and flight(s)\n"
-                + "6. View data\n"
-                + "7. Save database to file\n"
-                + "8. Load database from file\n"
-                + "Press x to exit");
-    }
-
     // MODIFIES: this
-    // EFFECTS: processes user input
-    private void processUserInput(int userInput) {
-        try {
-            if (userInput == 1) {
-                addNewPassenger();
-            } else if (userInput == 2) {
-                addNewAircraft();
-            } else if (userInput == 3) {
-                addNewFlight();
-            } else if (userInput == 4) {
-                modifyFlight();
-            } else if (userInput == 5) {
-                managePassengerFlights();
-            } else if (userInput == 6) {
-                viewData(); // fix later, does not process userInput after
-            } else if (userInput == 7) {
-                save();
-            } else if (userInput == 8) {
-                load();
-            }
-            // System.out.println("test3"); does not run
-        } catch (Exception e) {
-            System.out.println("Error: processUserInput");
-            error = true;
-        }
-    }
-
-    // EFFECTS: Creates the welcome text label and adds it to the main menu panel
-    public void addLabel(JLabel j1) {
-        j1.setFont(new Font("ComicSans", Font.BOLD, 50));
-        mainMenu.add(j1);
-    }
-
-    // EFFECTS: Creates the image on the main menu and its it to the panel
-    public void addImageToLabel(JLabel j1) {
-        j1.setIcon(new ImageIcon("./data/supra1.png"));
-        j1.setMinimumSize(new Dimension(20,20));
-        mainMenu.add(j1);
-    }
-
-
-    // MODIFIES: this
-    // EFFECTS: processes user input
-    private void runAirportUI() {
-        boolean exitApplication = false;
-        String userInput;
-
-        init();
-
-        while (!exitApplication) {
-            // testMethod();
-            try {
-                displayMainMenu();
-                userInput = input.next();
-                userInput = userInput.toLowerCase();
-
-                if (userInput.equals("x")) {
-                    exitApplication = true;
-                } else {
-                    processUserInput(Integer.parseInt(userInput));
-                }
-            } catch (Exception e) {
-                System.out.println("Error: Main Menu");
-                error = true;
-                input.next();
-            }
-
-        }
-        System.out.println("\nYou have successfully logged out");
-    }
-
-    private void testMethod() {
-        Passenger testPassenger = new Passenger(12345,"Jessica","Zhou",TravelClasses.FIRSTCLASS);
-        Aircraft boeing = new PassengerAirline("Boeing", 120);
-        Flight testFlight = new Flight("1234", boeing, Airports.PEK, Airports.PEK, 4);
-        testFlight.addPassenger(testPassenger);
-        System.out.println(testPassenger.getBoardingTickets());
-    }
-
-    // MODIFIES: this
-    // EFFECTS: initiates the system
-    private void init() {
-        listOfPassengers = new ArrayList<>();
-        listOfAircraft = new ArrayList<>();
-        listOfFlights = new ArrayList<>();
-        input = new Scanner(System.in);
-
-    }
-
-
-
-    // MODIFIES: this
-    // EFFECTS: adds new passenger into system
+    // EFFECTS: generates a popup window that adds new passenger into system and updates gui
     private void addNewPassenger() {
-        System.out.println("Please enter the following:");
-        int id = getValidInteger("PassengerID: ");
-        String firstName = getValidString("First Name: ");
-        String lastName = getValidString("Last Name: ");
-        TravelClasses chosenClass = getTravelClasses();
-        listOfPassengers.add(new Passenger(id, firstName, lastName, chosenClass));
-        System.out.println(firstName + " " + lastName + " is now in the system!");
-    }
-
-    // MODIFIES: this
-    // EFFECTS: checks that user input is an integer
-    private int getValidInteger(String prompt) {
-        int userInputInt;
-        while (true) {
-            System.out.print(prompt);
-            if (input.hasNextInt()) {
-                userInputInt = input.nextInt();
-                input.nextLine();
-                break;
-            } else {
-                System.out.println("Error: Input must be an integer.");
-                input.next();
-            }
-        }
-        return userInputInt;
-    }
-
-    // MODIFIES: this
-    // EFFECTS: checks that user input is a string
-    private String getValidString(String prompt) {
-        while (true) {
-            System.out.print(prompt);
-            String name = input.next();
-            if (name.matches("[a-zA-Z]+")) {
-                return name;
-            } else {
-                System.out.println("Error: Name must contain only letters.");
-            }
-        }
-    }
-
-    // EFFECTS: gets the seat class options on an aircraft
-    private TravelClasses getTravelClasses() {
-        System.out.println("Please select a travel class: ");
-        List<TravelClasses> availableClasses = TravelClasses.getTravelClasses();
-        for (int i = 0; i < availableClasses.size(); i++) {
-            System.out.println((i + 1) + ". " + availableClasses.get(i));
-        }
-        while (true) {
-            int userChoice = input.nextInt();
-            if (userChoice >= 1 && userChoice <= 4) {
-                return availableClasses.get(userChoice - 1);
-            } else {
-                System.out.println("Error: Invalid choice");
-            }
+        Object[] fields = { "Passenger ID:", new JTextField(), "First Name:", new JTextField(),
+                "Last Name:", new JTextField(), "Travel Class:", new JComboBox<>(TravelClasses.values())
+        };
+        int result = JOptionPane.showConfirmDialog(null, fields, "Enter Passenger Information",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.OK_OPTION) {
+            int id = Integer.parseInt(((JTextField) fields[1]).getText());
+            String firstName = ((JTextField) fields[3]).getText();
+            String lastName = ((JTextField) fields[5]).getText();
+            TravelClasses travelClass = (TravelClasses) ((JComboBox) fields[7]).getSelectedItem();
+            listOfPassengers.addElement(new Passenger(id, firstName, lastName, travelClass));
+            System.out.println(firstName + " " + lastName + " is now in the system!");
         }
     }
 
     // MODIFIES: this
     // EFFECTS: adds a new aircraft into the system
     private void addNewAircraft() {
-        System.out.println("Please enter the following:");
-        System.out.print("Enter the name of the aircraft: ");
-        String aircraftName = input.next();
-        int maxCapacity = getValidInteger("Maximum Capacity: ");
-        System.out.print("Select the type of aircraft: ");
-        System.out.println("\n1. Cargo Aircraft" + "\n2. Passenger Aircraft" + "\n3. Private Jet");
-        int userInput = input.nextInt();
-        while (true) {
-            try {
-                if (userInput == 1) {
-                    listOfAircraft.add(new CargoAircraft(aircraftName, maxCapacity));
-                } else if (userInput == 2) {
-                    listOfAircraft.add(new PassengerAirline(aircraftName, maxCapacity));
-                } else {
-                    listOfAircraft.add(new PrivateJet(aircraftName, maxCapacity));
-                }
-            } catch (Exception e) {
-                System.out.println("Error: Invalid Aircraft type. Please try again");
-                error = true;
+        JComboBox<String> aircraftTypesComboBox = new JComboBox<>(new String[]{"Cargo Aircraft",
+                "Passenger Aircraft", "Private Jet"});
+        Object[] fields = { "Aircraft Name:", new JTextField(), "Maximum Capacity:",
+                new JTextField(), "Aircraft Type:", aircraftTypesComboBox };
+        int result = JOptionPane.showConfirmDialog(null, fields,
+                "Enter Aircraft Information", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.OK_OPTION) {
+            String aircraftName = ((JTextField) fields[1]).getText();
+            int maxCapacity = Integer.parseInt(((JTextField) fields[3]).getText());
+            String aircraftType = (String) aircraftTypesComboBox.getSelectedItem();
+            if (aircraftType.equals("Cargo Aircraft")) {
+                listOfAircraft.addElement(new CargoAircraft(aircraftName, maxCapacity));
+            } else if (aircraftType.equals("Passenger Aircraft")) {
+                listOfAircraft.addElement(new PassengerAirline(aircraftName, maxCapacity));
+            } else if (aircraftType.equals("Private Jet")) {
+                listOfAircraft.addElement(new PrivateJet(aircraftName, maxCapacity));
             }
             System.out.println(aircraftName + " is now in the system!");
-            break;
         }
-
     }
 
     // MODIFIES: this
-    // EFFECTS: creates a new flight in the system
+    // EFFECTS: adds a new flight into the system
     private void addNewFlight() {
-        try {
-            System.out.print("Create a unique FlightID: ");
-            String flightID = input.next();
-
-            System.out.print("Assign an aircraft: ");
-            Aircraft workAircraft = searchForAircraft(input.next());
-
-            System.out.print("Origin: ");
-            System.out.println("(ie. YVR, YYZ, PEK, LAX, HKG)");
-            Airports origin = getAirports(input.next());
-
-            System.out.print("Destination: ");
-            Airports destination = getAirports(input.next());
-
-            int duration = getValidInteger("Duration of flight: ");
-
-            listOfFlights.add(new Flight(flightID, workAircraft, origin, destination, duration));
-            System.out.println("Flight " + flightID + " is now in the system!");
-        } catch (Exception e) {
-            System.out.println("Invalid. Please try again");
-            error = true;
+        JComboBox<Aircraft> aircraftDropdown = new JComboBox<>();
+        for (int i = 0; i < listOfAircraft.getSize(); i++) {
+            aircraftDropdown.addItem(listOfAircraft.getElementAt(i));
         }
+        JComboBox<Airports> originDropdown = new JComboBox<>(Airports.values());
+        JComboBox<Airports> destinationDropdown = new JComboBox<>(Airports.values());
+        JTextField flightIDField = new JTextField();
+        JTextField durationField = new JTextField();
 
+        Object[] fields = {"Flight ID:", flightIDField, "Aircraft:", aircraftDropdown, "Origin:", originDropdown,
+                "Destination:", destinationDropdown, "Duration:", durationField};
+        int result = JOptionPane.showConfirmDialog(null, fields, "Add New Flight",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String flightID = flightIDField.getText();
+            Aircraft workAircraft = (Aircraft) aircraftDropdown.getSelectedItem();
+            Airports origin = (Airports) originDropdown.getSelectedItem();
+            Airports destination = (Airports) destinationDropdown.getSelectedItem();
+            int duration = Integer.parseInt(durationField.getText());
+            listOfFlights.addElement(new Flight(flightID, workAircraft, origin, destination, duration));
+            System.out.println("Flight " + flightID + " is now in the system!");
+        }
     }
+
 
     // MODIFIES: this
     // EFFECTS: finds the airport in the enum Airports class
@@ -476,7 +437,8 @@ public class AirportUI extends JFrame implements Writable {
     // EFFECTS: searches for the flight in the system
     private Flight searchForFlight(String userInput) {
         while (true) {
-            for (Flight flight : listOfFlights) {
+            for (int i = 0; i < listOfFlights.size(); i++) {
+                Flight flight = listOfFlights.getElementAt(i);
                 if (userInput.equals(flight.getFlightID())) {
                     System.out.println("Flight " + flight.getFlightID() + " found.");
                     return flight;
@@ -487,20 +449,6 @@ public class AirportUI extends JFrame implements Writable {
         }
     }
 
-    // MODIFIES: this
-    // EFFECTS: searches for the aircraft in the system
-    private Aircraft searchForAircraft(String userInput) {
-        while (true) {
-            for (Aircraft aircraft : listOfAircraft) {
-                if (userInput.equals(aircraft.getName())) {
-                    System.out.println("Aircraft found.");
-                    return aircraft;
-                }
-            }
-            System.out.println("Aircraft not found. Try again");
-            userInput = input.next();
-        }
-    }
 
     // MODIFIES: this
     // EFFECTS: manages the options regarding passengers and flights
@@ -525,7 +473,6 @@ public class AirportUI extends JFrame implements Writable {
             } catch (Exception e) {
                 System.out.println("Error: UserInput invalid");
             }
-
         }
     }
 
@@ -562,7 +509,8 @@ public class AirportUI extends JFrame implements Writable {
     // EFFECTS: searches for the passenger in the system
     private Passenger searchForPassenger(int userInput) {
         while (true) {
-            for (Passenger passenger : listOfPassengers) {
+            for (int i = 0; i < listOfPassengers.size(); i++) {
+                Passenger passenger = listOfPassengers.getElementAt(i);
                 if (userInput == passenger.getPassengerID()) {
                     System.out.println("Passenger " + passenger.getPassengerID() + " found.");
                     return passenger;
@@ -589,14 +537,10 @@ public class AirportUI extends JFrame implements Writable {
             getListOfAircraft();
         } else if (userInput == 3) {
             getListOfFlights();
-        } else if (userInput == 4) {
-            displayMainMenu();
         } else {
             System.out.println("Invalid entry. Try Again");
         }
     }
-
-
 
     // EFFECTS: saves the airport database to file
     private void save() {
@@ -609,7 +553,6 @@ public class AirportUI extends JFrame implements Writable {
             System.out.println("Unable to write to file" + JSON_STORE);
         }
     }
-
 
     // MODIFIES: this
     // EFFECTS: loads workroom from file
@@ -625,39 +568,42 @@ public class AirportUI extends JFrame implements Writable {
         }
     }
 
-
-    // can be refactored, 3 methods repeat here
-    // EFFECTS: returns the list of all existing passengers
     private void getListOfPassengers() {
-        for (Passenger passenger : listOfPassengers) {
-            System.out.println(passenger.toString());
-        }
+        int numPassengers = listOfPassengers.size();
 
-        if (listOfPassengers.isEmpty()) {
+        if (numPassengers == 0) {
             System.out.println("Passenger list is empty");
+        } else {
+            for (int i = 0; i < numPassengers; i++) {
+                Passenger passenger = listOfPassengers.getElementAt(i);
+                System.out.println(passenger.toString());
+            }
         }
-
     }
 
-    // EFFECTS: returns the list of all existing aircraft
     private void getListOfAircraft() {
-        for (Aircraft aircraft : listOfAircraft) {
-            System.out.println(aircraft.toString());
-        }
+        int numAircraft = listOfAircraft.size();
 
-        if (listOfAircraft.isEmpty()) {
+        if (numAircraft == 0) {
             System.out.println("Aircraft list is empty");
+        } else {
+            for (int i = 0; i < numAircraft; i++) {
+                Aircraft aircraft = listOfAircraft.getElementAt(i);
+                System.out.println(aircraft.toString());
+            }
         }
     }
 
-    // EFFECTS: returns the list of all existing flights
     private void getListOfFlights() {
-        for (Flight flight : listOfFlights) {
-            System.out.println(flight.toString());
-        }
+        int numFlights = listOfFlights.size();
 
-        if (listOfFlights.isEmpty()) {
-            System.out.println("Flights list is empty");
+        if (numFlights == 0) {
+            System.out.println("Flight list is empty");
+        } else {
+            for (int i = 0; i < numFlights; i++) {
+                Flight flight = listOfFlights.getElementAt(i);
+                System.out.println(flight.toString());
+            }
         }
     }
 
@@ -669,15 +615,18 @@ public class AirportUI extends JFrame implements Writable {
         JSONArray flightArray = new JSONArray();
         JSONArray passengerArray = new JSONArray();
 
-        for (Passenger passenger : listOfPassengers) {
+        for (int i = 0; i < listOfPassengers.size(); i++) {
+            Passenger passenger = listOfPassengers.getElementAt(i);
             passengerArray.put(passenger.toJson());
         }
 
-        for (Aircraft aircraft : listOfAircraft) {
+        for (int i = 0; i < listOfAircraft.size(); i++) {
+            Aircraft aircraft = listOfAircraft.getElementAt(i);
             aircraftArray.put(aircraft.toJson());
         }
 
-        for (Flight flight : listOfFlights) {
+        for (int i = 0; i < listOfFlights.size(); i++) {
+            Flight flight = listOfFlights.getElementAt(i);
             flightArray.put(flight.toJson());
         }
 

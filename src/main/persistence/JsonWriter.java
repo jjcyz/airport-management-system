@@ -6,6 +6,7 @@ import model.Passenger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -30,13 +31,13 @@ public class JsonWriter {
 
     // MODIFIES: this
     // EFFECTS: writes JSON representation of workroom to file
-    public void write(ArrayList<Passenger> listOfPassengers,
-                      ArrayList<Aircraft> listOfAircraft,
-                      ArrayList<Flight> listOfFlights) {
+    public void write(DefaultListModel<Passenger> listOfPassengers,
+                      DefaultListModel<Aircraft> listOfAircraft,
+                      DefaultListModel<Flight> listOfFlights) {
         JSONObject json = new JSONObject();
-        json.put("listOfPassengers", new JSONArray(listOfPassengers));
-        json.put("listOfAircraft", new JSONArray(listOfAircraft));
-        json.put("listOfFlights", new JSONArray(listOfFlights));
+        json.put("listOfPassengers", new JSONArray(listOfPassengers.toArray()));
+        json.put("listOfAircraft", new JSONArray(listOfAircraft.toArray()));
+        json.put("listOfFlights", new JSONArray(listOfFlights.toArray()));
         saveToFile(json.toString());
     }
 

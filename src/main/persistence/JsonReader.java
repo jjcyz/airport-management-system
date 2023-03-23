@@ -4,6 +4,7 @@ import model.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -20,7 +21,8 @@ public class JsonReader {
 
     // EFFECTS: reads workroom from file and returns it;
     // throws IOException if an error occurs reading data from file
-    public ArrayList<Passenger> readPassengerList(ArrayList<Passenger> listOfPassengers) throws IOException {
+    public DefaultListModel<Passenger> readPassengerList(DefaultListModel<Passenger> listOfPassengers)
+            throws IOException {
         String jsonData = readFile(source);
         JSONObject jsonObject = new JSONObject(jsonData);
 
@@ -29,7 +31,7 @@ public class JsonReader {
 
     // EFFECTS: reads workroom from file and returns it;
     // throws IOException if an error occurs reading data from file
-    public ArrayList<Aircraft> readAircraftList(ArrayList<Aircraft> listOfAircraft) throws IOException {
+    public DefaultListModel<Aircraft> readAircraftList(DefaultListModel<Aircraft> listOfAircraft) throws IOException {
         String jsonData = readFile(source);
         JSONObject jsonObject = new JSONObject(jsonData);
 
@@ -38,7 +40,7 @@ public class JsonReader {
 
     // EFFECTS: reads workroom from file and returns it;
     // throws IOException if an error occurs reading data from file
-    public ArrayList<Flight> readFlightList(ArrayList<Flight> listOfFights) throws IOException {
+    public DefaultListModel<Flight> readFlightList(DefaultListModel<Flight> listOfFights) throws IOException {
         String jsonData = readFile(source);
         JSONObject jsonObject = new JSONObject(jsonData);
 
@@ -55,11 +57,11 @@ public class JsonReader {
     }
 
     // EFFECTS: parses list of passengers from JSON array and returns it
-    private ArrayList<Passenger> parsePassengerList(JSONArray jsonArray) {
-        ArrayList<Passenger> passengerList = new ArrayList<>();
+    private DefaultListModel<Passenger> parsePassengerList(JSONArray jsonArray) {
+        DefaultListModel<Passenger> passengerList = new DefaultListModel<>();
         for (Object o : jsonArray) {
             JSONObject jsonObject = (JSONObject) o;
-            passengerList.add(parsePassenger(jsonObject));
+            passengerList.addElement(parsePassenger(jsonObject));
         }
         return passengerList;
     }
@@ -84,11 +86,11 @@ public class JsonReader {
     }
 
     // EFFECTS: parses list of aircraft from JSON array and returns it
-    private ArrayList<Aircraft> parseAircraftList(JSONArray jsonArray) {
-        ArrayList<Aircraft> aircraftList = new ArrayList<>();
+    private DefaultListModel<Aircraft> parseAircraftList(JSONArray jsonArray) {
+        DefaultListModel<Aircraft> aircraftList = new DefaultListModel<>();
         for (Object o : jsonArray) {
             JSONObject jsonObject = (JSONObject) o;
-            aircraftList.add(parseAircraft(jsonObject));
+            aircraftList.addElement(parseAircraft(jsonObject));
         }
         return aircraftList;
     }
@@ -101,8 +103,8 @@ public class JsonReader {
     }
 
     // EFFECTS: parses list of flights from JSON array and returns it
-    private ArrayList<Flight> parseFlightList(JSONArray jsonArray) {
-        ArrayList<Flight> flightList = new ArrayList<>();
+    private DefaultListModel<Flight> parseFlightList(JSONArray jsonArray) {
+        DefaultListModel<Flight> flightList = new DefaultListModel<>();
         for (Object o : jsonArray) {
             JSONObject jsonObject = (JSONObject) o;
 //            flightList.add(parseFlight(jsonObject));

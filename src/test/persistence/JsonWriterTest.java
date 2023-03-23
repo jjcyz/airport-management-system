@@ -5,24 +5,25 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JsonWriterTest extends JsonTest{
-    private ArrayList<Passenger> pl;
-    private ArrayList<Aircraft> al;
-    private ArrayList<Flight> fl;
+    private DefaultListModel<Passenger> pl;
+    private DefaultListModel<Aircraft> al;
+    private DefaultListModel<Flight> fl;
     private Passenger testPassenger;
     private Aircraft testAircraft;
     private Flight testFlight;
 
     @BeforeEach
     void runBefore() {
-        pl = new ArrayList<>();
-        al = new ArrayList<>();
-        fl = new ArrayList<>();
+        pl = new DefaultListModel<>();
+        al = new DefaultListModel<>();
+        fl = new DefaultListModel<>();
         this.testPassenger = new Passenger(1,"Jessica", "Zhou",
                 TravelClasses.FIRSTCLASS);
         this.testAircraft = new Aircraft("Airplane",100);
@@ -49,9 +50,9 @@ public class JsonWriterTest extends JsonTest{
             writer.close();
 
             JsonReader reader = new JsonReader("./data/testWriterEmptyWorkroom.json");
-            ArrayList<Passenger> listOfPassengers = reader.readPassengerList(pl);
-            ArrayList<Aircraft>  listOfAircraft = reader.readAircraftList(al);
-            ArrayList<Flight> listOfFlights = reader.readFlightList(fl);
+            DefaultListModel<Passenger> listOfPassengers = reader.readPassengerList(pl);
+            DefaultListModel<Aircraft>  listOfAircraft = reader.readAircraftList(al);
+            DefaultListModel<Flight> listOfFlights = reader.readFlightList(fl);
             assertEquals(0, listOfPassengers.size());
             assertEquals(0, listOfAircraft.size());
             assertEquals(0, listOfFlights.size());
@@ -64,10 +65,10 @@ public class JsonWriterTest extends JsonTest{
     @Test
     void testWriterGeneralWorkroom() {
         try {
-            pl.add(new Passenger(0, "Jessica", "Zhou", TravelClasses.FIRSTCLASS));
+            pl.addElement(new Passenger(0, "Jessica", "Zhou", TravelClasses.FIRSTCLASS));
             Aircraft boeing = new Aircraft("Boeing", 100);
-            al.add(boeing);
-            fl.add(new Flight("1", boeing, Airports.YVR, Airports.YYZ, 3));
+            al.addElement(boeing);
+            fl.addElement(new Flight("1", boeing, Airports.YVR, Airports.YYZ, 3));
 
             JsonWriter writer = new JsonWriter("./data/testWriterGeneral.json");
             writer.open();
