@@ -51,12 +51,23 @@ economy, premium, business, or first class
 
 # Instructions for Grader
 
-- You can generate the first required action related to adding Xs to a Y by...
-- You can generate the second required action related to adding Xs to a Y by...
-- You can locate my visual component by...
-- You can save the state of my application by...
-- You can reload the state of my application by...
+- You can generate the first required action related to adding Xs to a Y by 
+  clicking on the "Add new aircraft" button, filling in all the required information, 
+  and clicking "OK"
+- You can generate the second required action related to adding Xs to a Y by
+  clicking on the "Create new flight" button, filling in the required information, 
+  selecting one of te aircraft in the system using the dropdown select option,
+- and clicking "OK"
+- You can locate my visual component by clicking on anyone of the cells
+- You can save the state of my application by clicking on the "Save database to file" 
+  button or clicking "Yes" when prompted upon exiting the program
+- You can reload the state of my application by clicking on "Yes" when prompted upon
+  running the program
 
- Disclaimers: 
- 1. The date printed on the boarding tickets when passenger.printBoardingTickets(); 
-is adjusted to the real date.
+Important Notes:
+1. Pop up may glitch. To fix, add new data entries. (It works when it can switch to another cell)
+2. The "view flights" button is not fully functioning. It is a wishlist feature.
+3. Clicking on the cells will show a popup window with a button to edit/change the information. 
+   This is not fully functioning. It is a wishlist feature.
+4. Counters at the top are not functioning. It is a wishlist feature.
+5. You can use the scroll bars at the bottom to view the entire data entry.
