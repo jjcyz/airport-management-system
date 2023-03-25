@@ -1,4 +1,5 @@
 package model;
+
 /* This class represents a private jet object, a subtype of aircraft */
 
 import org.json.JSONObject;
@@ -10,6 +11,7 @@ public class PrivateJet extends Aircraft implements Writable {
     public PrivateJet(String name, int maxCapacity) {
         super(name, maxCapacity);
         this.maxCapacity = maxCapacity;
+        EventLog.getInstance().logEvent(new Event("Added private jet aircraft: " + getName()));
     }
 
     public int getMaxCapacity() {

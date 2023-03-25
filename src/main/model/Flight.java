@@ -54,6 +54,7 @@ public class Flight implements Writable {
     // EFFECTS: add a passenger to flight
     public String addPassenger(Passenger passenger) {
         if (getCurrentCapacity() < aircraft.getMaxCapacity()) {
+            EventLog.getInstance().logEvent(new Event("Added passenger (on flight): " + passenger.getFirstName()));
             passengersOnFlight.add(passenger);
             passenger.getBookedFlights().add(this);
             return passenger.getFirstName()
@@ -70,6 +71,7 @@ public class Flight implements Writable {
         while (p.hasNext()) {
             Passenger passenger = p.next();
             if (passenger.getPassengerID() == passengerID) {
+                EventLog.getInstance().logEvent(new Event("Removed passenger: " + passenger.getFirstName()));
                 p.remove();
                 return passenger.getFirstName()
                         + " "
@@ -85,7 +87,6 @@ public class Flight implements Writable {
     public boolean isPassengerOnFlight(int passengerID) {
         for (Passenger passenger : passengersOnFlight) {
             if (passenger.getPassengerID() == passengerID) {
-                // System.out.println(passenger.getFirstName() + " is on registered on this flight");
                 return true;
             }
         }

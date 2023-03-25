@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class JsonReader {
@@ -107,7 +106,7 @@ public class JsonReader {
         DefaultListModel<Flight> flightList = new DefaultListModel<>();
         for (Object o : jsonArray) {
             JSONObject jsonObject = (JSONObject) o;
-//            flightList.add(parseFlight(jsonObject));
+            flightList.addElement(parseFlight(jsonObject));
         }
         return flightList;
     }
@@ -119,17 +118,16 @@ public class JsonReader {
         Airports origin = Airports.valueOf(jsonObject.getString("origin"));
         Airports destination = Airports.valueOf(jsonObject.getString("destination"));
         int duration = jsonObject.getInt("duration");
-        JSONArray jsonPassengersOnFlight = jsonObject.getJSONArray("listOfPassengers");
+        JSONArray jsonPassengersOnFlight = jsonObject.getJSONArray("passengersOnFlight");
 
         Flight flight = new Flight(flightNumber, aircraft, origin, destination, duration);
-
-//        for (int i = 0; i < jsonPassengersOnFlight.length(); i++) {
+        for (int i = 0; i < jsonPassengersOnFlight.length(); i++) {
 //            JSONObject jsonPassenger = jsonPassengersOnFlight.getJSONObject(i);
-//            Passenger passenger = parsePassenger(jsonPassenger);
-//            flight.addPassenger(passenger);
+//            Passenger passenger = parsePassenger(jsonPassenger); // do I need to parse again?
 //            //// flight.getListOfPassengers().add(passenger);
-//        }
+        }
         return flight;
+
     }
 
 

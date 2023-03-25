@@ -3,7 +3,6 @@ package model;
 /*  This class defines all the airports used in this program. Each airport has a full name, location,
     and country */
 
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,9 +48,5 @@ public enum Airports {
     public static List<Airports> getAirports() {
         return Arrays.asList(values());
     }
-
-
-
-
 
 }

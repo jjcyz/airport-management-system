@@ -1,4 +1,5 @@
 package model;
+
 /*  This class defines the travel classes that a passenger can have. Each travel class has a
     ticket cost (in CAD) */
 

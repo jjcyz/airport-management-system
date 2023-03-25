@@ -1,5 +1,7 @@
 package ui;
 
+/* This is the Cell Renderer class of the program */
+
 import model.Aircraft;
 import model.Flight;
 import model.Passenger;
@@ -9,7 +11,7 @@ import java.awt.*;
 
 public class CellRenderer extends DefaultListCellRenderer {
 
-    // EFFECTS: configures passenger rendering
+    // EFFECTS: Renders the cell for each object
     @Override
     public Component getListCellRendererComponent(
             JList list, Object value, int index,

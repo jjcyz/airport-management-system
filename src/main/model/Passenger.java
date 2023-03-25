@@ -50,6 +50,8 @@ public class Passenger implements Writable {
 
     // EFFECT: Adds flights to passenger's booked flights
     public void addToBookedFlights(Flight flight) {
+        EventLog.getInstance().logEvent(new Event("Added flight in "
+                + getFirstName() + "'s bookings list"));
         bookedFlights.add(flight);
     }
 

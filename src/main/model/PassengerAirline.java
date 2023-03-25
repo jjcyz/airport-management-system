@@ -1,4 +1,5 @@
 package model;
+
 /* This class represents a passenger airline object, a subtype of aircraft */
 
 import org.json.JSONArray;
@@ -14,6 +15,7 @@ public class PassengerAirline extends Aircraft implements Writable {
     public PassengerAirline(String name, int maxCapacity) {
         super(name, maxCapacity);
         this.listOfPassenger = new ArrayList<>();
+        EventLog.getInstance().logEvent(new Event("Added passenger aircraft: " + getName()));
     }
 
     // EFFECTS: returns the json object

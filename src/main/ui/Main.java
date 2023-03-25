@@ -1,13 +1,11 @@
 package ui;
 
-import java.io.FileNotFoundException;
+/* This is the Main class of the program */
 
 public class Main {
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
         new AirportUI();
-
-
     }
 
 

@@ -10,7 +10,6 @@ import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 
 public class JsonWriter {
     private static final int TAB = 4;
