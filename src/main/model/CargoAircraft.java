@@ -4,11 +4,10 @@ package model;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import persistence.Writable;
 
 import java.util.ArrayList;
 
-public class CargoAircraft extends Aircraft implements Writable {
+public class CargoAircraft extends Aircraft {
     private final ArrayList<Cargo> cargoOnBoard;
 
     public CargoAircraft(String name, int maxCapacity) {

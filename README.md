@@ -118,11 +118,13 @@ Removed passenger: JJ
 
 ### Refactoring
 
-The coupling is the most ideal and the cohesion is high. There is 
-room for improvement with more time. The GUI class can be separated into multiple classes
-the relationship between the classes can be improved. Namely, the bi-directional relationships
-in the code can be refactoring such that saving and reloading using JSON will be less difficult. 
-By doing so, the coupling in this application would decrease.
+The coupling is the most not the ideal as there tends to be may collections. Namely, lists of passengers 
+are used quite frequently. The cohesion is high however I believe that I could have made better uses of 
+abstract classes. I believe that the GUI can be separated into multiple classes as there is quite a bit 
+of code that can be grouped together. There is room for improvement and with more time, the relationship 
+between the classes can be improved. Namely, the bi-directional relationships in the code can be refactoring
+such that saving and reloading using JSON will be less difficult. By doing so, the coupling in this application 
+would decrease.
 
 ### GUI sampler
 
