@@ -4,7 +4,6 @@ package model;
     last name, and the travel class. A passenger is the smallest abstraction in the program
     that can be added to a plane  */
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
 

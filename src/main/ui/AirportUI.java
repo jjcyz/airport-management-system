@@ -17,6 +17,7 @@ import java.awt.event.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 // Represents the airport application
@@ -29,7 +30,6 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
     private FlightVisualizer visualizer;  // wish list
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
-    private EventLog log;
 
     private JScrollPane mainMenu;
     private JDesktopPane desktop;
@@ -420,6 +420,7 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
         if (result == JOptionPane.OK_OPTION) {
             Passenger passenger = (Passenger) passengerDropdown.getSelectedItem();
+            assert passenger != null;  // to catch NullPointerExceptions
             passenger.addToBookedFlights(flight);
             flight.addPassenger(passenger);
         }
@@ -436,6 +437,7 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
         if (result == JOptionPane.OK_OPTION) {
             Passenger passenger = (Passenger) passengerDropdown.getSelectedItem();
+            assert passenger != null; // to catch NullPointerExceptions
             flight.removePassenger(passenger.getPassengerID());
         }
     }
@@ -557,15 +559,18 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
             String aircraftName = ((JTextField) fields[1]).getText();
             int maxCapacity = Integer.parseInt(((JTextField) fields[3]).getText());
             String aircraftType = (String) aircraftTypesComboBox.getSelectedItem();
-            if (aircraftType.equals("Cargo Aircraft")) {
-                listOfAircraft.addElement(new CargoAircraft(aircraftName, maxCapacity));
-            } else if (aircraftType.equals("Passenger Aircraft")) {
-                listOfAircraft.addElement(new PassengerAirline(aircraftName, maxCapacity));
-            } else if (aircraftType.equals("Private Jet")) {
-                listOfAircraft.addElement(new PrivateJet(aircraftName, maxCapacity));
+            switch (Objects.requireNonNull(aircraftType)) {
+                case "Cargo Aircraft":
+                    listOfAircraft.addElement(new CargoAircraft(aircraftName, maxCapacity));
+                    break;
+                case "Passenger Aircraft":
+                    listOfAircraft.addElement(new PassengerAirline(aircraftName, maxCapacity));
+                    break;
+                case "Private Jet":
+                    listOfAircraft.addElement(new PrivateJet(aircraftName, maxCapacity));
+                    break;
             }
             updateAircraftWindow();
-            System.out.println(aircraftName + " is now in the system!");
         }
     }
 
@@ -618,7 +623,7 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
         }
     }
 
-
+    //wish list feature
     // MODIFIES: this
     // EFFECTS: changes the origin/destination of a flight
     private void modifyFlight() {

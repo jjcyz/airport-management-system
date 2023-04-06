@@ -131,6 +131,7 @@ would decrease.
 ![UML Diagram](GUI_Sampler_1.png)
 ![UML Diagram](GUI_Sampler_2.png)
 
+
 ### What's Next?
 - [ ] Implementing an API that will allow users to map flights according to location
 - [ ] Adding features that would enable visual components of the (ie. the aircrafts) 

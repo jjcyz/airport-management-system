@@ -2,7 +2,6 @@ package model;
 
 /* This class represents a plane. A plane has a name and maximum capacity */
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
 
@@ -29,9 +28,9 @@ public class Aircraft implements Writable {
 
     @Override
     public String toString() {
-        return "name: "
+        return "Name: "
                 + name
-                + " maxCapacity: "
+                + " Max Capacity: "
                 + maxCapacity;
     }
 
