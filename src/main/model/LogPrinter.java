@@ -1,6 +1,5 @@
 package model;
 
-
 /**
  * Defines behaviours that event log printers must support.
  * taken from UBC CPSC

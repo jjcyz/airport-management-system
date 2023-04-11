@@ -73,9 +73,9 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
     // EFFECTS: initializes the 3 header panes
     private void initializeHeader() {
         mainMenu.setLayout(new ScrollPaneLayout());
-        JPanel header1 = initializeTotalPassengerBox();
-        JPanel header2 = initializeTotalAircraftBox();
-        JPanel header3 = initializeTotalFlightsBox();
+        JPanel header1 = makeTotalCounter("Total Passengers", listOfPassengers.size());
+        JPanel header2 = makeTotalCounter("Total Aircraft", listOfAircraft.size());
+        JPanel header3 = makeTotalCounter("Total Flights", listOfFlights.size());
         mainMenu.add(header1);
         mainMenu.add(header2);
         mainMenu.add(header3);
@@ -84,54 +84,26 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
     }
 
     // MODIFIES: this
-    // EFFECTS: Makes the total passenger counter
-    public JPanel initializeTotalPassengerBox() {
-        totalPassengers = new JLabel("Total Passengers: " + listOfPassengers.size());
-        JPanel totalPassengersBox = new JPanel();
-        totalPassengersBox.add(totalPassengers);
+// EFFECTS: Makes a total counter with the given label and value
+    private JPanel makeTotalCounter(String label, int value) {
+        JLabel totalLabel = new JLabel(label + ": " + value);
+        JPanel totalBox = new JPanel();
+        totalBox.add(totalLabel);
 
-        totalPassengersBox.setBackground(Color.lightGray);
-        totalPassengersBox.setPreferredSize(new Dimension(200, 30));
-        add(totalPassengersBox);
+        totalBox.setBackground(Color.lightGray);
+        totalBox.setPreferredSize(new Dimension(200, 30));
+        add(totalBox);
 
-        return totalPassengersBox;
-    }
-
-    // MODIFIES: this
-    // EFFECTS: Makes the total aircraft counter
-    public JPanel initializeTotalAircraftBox() {
-        totalAircraft = new JLabel("Total Aircraft: " + listOfAircraft.size());
-        JPanel totalAircraftBox = new JPanel();
-        totalAircraftBox.add(totalAircraft);
-
-        totalAircraftBox.setBackground(Color.lightGray);
-        totalAircraftBox.setPreferredSize(new Dimension(200, 30));
-        add(totalAircraftBox);
-
-        return totalAircraftBox;
-    }
-
-    // MODIFIES: this
-    // EFFECTS: Makes the total flights counter
-    public JPanel initializeTotalFlightsBox() {
-        totalFlights = new JLabel("Total Flights: " + listOfFlights.size());
-        JPanel totalFlightsBox = new JPanel();
-        totalFlightsBox.add(totalFlights);
-
-        totalFlightsBox.setBackground(Color.lightGray);
-        totalFlightsBox.setPreferredSize(new Dimension(200, 30));
-        add(totalFlightsBox);
-
-        return totalFlightsBox;
+        return totalBox;
     }
 
     // MODIFIES: this
     // EFFECTS: initializes triple split panes
     private void initializeMainScreen() {
         JPanel mainPanel = new JPanel(new GridLayout(1, 3));
-        JScrollPane passengerScrollPane = setUpPassengerPane();
-        JScrollPane aircraftScrollPane = setUpAircraftPane();
-        JScrollPane flightsScrollPane = setUpFlightsPane();
+        JScrollPane passengerScrollPane = setUpListPane(listOfPassengers);
+        JScrollPane aircraftScrollPane = setUpListPane(listOfAircraft);
+        JScrollPane flightsScrollPane = setUpListPane(listOfFlights);
 
         mainPanel.add(passengerScrollPane);
         mainPanel.add(aircraftScrollPane);
@@ -143,51 +115,21 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
         add(mainPanel, BorderLayout.CENTER);
     }
 
-
     // MODIFIES: this
-    // EFFECTS: setup configurations for passenger pane
-    private JScrollPane setUpPassengerPane() {
-        JList<Passenger> passengerJList = new JList<>(listOfPassengers);
-        passengerJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        passengerJList.setSelectedIndex(0);
-        passengerJList.addListSelectionListener(this);
-        passengerJList.setVisibleRowCount(10);
-        passengerJList.setCellRenderer(new CellRenderer());
-        JScrollPane passengerScrollPane = new JScrollPane(passengerJList);
-        passengerScrollPane.createVerticalScrollBar();
+    // EFFECTS: setup configurations for a list pane
+    private <T> JScrollPane setUpListPane(DefaultListModel<T> items) {
+        JList<T> list = new JList<>(items);
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.setSelectedIndex(0);
+        list.addListSelectionListener(this);
+        list.setVisibleRowCount(10);
+        list.setCellRenderer(new CellRenderer());
+        JScrollPane scrollPane = new JScrollPane(list);
+        scrollPane.createVerticalScrollBar();
 
-        return passengerScrollPane;
+        return scrollPane;
     }
 
-    // MODIFIES: this
-    // EFFECTS: setup configurations for aircraft pane
-    private JScrollPane setUpAircraftPane() {
-        JList<Aircraft> aircraftJList = new JList<>(listOfAircraft);
-        aircraftJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        aircraftJList.setSelectedIndex(0);
-        aircraftJList.addListSelectionListener(this);
-        aircraftJList.setVisibleRowCount(10);
-        aircraftJList.setCellRenderer(new CellRenderer());
-        JScrollPane aircraftScrollPane = new JScrollPane(aircraftJList);
-        aircraftScrollPane.createVerticalScrollBar();
-
-        return aircraftScrollPane;
-    }
-
-    // MODIFIES: this
-    // EFFECTS: setup configurations for flights pane
-    private JScrollPane setUpFlightsPane() {
-        JList<Flight> flightsJList = new JList<>(listOfFlights);
-        flightsJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        flightsJList.setSelectedIndex(0);
-        flightsJList.addListSelectionListener(this);
-        flightsJList.setVisibleRowCount(10);
-        flightsJList.setCellRenderer(new CellRenderer());
-        JScrollPane flightsScrollPane = new JScrollPane(flightsJList);
-        flightsScrollPane.createVerticalScrollBar();
-
-        return flightsScrollPane;
-    }
 
     // MODIFIES: this
     // EFFECTS: initializes buttons
@@ -196,7 +138,6 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
         buttons.setLayout(new FlowLayout());
 
         addNewObjectsButtons(buttons);
-        addLoggingButtons(buttons);
 
         JButton viewFlights = new JButton("View flights");  // wishlist feature
         viewFlights.setActionCommand("4. View flights");
@@ -206,38 +147,37 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
         add(buttons, BorderLayout.PAGE_END);
     }
 
+    // EFFECTS: creates a new JButton with the given label, action command, and ActionListener
+    private JButton createButton(String label, String actionCommand, ActionListener listener) {
+        JButton button = new JButton(label);
+        button.setActionCommand(actionCommand);
+        button.addActionListener(listener);
+        return button;
+    }
+
     // EFFECTS: adds buttons that create new objects
     public void addNewObjectsButtons(JPanel buttons) {
-        JButton addNewPassenger = new JButton("Add new passenger");
-        addNewPassenger.setActionCommand("1. Add new passenger");
-        addNewPassenger.addActionListener(new ButtonListener());
-
-        JButton addNewAircraft = new JButton("Add new aircraft");
-        addNewAircraft.setActionCommand("2. Add new aircraft");
-        addNewAircraft.addActionListener(new ButtonListener());
-
-        JButton createNewFlight = new JButton("Create new flight");
-        createNewFlight.setActionCommand("3. Create new flight");
-        createNewFlight.addActionListener(new ButtonListener());
+        JButton addNewPassenger = createButton("Add new passenger",
+                "1. Add new passenger", new ButtonListener());
+        JButton addNewAircraft = createButton("Add new aircraft",
+                "2. Add new aircraft", new ButtonListener());
+        JButton createNewFlight = createButton("Create new flight",
+                "3. Create new flight", new ButtonListener());
+        JButton saveDatabaseToFile = createButton("Save database to file",
+                "5. Save", new ButtonListener());
+        JButton viewFlights = createButton("View flights",
+                "4. View flights", new ButtonListener());
+        JButton printLog = createButton("Print log",
+                "6. Print log", new ButtonListener());
+        printLog.setAction(new PrintLogAction());
+        JButton clearLog = createButton("Clear log",
+                "7. Clear log", new ButtonListener());
+        clearLog.setAction(new ClearLogAction());
+        clearLog.setAction(new ClearLogAction());
 
         buttons.add(addNewPassenger);
         buttons.add(addNewAircraft);
         buttons.add(createNewFlight);
-    }
-
-    // EFFECTS: adds buttons that logs user actions
-    private void addLoggingButtons(JPanel buttons) {
-        JButton saveDatabaseToFile = new JButton("Save database to file");
-        saveDatabaseToFile.setActionCommand("5. Save");
-        saveDatabaseToFile.addActionListener(new ButtonListener());
-
-        JButton printLog = new JButton(new PrintLogAction());
-        printLog.setActionCommand("6. Print log");
-        printLog.addActionListener(new ButtonListener());
-        JButton clearLog = new JButton(new ClearLogAction());
-        clearLog.setActionCommand("7. Clear log");
-        clearLog.addActionListener(new ButtonListener());
-
         buttons.add(saveDatabaseToFile);
         buttons.add(clearLog);
         buttons.add(printLog);
@@ -291,44 +231,36 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
         mainMenu.repaint();
     }
 
-    // EFFECTS: updates the aircraft panel with new the entry
+    private JScrollPane createScrollPane(JList<?> list) {
+        JScrollPane scrollPane = new JScrollPane(list);
+        scrollPane.createVerticalScrollBar();
+        list.setCellRenderer(new CellRenderer());
+        return scrollPane;
+    }
+
+    private void updatePanel(JScrollPane scrollPane, int index) {
+        for (Component component : mainMenu.getComponents()) {
+            if (component instanceof JScrollPane) {
+                mainMenu.remove(component);
+            }
+        }
+        mainMenu.add(scrollPane, index);
+        mainMenu.revalidate();
+        mainMenu.repaint();
+    }
+
     private void updateAircraftWindow() {
         JList<Aircraft> aircraftList = new JList<>(listOfAircraft);
-        aircraftList.setCellRenderer(new CellRenderer());
-        JScrollPane aircraftScrollPane = new JScrollPane(aircraftList);
-        aircraftScrollPane.createVerticalScrollBar();
-        for (Component component : mainMenu.getComponents()) {
-            if (component instanceof JScrollPane) {
-                JScrollPane scrollPane = (JScrollPane) component;
-                mainMenu.remove(scrollPane);
-            } else {
-                // handle non-JScrollPane components here, if needed
-            }
-        }
-        mainMenu.add(aircraftScrollPane, 1);
-        mainMenu.revalidate();
-        mainMenu.repaint();
+        JScrollPane aircraftScrollPane = createScrollPane(aircraftList);
+        updatePanel(aircraftScrollPane, 1);
     }
 
-    // EFFECTS: updates the flight panel with new the entry
     private void updateFlightsWindow() {
         JList<Flight> flightList = new JList<>(listOfFlights);
-        flightList.setCellRenderer(new CellRenderer());
-        JScrollPane flightScrollPane = new JScrollPane(flightList);
-        flightScrollPane.createVerticalScrollBar();
-
-        for (Component component : mainMenu.getComponents()) {
-            if (component instanceof JScrollPane) {
-                JScrollPane scrollPane = (JScrollPane) component;
-                mainMenu.remove(scrollPane);
-            } else {
-                // handle non-JScrollPane components here, if needed
-            }
-        }
-        mainMenu.add(flightScrollPane, 2);
-        mainMenu.revalidate();
-        mainMenu.repaint();
+        JScrollPane flightScrollPane = createScrollPane(flightList);
+        updatePanel(flightScrollPane, 2);
     }
+
 
     // EFFECTS: Makes the popup window when cells are clicked
     public void valueChanged(ListSelectionEvent e) {
@@ -543,6 +475,7 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
             listOfPassengers.addElement(new Passenger(id, firstName, lastName, travelClass));
             updatePassengersWindow();
             System.out.println(firstName + " " + lastName + " is now in the system!");
+            // initializeTotalPassengerBox();
         }
     }
 
@@ -666,33 +599,10 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
         }
     }
 
-    // EFFECTS: gets information about each flight about a passenger
-    private void viewPassengerFlights() {
-        System.out.println("Enter the PassengerID: ");
-        Passenger passenger = searchForPassenger(input.nextInt());
-        System.out.println(passenger.getBoardingTickets());
-    }
-
-    // MODIFIES: this
-    // EFFECTS: searches for the passenger in the system
-    private Passenger searchForPassenger(int userInput) {
-        while (true) {
-            for (int i = 0; i < listOfPassengers.size(); i++) {
-                Passenger passenger = listOfPassengers.getElementAt(i);
-                if (userInput == passenger.getPassengerID()) {
-                    System.out.println("Passenger " + passenger.getPassengerID() + " found.");
-                    return passenger;
-                }
-            }
-            System.out.println("Passenger " + userInput + " not found.");
-            userInput = input.nextInt();
-        }
-    }
-
     /**
      * Represents the action to be taken when the user wants to
      * print the event log.
-     * modified from UBC CPSC
+     * modified from UBC Computer Science
      */
     private class PrintLogAction extends AbstractAction {
         PrintLogAction() {
@@ -713,7 +623,7 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
     /**
      * Represents the action to be taken when the user wants to
      * clear the event log.
-     * UBC CPSC
+     * UBC Computer Science
      */
     private class ClearLogAction extends AbstractAction {
         ClearLogAction() {
@@ -729,7 +639,7 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
     /**
      * Represents action to be taken when user clicks desktop
      * to switch focus. (Needed for key handling.)
-     * UBC CPSC
+     * UBC Computer Science
      */
     private class DesktopFocusAction extends MouseAdapter {
         @Override

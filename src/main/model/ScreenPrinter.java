@@ -2,7 +2,6 @@ package model;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Iterator;
 
 public class ScreenPrinter extends JInternalFrame implements LogPrinter {
 

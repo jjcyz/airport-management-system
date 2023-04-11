@@ -21,7 +21,6 @@ public class PrivateJet extends Aircraft {
         return maxCapacity;
     }
 
-
     // EFFECTS: returns the json object
     @Override
     public JSONObject toJson() {
