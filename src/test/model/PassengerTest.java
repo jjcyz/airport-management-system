@@ -7,8 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static model.TravelClasses.ECONOMY;
-import static model.TravelClasses.FIRSTCLASS;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PassengerTest {
@@ -19,13 +17,13 @@ class PassengerTest {
     @BeforeEach
     void runBefore() {
         testPassenger = new Passenger(12345,"Jessica",
-                "Zhou", FIRSTCLASS);
+                "Zhou");
         testFlight = new Flight("123",
                 new PassengerAirline("test", 100),
                 Airports.YVR, Airports.PEK, 2);
         testFlight.addPassenger(testPassenger);
 
-        testPassenger2 = new Passenger(67890, "Elon", "Musk", ECONOMY);
+        testPassenger2 = new Passenger(67890, "Elon", "Musk");
     }
 
 
@@ -34,7 +32,6 @@ class PassengerTest {
         assertEquals(12345,testPassenger.getPassengerID());
         assertEquals("Jessica",testPassenger.getFirstName());
         assertEquals("Zhou",testPassenger.getLastName());
-        assertEquals(FIRSTCLASS,testPassenger.getTravelClass());
     }
 
     @Test
@@ -53,11 +50,6 @@ class PassengerTest {
     }
 
     @Test
-    void getTravelClassTest() {
-        assertEquals(FIRSTCLASS, testPassenger.getTravelClass());
-    }
-
-    @Test
     void getBookedFlights() {
         ArrayList<Flight> testForBookedFlight = new ArrayList<>();
         testForBookedFlight.add(testFlight);
@@ -66,7 +58,7 @@ class PassengerTest {
 
     @Test
     void toStringTest() {
-        assertEquals("Passenger ID: 12345 First Name: Jessica Last Name: Zhou Travel Class: FIRSTCLASS",
+        assertEquals("Passenger ID: 12345 First Name: Jessica Last Name: Zhou",
                 testPassenger.toString());
     }
 

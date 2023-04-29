@@ -1,4 +1,8 @@
-package model;
+package persistence;
+
+import persistence.Event;
+import persistence.EventLog;
+import persistence.LogPrinter;
 
 import javax.swing.*;
 import java.awt.*;

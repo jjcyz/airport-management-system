@@ -1,4 +1,6 @@
-package model;
+package persistence;
+
+import persistence.EventLog;
 
 /**
  * Defines behaviours that event log printers must support.

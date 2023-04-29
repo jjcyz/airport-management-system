@@ -5,6 +5,8 @@ package model;
     that can be added to a plane  */
 
 import org.json.JSONObject;
+import persistence.Event;
+import persistence.EventLog;
 import persistence.Writable;
 
 import java.text.SimpleDateFormat;
@@ -15,15 +17,13 @@ public class Passenger implements Writable {
     private final int passengerID;
     private final String firstName;
     private final String lastName;
-    private final TravelClasses travelClass;
     private final ArrayList<Flight> bookedFlights;
 
     // Creates a passenger
-    public Passenger(int passengerID, String firstName, String lastName, TravelClasses travelClass) {
+    public Passenger(int passengerID, String firstName, String lastName) {
         this.passengerID = passengerID;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.travelClass = travelClass;
         this.bookedFlights = new ArrayList<>();
     }
 
@@ -37,10 +37,6 @@ public class Passenger implements Writable {
 
     public String getLastName() {
         return lastName;
-    }
-
-    public TravelClasses getTravelClass() {
-        return travelClass;
     }
 
     public ArrayList<Flight> getBookedFlights() {
@@ -62,9 +58,7 @@ public class Passenger implements Writable {
                 + " First Name: "
                 + firstName
                 + " Last Name: "
-                + lastName
-                + " Travel Class: "
-                + travelClass;
+                + lastName;
     }
 
     // EFFECTS: generates a boarding ticket of a passenger's flights
@@ -78,7 +72,7 @@ public class Passenger implements Writable {
                 s.append("Name of Passenger: ").append(lastName).append(" ").append(firstName).append("\n");
                 s.append(String.format("%-20s %-20s %-20s %-20s\n", "Origin: ", flight.getOrigin(),
                         "Destination: ", flight.getDestination()));
-                s.append(String.format("%-20s %-20s %-20s %-20s\n", "Class: ", travelClass, "Seat No. ", "25A"));
+                s.append(String.format("%-20s %-20s %-20s %-20s\n", "Class: ", "<cabin class>", "Seat No. ", "25A"));
                 Date date = new Date();
                 SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                 String formattedDate = formatter.format(date);
@@ -101,7 +95,6 @@ public class Passenger implements Writable {
         json.put("passengerID", passengerID);
         json.put("firstName", this.firstName);
         json.put("lastName", this.lastName);
-        json.put("travelClass", this.travelClass);
         json.put("bookedFlights", this.bookedFlights);
         return json;
     }

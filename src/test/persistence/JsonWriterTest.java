@@ -24,9 +24,9 @@ public class JsonWriterTest extends JsonTest{
         pl = new DefaultListModel<>();
         al = new DefaultListModel<>();
         fl = new DefaultListModel<>();
-        this.testPassenger = new Passenger(1,"Jessica", "Zhou",
-                TravelClasses.FIRSTCLASS);
-        this.testAircraft = new Aircraft("Airplane",100);
+        this.testPassenger = new Passenger(1,"Jessica", "Zhou"
+        );
+        this.testAircraft = new Aircraft("Airplane");
         this.testFlight = new Flight("A", testAircraft, Airports.YVR, Airports.YYZ, 3);
     }
 
@@ -65,8 +65,8 @@ public class JsonWriterTest extends JsonTest{
     @Test
     void testWriterGeneralWorkroom() {
         try {
-            pl.addElement(new Passenger(0, "Jessica", "Zhou", TravelClasses.FIRSTCLASS));
-            Aircraft boeing = new Aircraft("Boeing", 100);
+            pl.addElement(new Passenger(0, "Jessica", "Zhou"));
+            Aircraft boeing = new Aircraft("Boeing");
             al.addElement(boeing);
             fl.addElement(new Flight("1", boeing, Airports.YVR, Airports.YYZ, 3));
 
@@ -83,14 +83,11 @@ public class JsonWriterTest extends JsonTest{
             testPassengerToJson();
             testAircraftToJson();
             testFlightToJson();
-            testCargoAircraftToJson();
             testPassengerAirlineToJson();
             testPrivateJetToJson();
-            testCargo();
 
             assertEquals(0, pl.get(0).getBookedFlights().size());
-            checkPassenger(0, "Jessica", "Zhou", TravelClasses.FIRSTCLASS,
-                    new ArrayList<>(), pl.get(0));
+            checkPassenger(0, "Jessica", "Zhou", new ArrayList<>(), pl.get(0));
             checkAircraft("Boeing", 100, al.get(0));
             checkFlight("1", boeing, Airports.YVR, Airports.YYZ, 3, fl.get(0));
 
@@ -113,7 +110,7 @@ public class JsonWriterTest extends JsonTest{
 
     private void testAircraftToJson() {
         JSONObject expectedAircraft = new JSONObject()
-                .put("name", "Airplane")
+                .put("identifier", "Airplane")
                 .put("maxCapacity", 100);
         JSONObject actualAircraft = testAircraft.toJson();
         assertEquals(expectedAircraft.toString(), actualAircraft.toString());
@@ -124,18 +121,9 @@ public class JsonWriterTest extends JsonTest{
                 .put("firstName", "Jessica")
                 .put("lastName", "Zhou")
                 .put("passengerID", 1)
-                .put("bookedFlights", new ArrayList<>())
-                .put("travelClass", "FIRSTCLASS");
+                .put("bookedFlights", new ArrayList<>());
         JSONObject actualPassenger = testPassenger.toJson();
         assertEquals(expectedPassenger.toString(), actualPassenger.toString());
-    }
-
-    private void testCargoAircraftToJson() {
-        JSONObject expectedCargoAirline = new JSONObject()
-                .put("name", "forCargo")
-                .put("maxCargoWeight", 100);
-        JSONObject actualCargoAirline = new CargoAircraft("forCargo",100).toJson();
-        assertEquals(expectedCargoAirline.toString(), actualCargoAirline.toString());
     }
 
     private void testPassengerAirlineToJson() {
@@ -154,18 +142,4 @@ public class JsonWriterTest extends JsonTest{
         assertEquals(expectedPrivateJet.toString(), actualPrivateJet.toString());
     }
 
-    private void testCargo() {
-        JSONObject expectedCargoAircraft = new JSONObject()
-                .put("name", "bananasPlane")
-                .put("maxCargoWeight", 100);
-        JSONObject actualCargo = new CargoAircraft("bananasPlane", 100).toJson();
-
-        JSONObject expectedCargo = new JSONObject()
-                .put("description", "bananas")
-                .put("weight", 50);
-        Cargo cargoCargo = new Cargo("bananas", 50);
-
-        assertEquals(expectedCargoAircraft.toString(), actualCargo.toString());
-        assertEquals(expectedCargo.toString(), cargoCargo.toJson().toString());
-    }
 }

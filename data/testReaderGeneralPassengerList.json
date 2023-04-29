@@ -9,13 +9,13 @@
         {
           "flightID": "A",
           "aircraft": {
-            "name": "Airplane",
+            "identifier": "Airplane",
             "maxCapacity": 100
           },
           "origin": "YVR",
           "destination": "YYZ",
           "duration": 3,
-          "listOfPassengers": []
+          "passengersOnFlight": []
         }
       ]
     },
@@ -28,14 +28,14 @@
         {
           "flightID": "A",
           "aircraft": {
-            "name": "Airplane",
+            "identifier": "Airplane",
             "maxCapacity": 100
           },
           "maxCapacity": 100,
           "origin": "YVR",
           "destination": "YYZ",
           "duration": 3,
-          "listOfPassengers": []
+          "passengersOnFlight": []
         }
       ]
     }

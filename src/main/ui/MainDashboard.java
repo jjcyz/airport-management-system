@@ -1,13 +1,12 @@
 package ui;
 
-/* This is the UI class of the program */
+/* This is the MainDashboard class of the program */
 
 import model.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import persistence.JsonReader;
-import persistence.JsonWriter;
-import persistence.Writable;
+import persistence.*;
+import persistence.Event;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -16,18 +15,16 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
 // Represents the airport application
-public class AirportUI extends JFrame implements Writable, ListSelectionListener {
+public class MainDashboard extends JFrame implements Writable, ListSelectionListener {
     private static final String JSON_STORE = "./data/airport.json";
     private Scanner input;
     private DefaultListModel<Passenger> listOfPassengers;
     private DefaultListModel<Aircraft> listOfAircraft;
     private DefaultListModel<Flight> listOfFlights;
-    private FlightVisualizer visualizer;  // wish list
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
 
@@ -37,8 +34,12 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
     private JLabel totalAircraft;
     private JLabel totalFlights;
 
+    // Features
+    private FlightsVisualizer visualizer;   // WISH LIST
+    private SearchFlights searchFlights;    // WISH LIST
+
     // Makes a new JFrame with different attributes
-    public AirportUI() {
+    public MainDashboard() {
         super("Airport Management System");
         setLayout(new BorderLayout());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -48,8 +49,7 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
         initializeHeader();
         initializeButtons();
         pack();
-        setVisible(true);
-
+        setLocationRelativeTo(null);
         startLoadPrompt();
         exitSavePrompt();
         setVisible(true);
@@ -130,7 +130,6 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
         return scrollPane;
     }
 
-
     // MODIFIES: this
     // EFFECTS: initializes buttons
     private void initializeButtons() {
@@ -167,20 +166,17 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
                 "5. Save", new ButtonListener());
         JButton viewFlights = createButton("View flights",
                 "4. View flights", new ButtonListener());
-        JButton printLog = createButton("Print log",
-                "6. Print log", new ButtonListener());
-        printLog.setAction(new PrintLogAction());
-        JButton clearLog = createButton("Clear log",
-                "7. Clear log", new ButtonListener());
-        clearLog.setAction(new ClearLogAction());
-        clearLog.setAction(new ClearLogAction());
+        JButton log = createButton("Log",
+                "6. Log", new ButtonListener());
+        JButton searchFlights = createButton("Search Flights",
+                "7. Search Flight", new ButtonListener());
 
         buttons.add(addNewPassenger);
         buttons.add(addNewAircraft);
         buttons.add(createNewFlight);
         buttons.add(saveDatabaseToFile);
-        buttons.add(clearLog);
-        buttons.add(printLog);
+        buttons.add(log);
+        buttons.add(searchFlights);
     }
 
     // creates Action Listener for button presses
@@ -200,14 +196,15 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
                     addNewFlight();
                     break;
                 case "4. View flights":
-                    visualizer = new FlightVisualizer(listOfFlights);
+                    visualizer = new FlightsVisualizer(listOfFlights);
                 case "5. Save":
                     save();
                     break;
-                case "6. Print log":
-                    new PrintLogAction();
-                case "7. Clear log":
-                    new ClearLogAction();
+                case "6. Log":
+                    logActionWindow();
+                case "7. Search Flights":
+                    searchFlights = new SearchFlights(listOfFlights);
+
             }
         }
     }
@@ -307,13 +304,13 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
     private void aircraftDashboard(Aircraft aircraft, JPanel popupPanel, JList list) {
         String[] options = {"Edit", "Delete"};
         int choice = JOptionPane.showOptionDialog(null, popupPanel,
-                "Edit or Delete " + aircraft.getName(),
+                "Edit or Delete " + aircraft.getIdentifier(),
                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
         if (choice == 0) {
             // Edit object code here
         } else if (choice == 1) {
             int confirmDelete = JOptionPane.showConfirmDialog(null,
-                    "Are you sure you want to delete this " + aircraft.getName() + "?",
+                    "Are you sure you want to delete this " + aircraft.getIdentifier() + "?",
                     "Confirm Delete", JOptionPane.YES_NO_OPTION);
             if (confirmDelete == JOptionPane.YES_OPTION) {
                 removeObjectFromSystem(list, aircraft);
@@ -438,7 +435,7 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
                     return;
                 }
                 // prints the event log
-                for (model.Event e : model.EventLog.getInstance()) {
+                for (Event e : EventLog.getInstance()) {
                     System.out.println(e);
                 }
                 save();
@@ -463,16 +460,14 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
     // EFFECTS: generates a popup window that adds new passenger into system
     private void addNewPassenger() {
         Object[] fields = { "Passenger ID:", new JTextField(), "First Name:", new JTextField(),
-                "Last Name:", new JTextField(), "Travel Class:", new JComboBox<>(TravelClasses.values())
-        };
+                "Last Name:", new JTextField()};
         int result = JOptionPane.showConfirmDialog(null, fields, "Enter Passenger Information",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
         if (result == JOptionPane.OK_OPTION) {
             int id = Integer.parseInt(((JTextField) fields[1]).getText());
             String firstName = ((JTextField) fields[3]).getText();
             String lastName = ((JTextField) fields[5]).getText();
-            TravelClasses travelClass = (TravelClasses) ((JComboBox) fields[7]).getSelectedItem();
-            listOfPassengers.addElement(new Passenger(id, firstName, lastName, travelClass));
+            listOfPassengers.addElement(new Passenger(id, firstName, lastName));
             updatePassengersWindow();
             System.out.println(firstName + " " + lastName + " is now in the system!");
             // initializeTotalPassengerBox();
@@ -482,25 +477,21 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
     // MODIFIES: this
     // EFFECTS: generates a popup window that adds a new aircraft into the system
     private void addNewAircraft() {
-        JComboBox<String> aircraftTypesComboBox = new JComboBox<>(new String[]{"Cargo Aircraft",
-                "Passenger Aircraft", "Private Jet"});
-        Object[] fields = { "Aircraft Name:", new JTextField(), "Maximum Capacity:",
+        JComboBox<String> aircraftTypesComboBox = new JComboBox<>(new String[]{"Passenger Aircraft", "Private Jet"});
+        Object[] fields = { "Aircraft Identifier:", new JTextField(), "Maximum Capacity:",
                 new JTextField(), "Aircraft Type:", aircraftTypesComboBox };
         int result = JOptionPane.showConfirmDialog(null, fields,
                 "Enter Aircraft Information", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
         if (result == JOptionPane.OK_OPTION) {
-            String aircraftName = ((JTextField) fields[1]).getText();
+            String aircraftIdentifier = ((JTextField) fields[1]).getText();
             int maxCapacity = Integer.parseInt(((JTextField) fields[3]).getText());
             String aircraftType = (String) aircraftTypesComboBox.getSelectedItem();
             switch (Objects.requireNonNull(aircraftType)) {
-                case "Cargo Aircraft":
-                    listOfAircraft.addElement(new CargoAircraft(aircraftName, maxCapacity));
-                    break;
                 case "Passenger Aircraft":
-                    listOfAircraft.addElement(new PassengerAirline(aircraftName, maxCapacity));
+                    listOfAircraft.addElement(new PassengerAirline(aircraftIdentifier, maxCapacity));
                     break;
                 case "Private Jet":
-                    listOfAircraft.addElement(new PrivateJet(aircraftName, maxCapacity));
+                    listOfAircraft.addElement(new PrivateJet(aircraftIdentifier, maxCapacity));
                     break;
             }
             updateAircraftWindow();
@@ -536,67 +527,25 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
         }
     }
 
-    // MODIFIES: this
-    // EFFECTS: finds the airport in the enum Airports class
-    private Airports getAirports(String userInput) {
-        List<Airports> availableAirports = Airports.getAirports();
-        while (true) {
-            try {
-                Airports airport = Airports.valueOf(userInput);
-                if (availableAirports.contains(airport)) {
-                    System.out.println("Airport found!");
-                    return airport;
-                } else {
-                    throw new IllegalArgumentException();
-                }
-            } catch (IllegalArgumentException e) {
-                System.out.println("Sorry. This airport does not currently have routes there. Try again.");
-                userInput = input.next();
-            }
-        }
-    }
+    private void logActionWindow() {
+        JFrame frame = new JFrame("Log Actions");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    //wish list feature
-    // MODIFIES: this
-    // EFFECTS: changes the origin/destination of a flight
-    private void modifyFlight() {
-        System.out.println("Search up a flight to change. Enter the FlightID: ");
-        Flight workFlight = searchForFlight(input.next());
-        System.out.println("What would you like to do?");
-        System.out.println("1. Modify Origin");
-        System.out.println("2. Modify Destination");
-        int userInput = input.nextInt();
-        while (true) {
-            if (userInput == 1) {
-                System.out.println("New origin: ");
-                workFlight.setOrigin(getAirports(input.next()));
-                System.out.print("Flight origin successfully changed.");
-                break;
-            } else if (userInput == 2) {
-                System.out.println("New destination: ");
-                workFlight.setDestination(getAirports(input.next()));
-                System.out.print("Flight destination successfully changed.");
-                break;
-            }
-            System.out.println("Invalid entry. Try again");
-            userInput = input.nextInt();
-        }
-    }
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(2, 1));
 
-    // MODIFIES: this
-    // EFFECTS: searches for the flight in the system
-    private Flight searchForFlight(String userInput) {
-        while (true) {
-            for (int i = 0; i < listOfFlights.size(); i++) {
-                Flight flight = listOfFlights.getElementAt(i);
-                if (userInput.equals(flight.getFlightID())) {
-                    System.out.println("Flight " + flight.getFlightID() + " found.");
-                    return flight;
-                }
-            }
-            System.out.println("Flight " + userInput + " not found.");
-            userInput = input.nextLine();
-        }
+        JButton printLogButton = new JButton("Print log to screen");
+        printLogButton.addActionListener(new PrintLogAction());
+        panel.add(printLogButton);
+
+        JButton clearLogButton = new JButton("Clear log");
+        clearLogButton.addActionListener(new ClearLogAction());
+        panel.add(clearLogButton);
+
+        frame.getContentPane().add(panel);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 
     /**
@@ -611,10 +560,10 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
 
         @Override
         public void actionPerformed(ActionEvent evt) {
-            LogPrinter lp = new ScreenPrinter(AirportUI.this);
+            LogPrinter lp = new ScreenPrinter(MainDashboard.this);
             lp.printLog(EventLog.getInstance());
             // prints the event log at the end
-            for (model.Event e : model.EventLog.getInstance()) {
+            for (Event e : EventLog.getInstance()) {
                 System.out.println(e);
             }
         }
@@ -644,7 +593,7 @@ public class AirportUI extends JFrame implements Writable, ListSelectionListener
     private class DesktopFocusAction extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
-            AirportUI.this.requestFocusInWindow();
+            MainDashboard.this.requestFocusInWindow();
         }
     }
 

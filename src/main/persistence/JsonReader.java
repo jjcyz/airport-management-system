@@ -70,11 +70,9 @@ public class JsonReader {
         int passengerID = jsonObject.getInt("passengerID");
         String firstName = jsonObject.getString("firstName");
         String lastName = jsonObject.getString("lastName");
-        String travelClassStr = jsonObject.getString("travelClass");
-        TravelClasses travelClass = TravelClasses.valueOf(travelClassStr);
         JSONArray jsonBookedFlights = jsonObject.getJSONArray("bookedFlights");
 
-        Passenger passenger = new Passenger(passengerID, firstName, lastName, travelClass);
+        Passenger passenger = new Passenger(passengerID, firstName, lastName);
 
         for (int i = 0; i < jsonBookedFlights.length(); i++) {
             JSONObject jsonFlight = jsonBookedFlights.getJSONObject(i);
@@ -96,9 +94,9 @@ public class JsonReader {
 
     // EFFECTS: parses aircraft from JSON object and returns it
     private Aircraft parseAircraft(JSONObject jsonObject) {
-        String name = jsonObject.getString("name");
+        String identifier = jsonObject.getString("identifier");
         int maxCapacity = jsonObject.getInt("maxCapacity");
-        return new Aircraft(name, maxCapacity);
+        return new Aircraft(identifier);
     }
 
     // EFFECTS: parses list of flights from JSON array and returns it

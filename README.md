@@ -2,7 +2,7 @@
 # Airport Information Management Application
 **Created by Jessica Zhou** 
 
-### Overview
+##Overview
 
 This is an airport information management system. This program 
 mimics the internal operations that happen at an international 

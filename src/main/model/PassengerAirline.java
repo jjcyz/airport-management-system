@@ -4,6 +4,8 @@ package model;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import persistence.Event;
+import persistence.EventLog;
 
 import java.util.ArrayList;
 
@@ -11,17 +13,17 @@ public class PassengerAirline extends Aircraft {
     private final ArrayList<Passenger> listOfPassenger;
 
     // Creates an aircraft for passengers
-    public PassengerAirline(String name, int maxCapacity) {
-        super(name, maxCapacity);
+    public PassengerAirline(String identifier, int maxCapacity) {
+        super(identifier);
         this.listOfPassenger = new ArrayList<>();
-        EventLog.getInstance().logEvent(new Event("Added passenger aircraft: " + getName()));
+        EventLog.getInstance().logEvent(new Event("Added passenger aircraft: " + getIdentifier()));
     }
 
     // EFFECTS: returns the json object
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        json.put("name", this.name);
+        json.put("identifier", this.identifier);
         json.put("maxCapacity", this.maxCapacity);
 
         JSONArray passengerArray = new JSONArray();
