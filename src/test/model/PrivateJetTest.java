@@ -9,12 +9,12 @@ public class PrivateJetTest {
 
     @Test
     void getName() {
-        assertEquals("Private", pj.getName());
+        assertEquals("Private", pj.getIdentifier());
     }
 
     @Test
     void getMaxCapacityTest() {
-        assertEquals(10, pj.getMaxCapacity());
+        assertEquals(60, pj.getMaxCapacity());
     }
 
     @Test

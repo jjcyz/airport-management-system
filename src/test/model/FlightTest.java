@@ -16,11 +16,11 @@ public class FlightTest {
 
     @BeforeEach
     void runBefore() {
-        p1 = new Passenger(123,"Ada","Lovelace",TravelClasses.FIRSTCLASS);
-        p2 = new Passenger(456,"Alan","Turing",TravelClasses.FIRSTCLASS);
-        p3 = new Passenger(789, "Charles", "Babbage", TravelClasses.FIRSTCLASS);
+        p1 = new Passenger(123,"Ada","Lovelace");
+        p2 = new Passenger(456,"Alan","Turing");
+        p3 = new Passenger(789, "Charles", "Babbage");
 
-        testAircraft1 = new Aircraft("ID12345", 2);
+        testAircraft1 = new Aircraft("ID12345");
 
         testFlight1 = new Flight("ID12345", testAircraft1, YVR,Airports.YYZ,4);
 
@@ -83,9 +83,9 @@ public class FlightTest {
 
     @Test
     void getAvailableSeats() {
-        assertEquals(2, testFlight1.getAvailableSeats());
+        assertEquals(60, testFlight1.getAvailableSeats());
         testFlight1.addPassenger(p1);
-        assertEquals(1, testFlight1.getAvailableSeats());
+        assertEquals(59, testFlight1.getAvailableSeats());
     }
 
     @Test
@@ -105,10 +105,10 @@ public class FlightTest {
     @Test
     void toStringTest() {
         assertEquals("Flight ID: ID12345 Aircraft: "
-                + "name: ID12345 "
-                + "maxCapacity: 2 "
+                + "Identifier: ID12345 "
+                + "Max Capacity: 60 "
                 + "Origin: YVR "
-                + "Destination: YYZ" +
-                " Duration: 4", testFlight1.toString());
+                + "Destination: YYZ"
+                + " Duration: 4", testFlight1.toString());
     }
 }

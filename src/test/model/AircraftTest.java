@@ -10,28 +10,35 @@ public class AircraftTest {
 
     @BeforeEach
     void runBefore() {
-        testAircraft1 = new CargoAircraft("ABC",150);
+        testAircraft1 = new Aircraft("ABC");
     }
 
     @Test
     void testConstructor() {
-        assertEquals("ABC", testAircraft1.getName());
-        assertEquals(150, testAircraft1.getMaxCapacity());
+        assertEquals("ABC", testAircraft1.getIdentifier());
+        assertEquals(60, testAircraft1.getMaxCapacity());
     }
 
     @Test
     void getName() {
-        assertEquals("ABC", testAircraft1.getName());
+        assertEquals("ABC", testAircraft1.getIdentifier());
     }
 
     @Test
     void getMaxCapacityTest() {
-        assertEquals(150,testAircraft1.getMaxCapacity());
+        assertEquals(60,testAircraft1.getMaxCapacity());
     }
 
     @Test
     void toStringTest() {
-        assertEquals("name: ABC maxCapacity: 150",testAircraft1.toString());
+        assertEquals("Identifier: ABC Max Capacity: 60",testAircraft1.toString());
+    }
+
+    @Test
+    void addCargoToAircraftTest() {
+        Cargo exoticFruits = new Cargo("Exotic fruits", 2);
+        assertEquals("Cargo has been added to ABC",
+                testAircraft1.addCargoToAircraft(exoticFruits));
     }
 
 

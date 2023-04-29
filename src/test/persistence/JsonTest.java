@@ -9,19 +9,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JsonTest {
 
-    protected void checkPassenger(int passengerID, String firstName, String lastName, TravelClasses travelClass,
+    protected void checkPassenger(int passengerID, String firstName, String lastName,
                                ArrayList<Flight> bookedFlights, Passenger passenger) {
         assertEquals(passengerID, passenger.getPassengerID());
         assertEquals(firstName, passenger.getFirstName());
         assertEquals(lastName, passenger.getLastName());
-        assertEquals(travelClass, passenger.getTravelClass());
         for (Flight flight : bookedFlights) {
             assertTrue(passenger.getBookedFlights().toString().contains(flight.toString()));
         }
     }
 
     protected void checkAircraft(String name, int maxCapacity, Aircraft aircraft) {
-        assertEquals(name, aircraft.getName());
+        assertEquals(name, aircraft.getIdentifier());
         assertEquals(maxCapacity, aircraft.getMaxCapacity());
     }
 

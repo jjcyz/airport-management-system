@@ -3,7 +3,7 @@
     {
       "flightID": "A",
       "aircraft": {
-        "name": "Airplane",
+        "identifier": "Airplane",
         "maxCapacity": 100
       },
       "origin": "YVR",

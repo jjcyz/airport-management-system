@@ -4,6 +4,8 @@ package model;
     the duration of flight, and the list of passengers registered on this flight. */
 
 import org.json.JSONObject;
+import persistence.Event;
+import persistence.EventLog;
 import persistence.Writable;
 
 import java.util.ArrayList;
