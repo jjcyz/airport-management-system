@@ -35,7 +35,7 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
     private JLabel totalFlights;
 
     // Features
-    private FlightsVisualizer visualizer;   // WISH LIST
+    private WorldVisualizer visualizer;   // WISH LIST
     private SearchFlights searchFlights;    // WISH LIST
 
     // Makes a new JFrame with different attributes
@@ -196,7 +196,7 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
                     addNewFlight();
                     break;
                 case "4. View flights":
-                    visualizer = new FlightsVisualizer(listOfFlights);
+                    visualizer = new WorldVisualizer(listOfFlights);
                 case "5. Save":
                     save();
                     break;

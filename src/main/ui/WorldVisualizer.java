@@ -7,12 +7,12 @@ import model.Flight;
 import javax.swing.*;
 import java.awt.*;
 
-public class FlightsVisualizer extends JFrame {
+public class WorldVisualizer extends JFrame {
     private final JPanel flightPanel;
     private final JPanel mapPanel;
     private final DefaultListModel<Flight> flights;
 
-    public FlightsVisualizer(DefaultListModel<Flight> flights) {
+    public WorldVisualizer(DefaultListModel<Flight> flights) {
         this.flights = flights;
         setTitle("Flight Visualizer");
         setSize(800, 600);
