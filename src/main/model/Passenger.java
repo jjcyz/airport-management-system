@@ -66,13 +66,18 @@ public class Passenger implements Writable {
         StringBuilder s = new StringBuilder();
         if (!bookedFlights.isEmpty()) {
             for (Flight flight : bookedFlights) {
+                String seatIdentifier = flight.getPassengerSeat(passengerID);
+                Seat seat = flight.getAircraft().getSeat(seatIdentifier);
+                String cabinClass = seat != null ? seat.getCabin().toString() : "UNASSIGNED";
+
                 s.append("---------------------------------------------------------------------------\n");
                 s.append("                         ELECTRONIC BOARDING PASS                          \n");
                 s.append("---------------------------------------------------------------------------\n");
                 s.append("Name of Passenger: ").append(lastName).append(" ").append(firstName).append("\n");
                 s.append(String.format("%-20s %-20s %-20s %-20s\n", "Origin: ", flight.getOrigin(),
                         "Destination: ", flight.getDestination()));
-                s.append(String.format("%-20s %-20s %-20s %-20s\n", "Class: ", "<cabin class>", "Seat No. ", "25A"));
+                s.append(String.format("%-20s %-20s %-20s %-20s\n", "Class: ", cabinClass,
+                        "Seat No. ", seatIdentifier != null ? seatIdentifier : "UNASSIGNED"));
                 Date date = new Date();
                 SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                 String formattedDate = formatter.format(date);

@@ -344,14 +344,32 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
         for (int i = 0; i < listOfPassengers.getSize(); i++) {
             passengerDropdown.addItem(listOfPassengers.getElementAt(i));
         }
-        Object[] fields = {"Select Passenger:", passengerDropdown};
-        int result = JOptionPane.showConfirmDialog(null, fields, "Passengers",
+
+        // Create seat selection field
+        JTextField seatField = new JTextField(5);
+        seatField.setText("A1");  // Default seat
+
+        Object[] fields = {
+            "Select Passenger:", passengerDropdown,
+            "Enter Seat (e.g., A1):", seatField
+        };
+
+        int result = JOptionPane.showConfirmDialog(null, fields, "Add Passenger to Flight",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
         if (result == JOptionPane.OK_OPTION) {
             Passenger passenger = (Passenger) passengerDropdown.getSelectedItem();
+            String seatIdentifier = seatField.getText().trim();
             assert passenger != null;  // to catch NullPointerExceptions
+
+            if (seatIdentifier.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please enter a valid seat identifier");
+                return;
+            }
+
             passenger.addToBookedFlights(flight);
-            flight.addPassenger(passenger);
+            String resultMessage = flight.addPassenger(passenger, seatIdentifier);
+            JOptionPane.showMessageDialog(null, resultMessage);
         }
     }
 

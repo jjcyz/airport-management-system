@@ -4,6 +4,7 @@ package model;
     the duration of flight, and the list of passengers registered on this flight. */
 
 import org.json.JSONObject;
+import org.json.JSONArray;
 import persistence.Event;
 import persistence.EventLog;
 import persistence.Writable;
@@ -19,6 +20,7 @@ public class Flight implements Writable {
     private int duration;
     private final ArrayList<Passenger> passengersOnFlight;
     private final HashMap<Integer, Passenger> passengerLookup;  // Added for O(1) lookup
+    private final HashMap<Integer, String> passengerSeatAssignments;  // Maps passengerID to seat identifier
 
     public Flight(String flightID, Aircraft aircraft, Airports origin, Airports destination, int duration) {
         this.flightID = flightID;
@@ -28,6 +30,7 @@ public class Flight implements Writable {
         this.duration = duration;
         this.passengersOnFlight = new ArrayList<>();
         this.passengerLookup = new HashMap<>();  // Initialize HashMap
+        this.passengerSeatAssignments = new HashMap<>();  // Initialize seat assignments
     }
 
     public String getFlightID() {
@@ -55,16 +58,26 @@ public class Flight implements Writable {
         return passengersOnFlight;
     }
 
-    // EFFECTS: add a passenger to flight
-    public String addPassenger(Passenger passenger) {
+    // EFFECTS: add a passenger to flight with a specific seat
+    public String addPassenger(Passenger passenger, String seatIdentifier) {
         if (getCurrentCapacity() < aircraft.getMaxCapacity()) {
+            Seat seat = aircraft.getSeat(seatIdentifier);
+            if (seat == null) {
+                return "Invalid seat identifier: " + seatIdentifier;
+            }
+            if (seat.isBooked()) {
+                return "Seat " + seatIdentifier + " is already booked";
+            }
+
             EventLog.getInstance().logEvent(new Event("Added passenger (on flight): " + passenger.getFirstName()));
             passengersOnFlight.add(passenger);
-            passengerLookup.put(passenger.getPassengerID(), passenger);  // Add to HashMap
+            passengerLookup.put(passenger.getPassengerID(), passenger);
+            passengerSeatAssignments.put(passenger.getPassengerID(), seatIdentifier);
+            seat.bookSeat(passenger);
             passenger.getBookedFlights().add(this);
             return passenger.getFirstName()
                     + " " + passenger.getLastName()
-                    + " has been added to this flight";
+                    + " has been added to this flight in seat " + seatIdentifier;
         } else {
             return "The aircraft for this flight is at maximum capacity.";
         }
@@ -74,6 +87,15 @@ public class Flight implements Writable {
     public String removePassenger(int passengerID) {
         Passenger passenger = passengerLookup.get(passengerID);  // O(1) lookup
         if (passenger != null) {
+            String seatIdentifier = passengerSeatAssignments.get(passengerID);
+            if (seatIdentifier != null) {
+                Seat seat = aircraft.getSeat(seatIdentifier);
+                if (seat != null) {
+                    seat.unbookSeat();
+                }
+                passengerSeatAssignments.remove(passengerID);
+            }
+
             EventLog.getInstance().logEvent(new Event("Removed passenger: " + passenger.getFirstName()));
             passengersOnFlight.remove(passenger);
             passengerLookup.remove(passengerID);
@@ -144,6 +166,11 @@ public class Flight implements Writable {
         return R * c;
     }
 
+    // EFFECTS: returns the seat identifier for a passenger, or null if not found
+    public String getPassengerSeat(int passengerID) {
+        return passengerSeatAssignments.get(passengerID);
+    }
+
     // EFFECTS: return the flight string
     @Override
     public String toString() {
@@ -165,10 +192,21 @@ public class Flight implements Writable {
         JSONObject json = new JSONObject();
         json.put("flightID", this.flightID);
         json.put("aircraft", this.aircraft.toJson());
-        json.put("origin", this.origin);
-        json.put("destination", this.destination);
+        json.put("origin", this.origin.toString());
+        json.put("destination", this.destination.toString());
         json.put("duration", this.duration);
-        json.put("passengersOnFlight", this.passengersOnFlight);
+
+        // Create a JSONArray for passengers and serialize each one
+        org.json.JSONArray passengersArray = new org.json.JSONArray();
+        for (Passenger passenger : this.passengersOnFlight) {
+            passengersArray.put(passenger.toJson());
+        }
+        json.put("passengersOnFlight", passengersArray);
         return json;
+    }
+
+    // EFFECTS: returns the passenger lookup map for debugging purposes
+    public HashMap<Integer, Passenger> getPassengerLookup() {
+        return passengerLookup;
     }
 }

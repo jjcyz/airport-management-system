@@ -65,6 +65,18 @@ public class Aircraft implements Writable  {  // make aircraft abstract later
         return maxCapacity;
     }
 
+    // EFFECTS: returns the seat with the given identifier, or null if not found
+    public Seat getSeat(String seatIdentifier) {
+        for (Seat[] seatRow : seats) {
+            for (Seat seat : seatRow) {
+                if (seat.getSeatIdentifier().equals(seatIdentifier)) {
+                    return seat;
+                }
+            }
+        }
+        return null;
+    }
+
     // EFFECTS: adds cargo to the cargo aircraft
     public String addCargoToAircraft(Cargo cargo) {
         EventLog.getInstance().logEvent(new Event("Added cargo: " + cargo));

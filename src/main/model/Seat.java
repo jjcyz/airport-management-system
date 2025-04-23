@@ -1,10 +1,10 @@
 package model;
 
 public class Seat {
-    private String seatIdentifier;
-    private CabinType cabin;
-    private double cost;
-    private Boolean isBooked;
+    private final String seatIdentifier;
+    private final CabinType cabin;
+    private final double cost;
+    private boolean isBooked;
     private Passenger passenger;
 
     public enum CabinType {
@@ -16,10 +16,27 @@ public class Seat {
         this.cabin = CabinType.ECONOMY;     // default
         this.cost = calculateCost();
         this.isBooked = false;
+        this.passenger = null;
     }
 
     public String getSeatIdentifier() {
         return seatIdentifier;
+    }
+
+    public CabinType getCabin() {
+        return cabin;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public boolean isBooked() {
+        return isBooked;
+    }
+
+    public Passenger getPassenger() {
+        return passenger;
     }
 
     // WISHLIST ITEM: calculate the cost that a plan ticket should be
@@ -40,4 +57,15 @@ public class Seat {
         return totalWeight / weightedSum;
     }
 
+    // EFFECTS: books this seat for the given passenger
+    public void bookSeat(Passenger passenger) {
+        this.isBooked = true;
+        this.passenger = passenger;
+    }
+
+    // EFFECTS: unbooks this seat
+    public void unbookSeat() {
+        this.isBooked = false;
+        this.passenger = null;
+    }
 }

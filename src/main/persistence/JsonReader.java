@@ -77,7 +77,7 @@ public class JsonReader {
         for (int i = 0; i < jsonBookedFlights.length(); i++) {
             JSONObject jsonFlight = jsonBookedFlights.getJSONObject(i);
             Flight flight = parseFlight(jsonFlight);
-            flight.addPassenger(passenger); // add passenger to flight
+            flight.addPassenger(passenger, "A1");
         }
         return passenger;
     }

@@ -21,7 +21,7 @@ class PassengerTest {
         testFlight = new Flight("123",
                 new PassengerAirline("test", 100),
                 Airports.YVR, Airports.PEK, 2);
-        testFlight.addPassenger(testPassenger);
+        testFlight.addPassenger(testPassenger, "A1");
 
         testPassenger2 = new Passenger(67890, "Elon", "Musk");
     }
@@ -73,7 +73,7 @@ class PassengerTest {
                 +"---------------------------------------------------------------------------\n"
                 +"Name of Passenger: Zhou Jessica\n"
                 +"Origin:              YVR                  Destination:         PEK                 \n"
-                +"Class:               FIRSTCLASS           Seat No.             25A                 \n"
+                +"Class:               ECONOMY              Seat No.             A1                  \n"
                 +"Flight ID:           123                  Date:                " + formattedDate + "          \n"
                 +"Departure:           11:30 am             Arrival:             10:00 am            \n"
                 +"---------------------------------------------------------------------------\n"

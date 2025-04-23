@@ -2,113 +2,181 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static model.Airports.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FlightTest {
-    private Passenger p1;
-    private Passenger p2;
-    private Passenger p3;
-    private Flight testFlight1;
-    private Aircraft testAircraft1;
-
+class FlightTest {
+    private Flight flight;
+    private Aircraft aircraft;
+    private Passenger passenger1;
+    private Passenger passenger2;
 
     @BeforeEach
-    void runBefore() {
-        p1 = new Passenger(123,"Ada","Lovelace");
-        p2 = new Passenger(456,"Alan","Turing");
-        p3 = new Passenger(789, "Charles", "Babbage");
-
-        testAircraft1 = new Aircraft("ID12345");
-
-        testFlight1 = new Flight("ID12345", testAircraft1, YVR,Airports.YYZ,4);
-
+    void setUp() {
+        aircraft = new Aircraft("Boeing737");
+        flight = new Flight("AC123", aircraft, Airports.YVR, Airports.YYZ, 0);
+        passenger1 = new Passenger(1, "John", "Doe");
+        passenger2 = new Passenger(2, "Jane", "Smith");
     }
 
     @Test
-    void constructorTest() {
-        assertEquals("ID12345",testFlight1.getFlightID());
-        assertEquals(testAircraft1, testFlight1.getAircraft());
-        assertEquals(YVR,testFlight1.getOrigin());
-        assertEquals(Airports.YYZ,testFlight1.getDestination());
-        assertEquals(4,testFlight1.getDuration());
+    void testConstructor() {
+        assertEquals("AC123", flight.getFlightID());
+        assertEquals(aircraft, flight.getAircraft());
+        assertEquals(Airports.YVR, flight.getOrigin());
+        assertEquals(Airports.YYZ, flight.getDestination());
+        assertEquals(0, flight.getDuration());
+        assertTrue(flight.getPassengersOnFlight().isEmpty());
     }
 
     @Test
-    void getListOfPassenger() {
-        testFlight1.addPassenger(p1);
-        assertEquals(testFlight1.getPassengersOnFlight(),
-                testFlight1.getPassengersOnFlight());
+    void testAddPassengerSuccess() {
+        String result = flight.addPassenger(passenger1, "A1");
+        assertEquals("John Doe has been added to this flight in seat A1", result);
+        assertEquals(1, flight.getCurrentCapacity());
+        assertTrue(flight.isPassengerOnFlight(passenger1.getPassengerID()));
+        assertTrue(passenger1.getBookedFlights().contains(flight));
+        assertEquals("A1", flight.getPassengerSeat(passenger1.getPassengerID()));
     }
 
     @Test
-    void addPassengerTest() {
-        assertEquals("Ada Lovelace has been added to this flight",testFlight1.addPassenger(p1));
-        assertTrue(testFlight1.isPassengerOnFlight(123));
-        assertFalse(testFlight1.isPassengerOnFlight(999));
-        assertEquals("Alan Turing has been added to this flight",testFlight1.addPassenger(p2));
-        assertEquals("The aircraft for this flight is at maximum capacity.",testFlight1.addPassenger(p3));
-        assertTrue(testFlight1.isPassengerOnFlight(456));
-        assertFalse(testFlight1.isPassengerOnFlight(789));
-        assertFalse(testFlight1.isPassengerOnFlight(888));
+    void testAddPassengerInvalidSeat() {
+        String result = flight.addPassenger(passenger1, "Z99");
+        assertEquals("Invalid seat identifier: Z99", result);
+        assertEquals(0, flight.getCurrentCapacity());
+        assertFalse(flight.isPassengerOnFlight(passenger1.getPassengerID()));
+        assertFalse(passenger1.getBookedFlights().contains(flight));
     }
 
     @Test
-    void removePassengerTest() {
-        testFlight1.addPassenger(p2);
-        testFlight1.addPassenger(p1);
-        assertTrue(testFlight1.isPassengerOnFlight(123));
-        int before = testFlight1.getPassengersOnFlight().size();
-        assertEquals("Ada Lovelace has been removed from this flight",
-                testFlight1.removePassenger(123));
-        assertEquals(before - 1, testFlight1.getPassengersOnFlight().size());
-        assertEquals("Passenger 999 is not found on this flight",
-                testFlight1.removePassenger(999));
+    void testAddPassengerSeatAlreadyBooked() {
+        flight.addPassenger(passenger1, "A1");
+        String result = flight.addPassenger(passenger2, "A1");
+        assertEquals("Seat A1 is already booked", result);
+        assertEquals(1, flight.getCurrentCapacity());
+        assertFalse(flight.isPassengerOnFlight(passenger2.getPassengerID()));
+        assertFalse(passenger2.getBookedFlights().contains(flight));
     }
 
     @Test
-    void isPassengerOnFlightTest() {
-        testFlight1.addPassenger(p1);
-        assertTrue(testFlight1.isPassengerOnFlight(p1.getPassengerID()));
-        assertFalse(testFlight1.isPassengerOnFlight(p2.getPassengerID()));
+    void testAddPassengerFullCapacity() {
+        // Fill up the flight
+        for (int i = 0; i < aircraft.getMaxCapacity(); i++) {
+            Passenger p = new Passenger(i + 100, "Test", "Passenger" + i);
+            String seatId = "A" + (i + 1);
+            flight.addPassenger(p, seatId);
+        }
+
+        String result = flight.addPassenger(passenger1, "B1");
+        assertEquals("The aircraft for this flight is at maximum capacity.", result);
+        assertEquals(aircraft.getMaxCapacity(), flight.getCurrentCapacity());
     }
 
     @Test
-    void getCurrentCapacityTest() {
-        assertEquals(0,testFlight1.getCurrentCapacity());
-        testFlight1.addPassenger(p1);
-        assertEquals(1,testFlight1.getCurrentCapacity());
+    void testRemovePassengerSuccess() {
+        flight.addPassenger(passenger1, "A1");
+        String result = flight.removePassenger(passenger1.getPassengerID());
+        assertEquals("John Doe has been removed from this flight", result);
+        assertEquals(0, flight.getCurrentCapacity());
+        assertFalse(flight.isPassengerOnFlight(passenger1.getPassengerID()));
+        assertFalse(passenger1.getBookedFlights().contains(flight));
+        assertNull(flight.getPassengerSeat(passenger1.getPassengerID()));
     }
 
     @Test
-    void getAvailableSeats() {
-        assertEquals(60, testFlight1.getAvailableSeats());
-        testFlight1.addPassenger(p1);
-        assertEquals(59, testFlight1.getAvailableSeats());
+    void testRemovePassengerNotFound() {
+        String result = flight.removePassenger(999);
+        assertEquals("Passenger 999 is not found on this flight", result);
     }
 
     @Test
-    void setOriginTest() {
-        assertEquals(YVR,testFlight1.getOrigin());
-        testFlight1.setOrigin(PEK);
-        assertEquals(PEK,testFlight1.getOrigin());
+    void testGetAvailableSeats() {
+        assertEquals(150, flight.getAvailableSeats());
+        flight.addPassenger(passenger1, "A1");
+        assertEquals(149, flight.getAvailableSeats());
     }
 
     @Test
-    void setDestinationTest() {
-        assertEquals(YYZ,testFlight1.getDestination());
-        testFlight1.setDestination(PEK);
-        assertEquals(PEK,testFlight1.getDestination());
+    void testSetOrigin() {
+        flight.setOrigin(Airports.LAX);
+        assertEquals(Airports.LAX, flight.getOrigin());
     }
 
     @Test
-    void toStringTest() {
-        assertEquals("Flight ID: ID12345 Aircraft: "
-                + "Identifier: ID12345 "
-                + "Max Capacity: 60 "
-                + "Origin: YVR "
-                + "Destination: YYZ"
-                + " Duration: 4", testFlight1.toString());
+    void testSetDestination() {
+        flight.setDestination(Airports.LAX);
+        assertEquals(Airports.LAX, flight.getDestination());
+        assertTrue(flight.getDuration() > 0); // Duration should be recalculated
+    }
+
+    @Test
+    void testCalculateFlightDuration() {
+        // Test short flight (Vancouver to Toronto)
+        flight.setDestination(Airports.YYZ);
+        assertTrue(flight.getDuration() >= 4 && flight.getDuration() <= 5);
+
+        // Test long flight (Vancouver to Hong Kong)
+        flight.setDestination(Airports.HKG);
+        assertTrue(flight.getDuration() >= 12 && flight.getDuration() <= 13);
+    }
+
+    @Test
+    void testSameAirportDuration() {
+        flight.setDestination(Airports.YVR);
+        assertEquals(0, flight.getDuration());
+    }
+
+    @Test
+    void testToString() {
+        String expected = "Flight ID: AC123 Aircraft: " + aircraft + " Origin: YVR Destination: YYZ Duration: 0";
+        assertEquals(expected, flight.toString());
+    }
+
+    @Test
+    void testToJson() {
+        flight.addPassenger(passenger1, "A1");
+        org.json.JSONObject json = flight.toJson();
+
+        assertEquals("AC123", json.getString("flightID"));
+        assertEquals(Airports.YVR.toString(), json.getString("origin"));
+        assertEquals(Airports.YYZ.toString(), json.getString("destination"));
+        assertEquals(0, json.getInt("duration"));
+        assertNotNull(json.getJSONObject("aircraft"));
+        assertNotNull(json.get("passengersOnFlight"));
+    }
+
+    @Test
+    void testMultiplePassengers() {
+        flight.addPassenger(passenger1, "A1");
+        flight.addPassenger(passenger2, "B1");
+
+        assertEquals(2, flight.getCurrentCapacity());
+        assertTrue(flight.isPassengerOnFlight(passenger1.getPassengerID()));
+        assertTrue(flight.isPassengerOnFlight(passenger2.getPassengerID()));
+        assertEquals("A1", flight.getPassengerSeat(passenger1.getPassengerID()));
+        assertEquals("B1", flight.getPassengerSeat(passenger2.getPassengerID()));
+    }
+
+    @Test
+    void testPassengerLookupEfficiency() {
+        // Add a passenger with a specific seat
+        Passenger p = new Passenger(1500, "Test", "Passenger");
+        String result = flight.addPassenger(p, "A1");
+        System.out.println("Add passenger result: " + result);
+
+        // Debug: Print the contents of passengerLookup
+        System.out.println("Passenger lookup contents: " + flight.getPassengerLookup());
+        System.out.println("Passenger ID being checked: 1500");
+
+        // Test lookup time for the passenger
+        long startTime = System.nanoTime();
+        boolean lookupResult = flight.isPassengerOnFlight(1500);
+        long endTime = System.nanoTime();
+        long lookupTime = endTime - startTime;
+
+        System.out.println("Lookup result: " + lookupResult);
+
+        // The lookup should be very fast (O(1))
+        assertTrue(lookupTime < 10000000); // Less than 10 milliseconds
+        assertEquals("A1", flight.getPassengerSeat(1500));
     }
 }
