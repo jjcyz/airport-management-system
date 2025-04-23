@@ -13,35 +13,39 @@ on the aircraft; and searching up flights to a given destination.
 ## Setup and Configuration
 1. **Dependencies**
    - Java JDK 8 or higher
-   - org.json library (json-20231013.jar or newer)
+   - Gradle 8.13 or higher
 
 2. **Quick Start**
    ```bash
-   # Make the run script executable
-   chmod +x run.sh
-
-   # Setup and run the application
-   ./run.sh all
+   # Build and run the application using Gradle
+   ./gradlew run
    ```
 
-3. **Available Commands**
+3. **Available Gradle Commands**
    ```bash
-   ./run.sh setup    # Setup initial configuration
-   ./run.sh build    # Compile the project
-   ./run.sh run      # Run the application
-   ./run.sh clean    # Clean build artifacts
-   ./run.sh all      # Build and run the application
-   ./run.sh          # Show help with all available commands
+   ./gradlew build     # Build the project
+   ./gradlew run       # Run the application
+   ./gradlew clean     # Clean build artifacts
+   ./gradlew test      # Run tests
    ```
 
-4. **Manual Setup (if needed)**
+4. **Git Configuration**
+   To ensure your commits are properly associated with your GitHub account:
    ```bash
-   # Download JSON library
-   curl -O https://repo1.maven.org/maven2/org/json/json/20231013/json-20231013.jar
+   git config --global user.name "Your Name"
+   git config --global user.email "your.github.email@example.com"
+   ```
 
-   # Create data directory and initialize JSON file
-   mkdir -p data
-   echo '{"listOfPassengers":[],"listOfAircraft":[],"listOfFlights":[]}' > data/airport.json
+5. **Project Structure**
+   ```
+   src/
+   ├── main/
+   │   ├── java/      # Main application code
+   │   ├── model/     # Data models
+   │   ├── persistence/ # Data storage
+   │   └── ui/        # User interface
+   └── test/
+       └── model/     # Test files
    ```
 
 ## Phase 0-2: User Stories
@@ -86,38 +90,28 @@ surface level.</p>
   clicking on the "Create new flight" button, filling in the required information,
   selecting one of the aircraft in the system using the dropdown select option,
   and clicking "OK"
+
 ### Removing
 - You can generate the second required action related to adding Xs to a Y by
   clicking on a flight from the list of flights on the screen, selecting
   "Add Passenger" button, selecting a passenger from the dropdown, and clicking "OK".
+
 ### Visual Component
 - You can locate my visual component by clicking on anyone of the cells. Pictures of an
   aircraft or passenger profile will pop up.
+
 ### Saving and Reloading
 - You can save the state of my application by clicking on the "Save database to file"
   button or by clicking "Yes" when prompted upon exiting the application.
 - You can reload the state of my application by clicking on "Yes" when prompted upon
   running the program
 
-**Important Notes:**
-1. Pop up windows may glitch but is not an error in the code. To fix, add new data entries.
-   (Methods in the Java library seem to work better when it can switch to another cell).
-2. Users must have data entries for aircraft before creating a new flight. Likewise, there must be
-   data entries for passengers before being able to add passengers to a flight and the passenger must
-   be already added to the flight to be removed.
-3. The "view flights" button is not fully functioning. It is a wishlist feature.
-4. Clicking on the cells will show a popup window with a button to edit/change the information.
-   This is not fully functioning. It is a wishlist feature.
-5. Counters at the top are not functioning. It is a wishlist feature.
-6. If the error: A JSONObject text must begin with '{' at 0 [character 1 line 1] occurs. Go in data > airport.json
-   and insert the following code. (There is a tendency for the application to delete all file)
-```
-{
-  "listOfPassengers": [],
-  "listOfAircraft": [],
-  "listOfFlights": []
-}
-```
+### Testing
+- Run the test suite using Gradle:
+  ```bash
+  ./gradlew test
+  ```
+- Test reports will be generated in `build/reports/tests/test/`
 
 ## Phase 4: Event Logging and Design Reflection
 
