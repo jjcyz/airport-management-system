@@ -12,6 +12,8 @@ show_help() {
     echo ""
     echo "Commands:"
     echo "  build    - Compile the project"
+    echo "  test     - Run tests"
+    echo "  test-compile - Compile and run specific test compilation"
     echo "  run      - Run the application"
     echo "  clean    - Clean build artifacts"
     echo "  setup    - Setup initial configuration"
@@ -29,7 +31,7 @@ setup() {
 # Function to build the project
 build() {
     echo -e "${GREEN}Building project...${NC}"
-    javac -cp json-20231013.jar -d .dist src/main/ui/Main.java src/main/ui/*.java src/main/model/*.java src/main/persistence/*.java
+    ./gradlew build
     if [ $? -eq 0 ]; then
         echo -e "${GREEN}Build successful!${NC}"
     else
@@ -38,23 +40,49 @@ build() {
     fi
 }
 
+# Function to run tests
+test() {
+    echo -e "${GREEN}Running tests...${NC}"
+    ./gradlew test
+}
+
 # Function to run the application
 run() {
     echo -e "${GREEN}Running application...${NC}"
-    java -cp .dist:json-20231013.jar ui.Main
+    java -cp build/classes/java/main:build/libs/* ui.Main
 }
 
 # Function to clean build artifacts
 clean() {
     echo -e "${GREEN}Cleaning build artifacts...${NC}"
-    rm -rf .dist
+    ./gradlew clean
     echo -e "${GREEN}Clean complete!${NC}"
+}
+
+# Function to run specific test compilation
+test_compile() {
+    echo -e "${GREEN}Compiling and running specific test compilation...${NC}"
+    mkdir -p .dist
+    javac -cp json-20231013.jar -d .dist src/main/ui/Main.java src/main/ui/*.java src/main/model/*.java src/main/persistence/*.java src/test/model/TestRunner.java
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}Compilation successful!${NC}"
+        java -cp .dist:json-20231013.jar model.TestRunner
+    else
+        echo -e "${RED}Compilation failed!${NC}"
+        exit 1
+    fi
 }
 
 # Main script logic
 case "$1" in
     "build")
         build
+        ;;
+    "test")
+        test
+        ;;
+    "test-compile")
+        test_compile
         ;;
     "run")
         run

@@ -105,10 +105,43 @@ public class Flight implements Writable {
         this.origin = origin;
     }
 
-    // EFFECTS: sets destination to given destination
+    // EFFECTS: sets destination to given destination and updates duration
     public void setDestination(Airports destination) {
         this.destination = destination;
-        this.duration += 2; // or chgDuration(); (calculate this, would be a cool feature)
+        this.duration = calculateFlightDuration();
+    }
+
+    // EFFECTS: calculates flight duration based on distance between airports
+    private int calculateFlightDuration() {
+        // Average commercial aircraft speed in km/h
+        final int AVERAGE_SPEED = 900;
+
+        // Get coordinates for both airports
+        double[] originCoords = origin.getCoordinates();
+        double[] destCoords = destination.getCoordinates();
+
+        // Calculate distance using Haversine formula
+        double distance = calculateDistance(originCoords[0], originCoords[1],
+                                         destCoords[0], destCoords[1]);
+
+        // Calculate duration in hours (rounded up)
+        return (int) Math.ceil(distance / AVERAGE_SPEED);
+    }
+
+    // EFFECTS: calculates distance between two points using Haversine formula
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371; // Earth's radius in kilometers
+
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c;
     }
 
     // EFFECTS: return the flight string
