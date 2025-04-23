@@ -9,7 +9,7 @@ import persistence.EventLog;
 import persistence.Writable;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 
 public class Flight implements Writable {
     private final String flightID;
@@ -18,6 +18,7 @@ public class Flight implements Writable {
     private Airports destination;
     private int duration;
     private final ArrayList<Passenger> passengersOnFlight;
+    private final HashMap<Integer, Passenger> passengerLookup;  // Added for O(1) lookup
 
     public Flight(String flightID, Aircraft aircraft, Airports origin, Airports destination, int duration) {
         this.flightID = flightID;
@@ -26,6 +27,7 @@ public class Flight implements Writable {
         this.destination = destination;
         this.duration = duration;
         this.passengersOnFlight = new ArrayList<>();
+        this.passengerLookup = new HashMap<>();  // Initialize HashMap
     }
 
     public String getFlightID() {
@@ -58,6 +60,7 @@ public class Flight implements Writable {
         if (getCurrentCapacity() < aircraft.getMaxCapacity()) {
             EventLog.getInstance().logEvent(new Event("Added passenger (on flight): " + passenger.getFirstName()));
             passengersOnFlight.add(passenger);
+            passengerLookup.put(passenger.getPassengerID(), passenger);  // Add to HashMap
             passenger.getBookedFlights().add(this);
             return passenger.getFirstName()
                     + " " + passenger.getLastName()
@@ -69,30 +72,22 @@ public class Flight implements Writable {
 
     // EFFECTS: remove a passenger from flight
     public String removePassenger(int passengerID) {
-        Iterator<Passenger> p = passengersOnFlight.iterator();
-        while (p.hasNext()) {
-            Passenger passenger = p.next();
-            if (passenger.getPassengerID() == passengerID) {
-                EventLog.getInstance().logEvent(new Event("Removed passenger: " + passenger.getFirstName()));
-                p.remove();
-                return passenger.getFirstName()
-                        + " "
-                        + passenger.getLastName()
-                        + " has been removed from this flight";
-            }
+        Passenger passenger = passengerLookup.get(passengerID);  // O(1) lookup
+        if (passenger != null) {
+            EventLog.getInstance().logEvent(new Event("Removed passenger: " + passenger.getFirstName()));
+            passengersOnFlight.remove(passenger);
+            passengerLookup.remove(passengerID);
+            return passenger.getFirstName()
+                    + " "
+                    + passenger.getLastName()
+                    + " has been removed from this flight";
         }
         return "Passenger " + passengerID + " is not found on this flight";
-
     }
 
     // EFFECTS: checks if a passenger is registered on the aircraft
     public boolean isPassengerOnFlight(int passengerID) {
-        for (Passenger passenger : passengersOnFlight) {
-            if (passenger.getPassengerID() == passengerID) {
-                return true;
-            }
-        }
-        return false;
+        return passengerLookup.containsKey(passengerID);  // O(1) lookup
     }
 
     // EFFECTS: returns the size of passenger on the aircraft
