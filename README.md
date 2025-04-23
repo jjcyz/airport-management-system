@@ -1,36 +1,62 @@
-
 # Airport Information Management Application
-**Created by Jessica Zhou** 
+**Created by Jessica Zhou**
 
-##Overview
+## Overview
 
-This is an airport information management system. This program 
-mimics the internal operations that happen at an international 
-airport. It lets the user enter information about new passenger, 
-planes, and create new flights. Possible features include different 
-planes; adding passengers to the flight; listing all the passengers 
-on the aircraft; and searching up flights to a given destination. 
+This is an airport information management system. This program
+mimics the internal operations that happen at an international
+airport. It lets the user enter information about new passenger,
+planes, and create new flights. Possible features include different
+planes; adding passengers to the flight; listing all the passengers
+on the aircraft; and searching up flights to a given destination.
+
+## Setup and Configuration
+1. **Dependencies**
+   - Java JDK 8 or higher
+   - org.json library (json-20231013.jar or newer)
+
+2. **Build and Run**
+   ```bash
+   # Download JSON library (if not present)
+   curl -O https://repo1.maven.org/maven2/org/json/json/20231013/json-20231013.jar
+
+   # Compile the project
+   javac -cp json-20231013.jar -d .dist src/main/ui/Main.java src/main/ui/*.java src/main/model/*.java src/main/persistence/*.java
+
+   # Run the application
+   java -cp .dist:json-20231013.jar ui.Main
+   ```
+
+3. **Initial JSON Configuration**
+   - Ensure the `data/airport.json` file exists with this initial structure:
+   ```json
+   {
+     "listOfPassengers": [],
+     "listOfAircraft": [],
+     "listOfFlights": []
+   }
+   ```
 
 ## Phase 0-2: User Stories
 
 ### What will the application do?
-<p>This application stores information that the user inputs about 
-passengers, planes, and flights in a system such that it easy for 
-the user to then pull information from the program to create new 
-flights. Additionally, it can also search for existing flights 
+<p>This application stores information that the user inputs about
+passengers, planes, and flights in a system such that it easy for
+the user to then pull information from the program to create new
+flights. Additionally, it can also search for existing flights
 given a destination.</p>
 
-### Who will use it? 
-<p>Airline managers who want to coordinate efficient operations at 
-the airport through creating flights, booking passengers onto and 
+### Who will use it?
+<p>Airline managers who want to coordinate efficient operations at
+the airport through creating flights, booking passengers onto and
 off flights, and being able check for flights.</p>
 
 ### Why is this project of interest to you?
-<p>The airport is such a vibrant and chaotic place. I am fascinate 
-by how airport systems are able to coordinate the sheer amount of 
-people, flights, and passengers coming from around the world. As a 
-business and computer science student, I wanted to create a project 
-that can manage the mass amount of information at a 
+<p>The airport is such a vibrant and chaotic place. I am fascinate
+by how airport systems are able to coordinate the sheer amount of
+people, flights, and passengers coming from around the world. As a
+business and computer science student, I wanted to create a project
+that can manage the mass amount of information at a
 surface level.</p>
 
 **Task 3:**
@@ -54,27 +80,27 @@ surface level.</p>
   selecting one of the aircraft in the system using the dropdown select option,
   and clicking "OK"
 ### Removing
-- You can generate the second required action related to adding Xs to a Y by 
-  clicking on a flight from the list of flights on the screen, selecting 
+- You can generate the second required action related to adding Xs to a Y by
+  clicking on a flight from the list of flights on the screen, selecting
   "Add Passenger" button, selecting a passenger from the dropdown, and clicking "OK".
 ### Visual Component
-- You can locate my visual component by clicking on anyone of the cells. Pictures of an 
+- You can locate my visual component by clicking on anyone of the cells. Pictures of an
   aircraft or passenger profile will pop up.
 ### Saving and Reloading
-- You can save the state of my application by clicking on the "Save database to file" 
+- You can save the state of my application by clicking on the "Save database to file"
   button or by clicking "Yes" when prompted upon exiting the application.
 - You can reload the state of my application by clicking on "Yes" when prompted upon
   running the program
 
 **Important Notes:**
-1. Pop up windows may glitch but is not an error in the code. To fix, add new data entries. 
-   (Methods in the Java library seem to work better when it can switch to another cell). 
-2. Users must have data entries for aircraft before creating a new flight. Likewise, there must be 
+1. Pop up windows may glitch but is not an error in the code. To fix, add new data entries.
+   (Methods in the Java library seem to work better when it can switch to another cell).
+2. Users must have data entries for aircraft before creating a new flight. Likewise, there must be
    data entries for passengers before being able to add passengers to a flight and the passenger must
-   be already added to the flight to be removed. 
+   be already added to the flight to be removed.
 3. The "view flights" button is not fully functioning. It is a wishlist feature.
-4. Clicking on the cells will show a popup window with a button to edit/change the information. 
-   This is not fully functioning. It is a wishlist feature. 
+4. Clicking on the cells will show a popup window with a button to edit/change the information.
+   This is not fully functioning. It is a wishlist feature.
 5. Counters at the top are not functioning. It is a wishlist feature.
 6. If the error: A JSONObject text must begin with '{' at 0 [character 1 line 1] occurs. Go in data > airport.json
    and insert the following code. (There is a tendency for the application to delete all file)
@@ -118,12 +144,12 @@ Removed passenger: JJ
 
 ### Refactoring
 
-The coupling is the most not the ideal as there tends to be may collections. Namely, lists of passengers 
-are used quite frequently. The cohesion is high however I believe that I could have made better uses of 
-abstract classes. I believe that the GUI can be separated into multiple classes as there is quite a bit 
-of code that can be grouped together. There is room for improvement and with more time, the relationship 
+The coupling is the most not the ideal as there tends to be may collections. Namely, lists of passengers
+are used quite frequently. The cohesion is high however I believe that I could have made better uses of
+abstract classes. I believe that the GUI can be separated into multiple classes as there is quite a bit
+of code that can be grouped together. There is room for improvement and with more time, the relationship
 between the classes can be improved. Namely, the bi-directional relationships in the code can be refactoring
-such that saving and reloading using JSON will be less difficult. By doing so, the coupling in this application 
+such that saving and reloading using JSON will be less difficult. By doing so, the coupling in this application
 would decrease.
 
 ### GUI sampler
@@ -134,5 +160,5 @@ would decrease.
 
 ### What's Next?
 - [ ] Implementing an API that will allow users to map flights according to location
-- [ ] Adding features that would enable visual components of the (ie. the aircrafts) 
+- [ ] Adding features that would enable visual components of the (ie. the aircrafts)
       to be able to move on the screen

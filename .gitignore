@@ -1,2 +1,8 @@
 *.class
+*.jar
+.dist/
 workspace.xml
+.idea/
+*.iml
+out/
+data/*.json
