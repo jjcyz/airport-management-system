@@ -15,26 +15,33 @@ on the aircraft; and searching up flights to a given destination.
    - Java JDK 8 or higher
    - org.json library (json-20231013.jar or newer)
 
-2. **Build and Run**
+2. **Quick Start**
    ```bash
-   # Download JSON library (if not present)
-   curl -O https://repo1.maven.org/maven2/org/json/json/20231013/json-20231013.jar
+   # Make the run script executable
+   chmod +x run.sh
 
-   # Compile the project
-   javac -cp json-20231013.jar -d .dist src/main/ui/Main.java src/main/ui/*.java src/main/model/*.java src/main/persistence/*.java
-
-   # Run the application
-   java -cp .dist:json-20231013.jar ui.Main
+   # Setup and run the application
+   ./run.sh all
    ```
 
-3. **Initial JSON Configuration**
-   - Ensure the `data/airport.json` file exists with this initial structure:
-   ```json
-   {
-     "listOfPassengers": [],
-     "listOfAircraft": [],
-     "listOfFlights": []
-   }
+3. **Available Commands**
+   ```bash
+   ./run.sh setup    # Setup initial configuration
+   ./run.sh build    # Compile the project
+   ./run.sh run      # Run the application
+   ./run.sh clean    # Clean build artifacts
+   ./run.sh all      # Build and run the application
+   ./run.sh          # Show help with all available commands
+   ```
+
+4. **Manual Setup (if needed)**
+   ```bash
+   # Download JSON library
+   curl -O https://repo1.maven.org/maven2/org/json/json/20231013/json-20231013.jar
+
+   # Create data directory and initialize JSON file
+   mkdir -p data
+   echo '{"listOfPassengers":[],"listOfAircraft":[],"listOfFlights":[]}' > data/airport.json
    ```
 
 ## Phase 0-2: User Stories
