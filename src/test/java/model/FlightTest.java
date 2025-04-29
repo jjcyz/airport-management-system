@@ -89,7 +89,7 @@ class FlightTest {
         assertEquals(0, flight.getCurrentCapacity());
         assertFalse(flight.isPassengerOnFlight(passenger1.getPassengerID()));
         assertFalse(passenger1.getBookedFlights().contains(flight));
-        assertNull(flight.getPassengerSeat(passenger1.getPassengerID()));
+        assertNull(flight.getPassengerSeat(passenger1));
     }
 
     @Test
@@ -162,8 +162,8 @@ class FlightTest {
         assertEquals(2, flight.getCurrentCapacity());
         assertTrue(flight.isPassengerOnFlight(passenger1.getPassengerID()));
         assertTrue(flight.isPassengerOnFlight(passenger2.getPassengerID()));
-        assertEquals("A1", flight.getPassengerSeat(passenger1.getPassengerID()));
-        assertEquals("B1", flight.getPassengerSeat(passenger2.getPassengerID()));
+        assertEquals("A1", flight.getPassengerSeat(passenger1));
+        assertEquals("B1", flight.getPassengerSeat(passenger2));
     }
 
     @Test
@@ -187,6 +187,6 @@ class FlightTest {
 
         // The lookup should be very fast (O(1))
         assertTrue(lookupTime < 10000000); // Less than 10 milliseconds
-        assertEquals("A1", flight.getPassengerSeat(1500));
+        assertEquals("A1", flight.getPassengerSeat(p));
     }
 }

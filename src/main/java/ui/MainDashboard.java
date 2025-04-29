@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.*;
 import persistence.Event;
+import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -41,12 +42,20 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
     // Makes a new JFrame with different attributes
     public MainDashboard() {
         super("Airport Management System");
+        // Set FlatLaf look and feel
+        try {
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        } catch (Exception ex) {
+            System.err.println("Failed to initialize FlatLaf");
+        }
+
         setLayout(new BorderLayout());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setPreferredSize(new Dimension(800, 700));
+        setPreferredSize(new Dimension(1200, 800));
 
         initializeBackend();
         initializeHeader();
+        initializeMainScreen();
         initializeButtons();
         pack();
         setLocationRelativeTo(null);
@@ -72,92 +81,113 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
     // MODIFIES: this
     // EFFECTS: initializes the 3 header panes
     private void initializeHeader() {
-        mainMenu.setLayout(new ScrollPaneLayout());
-        JPanel header1 = makeTotalCounter("Total Passengers", listOfPassengers.size());
-        JPanel header2 = makeTotalCounter("Total Aircraft", listOfAircraft.size());
-        JPanel header3 = makeTotalCounter("Total Flights", listOfFlights.size());
-        mainMenu.add(header1);
-        mainMenu.add(header2);
-        mainMenu.add(header3);
+        JPanel headerPanel = new JPanel(new GridLayout(1, 3, 10, 0));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        add(mainMenu, BorderLayout.PAGE_START);
+        totalPassengers = createHeaderLabel("Total Passengers", listOfPassengers.size());
+        totalAircraft = createHeaderLabel("Total Aircraft", listOfAircraft.size());
+        totalFlights = createHeaderLabel("Total Flights", listOfFlights.size());
+
+        headerPanel.add(totalPassengers);
+        headerPanel.add(totalAircraft);
+        headerPanel.add(totalFlights);
+
+        add(headerPanel, BorderLayout.PAGE_START);
     }
 
-    // MODIFIES: this
-// EFFECTS: Makes a total counter with the given label and value
-    private JPanel makeTotalCounter(String label, int value) {
-        JLabel totalLabel = new JLabel(label + ": " + value);
-        JPanel totalBox = new JPanel();
-        totalBox.add(totalLabel);
-
-        totalBox.setBackground(Color.lightGray);
-        totalBox.setPreferredSize(new Dimension(200, 30));
-        add(totalBox);
-
-        return totalBox;
+    private JLabel createHeaderLabel(String label, int value) {
+        JLabel headerLabel = new JLabel(label + ": " + value, SwingConstants.CENTER);
+        headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        headerLabel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+        headerLabel.setBackground(new Color(240, 240, 240));
+        headerLabel.setOpaque(true);
+        return headerLabel;
     }
 
     // MODIFIES: this
     // EFFECTS: initializes triple split panes
     private void initializeMainScreen() {
-        JPanel mainPanel = new JPanel(new GridLayout(1, 3));
-        JScrollPane passengerScrollPane = setUpListPane(listOfPassengers);
-        JScrollPane aircraftScrollPane = setUpListPane(listOfAircraft);
-        JScrollPane flightsScrollPane = setUpListPane(listOfFlights);
+        JPanel mainPanel = new JPanel(new GridLayout(1, 3, 10, 0));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JScrollPane passengerScrollPane = createStyledListPane(listOfPassengers, "Passengers");
+        JScrollPane aircraftScrollPane = createStyledListPane(listOfAircraft, "Aircraft");
+        JScrollPane flightsScrollPane = createStyledListPane(listOfFlights, "Flights");
 
         mainPanel.add(passengerScrollPane);
         mainPanel.add(aircraftScrollPane);
         mainPanel.add(flightsScrollPane);
 
-        mainPanel.setMinimumSize(new Dimension(700, 300));
-        mainPanel.setPreferredSize(new Dimension(1000, 300));
-        mainPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         add(mainPanel, BorderLayout.CENTER);
     }
 
-    // MODIFIES: this
-    // EFFECTS: setup configurations for a list pane
-    private <T> JScrollPane setUpListPane(DefaultListModel<T> items) {
+    private <T> JScrollPane createStyledListPane(DefaultListModel<T> items, String title) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createTitledBorder(title));
+
         JList<T> list = new JList<>(items);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
         list.addListSelectionListener(this);
-        list.setVisibleRowCount(10);
+        list.setVisibleRowCount(15);
         list.setCellRenderer(new CellRenderer());
-        JScrollPane scrollPane = new JScrollPane(list);
-        scrollPane.createVerticalScrollBar();
 
-        return scrollPane;
+        JScrollPane scrollPane = new JScrollPane(list);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+
+        panel.add(scrollPane, BorderLayout.CENTER);
+        return new JScrollPane(panel);
     }
 
     // MODIFIES: this
     // EFFECTS: initializes buttons
     private void initializeButtons() {
-        JPanel buttons = new JPanel();
-        buttons.setLayout(new FlowLayout());
-        addNewObjectsButtons(buttons);
-        add(buttons, BorderLayout.PAGE_END);
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        String[] buttonLabels = {
+            "Add new passenger",
+            "Add new aircraft",
+            "Create new flight",
+            "View flights",
+            "Save database",
+            "View log",
+            "Search Flights"
+        };
+
+        String[] commands = {
+            "1. Add new passenger",
+            "2. Add new aircraft",
+            "3. Create new flight",
+            "4. View flights",
+            "5. Save",
+            "6. Log",
+            "7. Search Flight"
+        };
+
+        ButtonListener buttonListener = new ButtonListener();
+
+        for (int i = 0; i < buttonLabels.length; i++) {
+            JButton button = createStyledButton(buttonLabels[i], commands[i], buttonListener);
+            buttonPanel.add(button);
+        }
+
+        add(buttonPanel, BorderLayout.PAGE_END);
     }
 
-    // EFFECTS: creates a new JButton with the given label, action command, and ActionListener
-    private JButton createButton(String label, String actionCommand, ActionListener listener) {
+    private JButton createStyledButton(String label, String actionCommand, ActionListener listener) {
         JButton button = new JButton(label);
         button.setActionCommand(actionCommand);
         button.addActionListener(listener);
+        button.setFocusPainted(false);
+        button.setBackground(new Color(0, 120, 215));
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        button.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         return button;
-    }
-
-    // EFFECTS: adds buttons that create new objects
-    private void addNewObjectsButtons(JPanel buttons) {
-        ButtonListener buttonListener = new ButtonListener();
-
-        buttons.add(createButton("Add new passenger", "1. Add new passenger", buttonListener));
-        buttons.add(createButton("Add new aircraft", "2. Add new aircraft", buttonListener));
-        buttons.add(createButton("Create new flight", "3. Create new flight", buttonListener));
-        buttons.add(createButton("View flights", "4. View flights", buttonListener));
-        buttons.add(createButton("Save database to file", "5. Save", buttonListener));
-        buttons.add(createButton("Log", "6. Log", buttonListener));
-        buttons.add(createButton("Search Flights", "7. Search Flight", buttonListener));
     }
 
     // creates Action Listener for button presses

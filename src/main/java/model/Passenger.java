@@ -53,44 +53,24 @@ public class Passenger implements Writable {
     // EFFECT: returns the json object
     @Override
     public String toString() {
-        return "Passenger ID: "
-                + passengerID
-                + " First Name: "
-                + firstName
-                + " Last Name: "
-                + lastName;
+        return String.format("Passenger ID: %d First Name: %s Last Name: %s",
+                passengerID, firstName, lastName);
     }
 
     // EFFECTS: generates a boarding ticket of a passenger's flights
-    public StringBuilder getBoardingTickets() {
-        StringBuilder s = new StringBuilder();
-        if (!bookedFlights.isEmpty()) {
-            for (Flight flight : bookedFlights) {
-                String seatIdentifier = flight.getPassengerSeat(passengerID);
-                Seat seat = flight.getAircraft().getSeat(seatIdentifier);
-                String cabinClass = seat != null ? seat.getCabin().toString() : "UNASSIGNED";
-
-                s.append("---------------------------------------------------------------------------\n");
-                s.append("                         ELECTRONIC BOARDING PASS                          \n");
-                s.append("---------------------------------------------------------------------------\n");
-                s.append("Name of Passenger: ").append(lastName).append(" ").append(firstName).append("\n");
-                s.append(String.format("%-20s %-20s %-20s %-20s\n", "Origin: ", flight.getOrigin(),
-                        "Destination: ", flight.getDestination()));
-                s.append(String.format("%-20s %-20s %-20s %-20s\n", "Class: ", cabinClass,
-                        "Seat No. ", seatIdentifier != null ? seatIdentifier : "UNASSIGNED"));
-                Date date = new Date();
-                SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-                String formattedDate = formatter.format(date);
-                s.append(String.format("%-20s %-20s %-20s %-20s\n", "Flight ID: ", flight.getFlightID(),
-                        "Date: ", formattedDate));
-                s.append(String.format("%-20s %-20s %-20s %-20s\n", "Departure: ", "11:30 am","Arrival: ", "10:00 am"));
-                s.append("---------------------------------------------------------------------------\n");
-            }
-        } else {
-            StringBuilder e = new StringBuilder();
-            return e.append(firstName).append(" ").append(lastName).append(" is not currently booked on any flights.");
+    public String getBoardingTickets() {
+        if (bookedFlights.isEmpty()) {
+            return "No flights booked.";
         }
-        return s;
+
+        StringBuilder tickets = new StringBuilder();
+        for (Flight flight : bookedFlights) {
+            String seatIdentifier = flight.getPassengerSeat(this);
+            String cabinClass = flight.getPassengerCabinClass(this);
+            BoardingTicket ticket = new BoardingTicket(this, flight, seatIdentifier, cabinClass);
+            tickets.append(ticket.generate()).append("\n");
+        }
+        return tickets.toString();
     }
 
     // EFFECTS: returns the json object

@@ -11,8 +11,12 @@ import persistence.Writable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Flight implements Writable {
+    private static final int AVERAGE_SPEED = 900; // Average commercial aircraft speed in km/h
+    private static final int EARTH_RADIUS = 6371; // Earth's radius in kilometers
+
     private final String flightID;
     private final Aircraft aircraft;
     private Airports origin;
@@ -135,55 +139,45 @@ public class Flight implements Writable {
 
     // EFFECTS: calculates flight duration based on distance between airports
     private int calculateFlightDuration() {
-        // Average commercial aircraft speed in km/h
-        final int AVERAGE_SPEED = 900;
-
         // Get coordinates for both airports
         double[] originCoords = origin.getCoordinates();
         double[] destCoords = destination.getCoordinates();
 
         // Calculate distance using Haversine formula
-        double distance = calculateDistance(originCoords[0], originCoords[1],
-                                         destCoords[0], destCoords[1]);
+        double distance = DistanceCalculator.calculateDistance(
+                originCoords[0], originCoords[1],
+                destCoords[0], destCoords[1],
+                EARTH_RADIUS
+        );
 
         // Calculate duration in hours (rounded up)
         return (int) Math.ceil(distance / AVERAGE_SPEED);
     }
 
-    // EFFECTS: calculates distance between two points using Haversine formula
-    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        final int R = 6371; // Earth's radius in kilometers
-
-        double latDistance = Math.toRadians(lat2 - lat1);
-        double lonDistance = Math.toRadians(lon2 - lon1);
-
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        return R * c;
+    // EFFECTS: returns the seat identifier for a passenger, or null if not found
+    public String getPassengerSeat(Passenger passenger) {
+        for (Map.Entry<Integer, String> entry : passengerSeatAssignments.entrySet()) {
+            if (passengerLookup.get(entry.getKey()).equals(passenger)) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 
-    // EFFECTS: returns the seat identifier for a passenger, or null if not found
-    public String getPassengerSeat(int passengerID) {
-        return passengerSeatAssignments.get(passengerID);
+    public String getPassengerCabinClass(Passenger passenger) {
+        String seatId = getPassengerSeat(passenger);
+        if (seatId != null) {
+            Seat seat = aircraft.getSeat(seatId);
+            return seat != null ? seat.getCabin().toString() : "UNASSIGNED";
+        }
+        return "UNASSIGNED";
     }
 
     // EFFECTS: return the flight string
     @Override
     public String toString() {
-        return "Flight ID: "
-                + flightID
-                + " Aircraft: "
-                + aircraft
-                + " Origin: "
-                + origin
-                + " Destination: "
-                + destination
-                + " Duration: "
-                + duration;
+        return String.format("Flight ID: %s Aircraft: %s Origin: %s Destination: %s Duration: %d",
+                flightID, aircraft, origin, destination, duration);
     }
 
     // EFFECTS: returns the json object
@@ -202,7 +196,7 @@ public class Flight implements Writable {
             passengerJson.put("passengerID", passenger.getPassengerID());
             passengerJson.put("firstName", passenger.getFirstName());
             passengerJson.put("lastName", passenger.getLastName());
-            passengerJson.put("seat", getPassengerSeat(passenger.getPassengerID()));
+            passengerJson.put("seat", getPassengerSeat(passenger));
             passengersArray.put(passengerJson);
         }
         json.put("passengersOnFlight", passengersArray);
@@ -213,5 +207,24 @@ public class Flight implements Writable {
     // EFFECTS: returns the passenger lookup map for debugging purposes
     public HashMap<Integer, Passenger> getPassengerLookup() {
         return passengerLookup;
+    }
+}
+
+// Utility class for distance calculations
+class DistanceCalculator {
+    private DistanceCalculator() {} // Prevent instantiation
+
+    // EFFECTS: calculates distance between two points using Haversine formula
+    public static double calculateDistance(double lat1, double lon1, double lat2, double lon2, int earthRadius) {
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return earthRadius * c;
     }
 }
