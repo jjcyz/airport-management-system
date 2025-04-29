@@ -1,5 +1,4 @@
-# Airport Information Management Application
-**Created by Jessica Zhou**
+# Airport Management Application
 
 ## Overview
 
@@ -20,7 +19,7 @@ on the aircraft; and searching up flights to a given destination.
    # Build and run the application using Gradle
    ./gradlew run
    ```
-
+   
 3. **Available Gradle Commands**
    ```bash
    ./gradlew build     # Build the project
@@ -157,7 +156,6 @@ would decrease.
 
 ![UML Diagram](GUI_Sampler_1.png)
 ![UML Diagram](GUI_Sampler_2.png)
-
 
 ### What's Next?
 - [ ] Implementing an API that will allow users to map flights according to location
