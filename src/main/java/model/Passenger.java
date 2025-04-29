@@ -58,62 +58,19 @@ public class Passenger implements Writable {
     }
 
     // EFFECTS: generates a boarding ticket of a passenger's flights
-    public StringBuilder getBoardingTickets() {
+    public String getBoardingTickets() {
         if (bookedFlights.isEmpty()) {
-            return new StringBuilder().append(firstName).append(" ").append(lastName)
-                    .append(" is not currently booked on any flights.");
+            return "No flights booked.";
         }
 
         StringBuilder tickets = new StringBuilder();
         for (Flight flight : bookedFlights) {
-            tickets.append(generateBoardingTicket(flight));
+            String seatIdentifier = flight.getPassengerSeat(this);
+            String cabinClass = flight.getPassengerCabinClass(this);
+            BoardingTicket ticket = new BoardingTicket(this, flight, seatIdentifier, cabinClass);
+            tickets.append(ticket.generate()).append("\n");
         }
-        return tickets;
-    }
-
-    private StringBuilder generateBoardingTicket(Flight flight) {
-        StringBuilder ticket = new StringBuilder();
-        String seatIdentifier = flight.getPassengerSeat(passengerID);
-        Seat seat = flight.getAircraft().getSeat(seatIdentifier);
-        String cabinClass = seat != null ? seat.getCabin().toString() : "UNASSIGNED";
-
-        appendHeader(ticket);
-        appendPassengerInfo(ticket);
-        appendFlightInfo(ticket, flight, cabinClass, seatIdentifier);
-        appendFooter(ticket);
-
-        return ticket;
-    }
-
-    private void appendHeader(StringBuilder ticket) {
-        ticket.append("---------------------------------------------------------------------------\n")
-              .append("                         ELECTRONIC BOARDING PASS                          \n")
-              .append("---------------------------------------------------------------------------\n");
-    }
-
-    private void appendPassengerInfo(StringBuilder ticket) {
-        ticket.append("Name of Passenger: ").append(lastName).append(" ").append(firstName).append("\n");
-    }
-
-    private void appendFlightInfo(StringBuilder ticket, Flight flight, String cabinClass, String seatIdentifier) {
-        ticket.append(String.format("%-20s %-20s %-20s %-20s\n", "Origin: ", flight.getOrigin(),
-                "Destination: ", flight.getDestination()))
-              .append(String.format("%-20s %-20s %-20s %-20s\n", "Class: ", cabinClass,
-                "Seat No. ", seatIdentifier != null ? seatIdentifier : "UNASSIGNED"))
-              .append(String.format("%-20s %-20s %-20s %-20s\n", "Flight ID: ", flight.getFlightID(),
-                "Date: ", getFormattedDate()))
-              .append(String.format("%-20s %-20s %-20s %-20s\n", "Departure: ", "11:30 am",
-                "Arrival: ", "10:00 am"));
-    }
-
-    private void appendFooter(StringBuilder ticket) {
-        ticket.append("---------------------------------------------------------------------------\n");
-    }
-
-    private String getFormattedDate() {
-        Date date = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        return formatter.format(date);
+        return tickets.toString();
     }
 
     // EFFECTS: returns the json object
