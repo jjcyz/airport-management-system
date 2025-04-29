@@ -9,8 +9,7 @@ import persistence.Writable;
 
 import java.util.ArrayList;
 
-public class Aircraft implements Writable  {  // make aircraft abstract later
-
+public abstract class Aircraft implements Writable {
     protected final String identifier;
     protected final int maxCapacity;
     private Seat[][] seats;
@@ -18,15 +17,14 @@ public class Aircraft implements Writable  {  // make aircraft abstract later
     private int columns;
     private ArrayList<Cargo> cargoOnBoard;
 
-    public Aircraft(String identifier) {
-        this(identifier, 60); // Default to 60 seats for backward compatibility
-    }
-
-    public Aircraft(String identifier, int maxCapacity) {
+    protected Aircraft(String identifier, int maxCapacity) {
         this.identifier = identifier;
         this.maxCapacity = maxCapacity;
         this.cargoOnBoard = new ArrayList<>();
+        initializeSeats();
+    }
 
+    private void initializeSeats() {
         // Calculate rows and columns to fit maxCapacity
         // Assuming we want roughly 6 seats per row
         this.columns = 6;

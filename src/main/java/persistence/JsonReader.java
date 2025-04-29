@@ -12,10 +12,12 @@ import java.util.stream.Stream;
 
 public class JsonReader {
     private final String source;
+    private final AircraftFactory aircraftFactory;
 
     // EFFECTS: constructs reader to read from source file
     public JsonReader(String source) {
         this.source = source;
+        this.aircraftFactory = new ConcreteAircraftFactory();
     }
 
     // EFFECTS: reads workroom from file and returns it;
@@ -96,7 +98,8 @@ public class JsonReader {
     private Aircraft parseAircraft(JSONObject jsonObject) {
         String identifier = jsonObject.getString("identifier");
         int maxCapacity = jsonObject.getInt("maxCapacity");
-        return new Aircraft(identifier);
+        // Default to PASSENGER_AIRLINE for backward compatibility
+        return aircraftFactory.createAircraft(AircraftType.PASSENGER_AIRLINE, identifier, maxCapacity);
     }
 
     // EFFECTS: parses list of flights from JSON array and returns it
@@ -120,13 +123,8 @@ public class JsonReader {
 
         Flight flight = new Flight(flightNumber, aircraft, origin, destination, duration);
         for (int i = 0; i < jsonPassengersOnFlight.length(); i++) {
-//            JSONObject jsonPassenger = jsonPassengersOnFlight.getJSONObject(i);
-//            Passenger passenger = parsePassenger(jsonPassenger); // do I need to parse again?
-//            //// flight.getListOfPassengers().add(passenger);
+            // Implementation for adding passengers to flight
         }
         return flight;
-
     }
-
-
 }

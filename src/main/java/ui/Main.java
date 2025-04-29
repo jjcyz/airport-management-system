@@ -4,11 +4,15 @@ package ui;
 
 
 import model.Aircraft;
+import model.AircraftFactory;
+import model.AircraftType;
+import model.ConcreteAircraftFactory;
 
 public class Main {
 
     public static void main(String[] args) {
-        Aircraft ac = new Aircraft("Jessica");
+        AircraftFactory factory = new ConcreteAircraftFactory();
+        Aircraft ac = factory.createAircraft(AircraftType.PASSENGER_AIRLINE, "Jessica", 60);
         ac.printSeats();
         new MainDashboard();
     }

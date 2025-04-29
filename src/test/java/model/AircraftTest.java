@@ -7,10 +7,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AircraftTest {
     private Aircraft testAircraft1;
+    private AircraftFactory factory;
 
     @BeforeEach
     void runBefore() {
-        testAircraft1 = new Aircraft("ABC");
+        factory = new ConcreteAircraftFactory();
+        testAircraft1 = factory.createAircraft(AircraftType.PASSENGER_AIRLINE, "ABC", 60);
     }
 
     @Test
@@ -26,12 +28,12 @@ public class AircraftTest {
 
     @Test
     void getMaxCapacityTest() {
-        assertEquals(60,testAircraft1.getMaxCapacity());
+        assertEquals(60, testAircraft1.getMaxCapacity());
     }
 
     @Test
     void toStringTest() {
-        assertEquals("Identifier: ABC Max Capacity: 60",testAircraft1.toString());
+        assertEquals("Identifier: ABC Max Capacity: 60", testAircraft1.toString());
     }
 
     @Test
@@ -40,7 +42,4 @@ public class AircraftTest {
         assertEquals("Cargo has been added to ABC",
                 testAircraft1.addCargoToAircraft(exoticFruits));
     }
-
-
-
 }

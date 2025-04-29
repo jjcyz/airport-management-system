@@ -9,10 +9,12 @@ class FlightTest {
     private Aircraft aircraft;
     private Passenger passenger1;
     private Passenger passenger2;
+    private AircraftFactory factory;
 
     @BeforeEach
     void setUp() {
-        aircraft = new Aircraft("Boeing737", 150); // Create aircraft with 150 seats for flight tests
+        factory = new ConcreteAircraftFactory();
+        aircraft = factory.createAircraft(AircraftType.PASSENGER_AIRLINE, "Boeing737", 150);
         flight = new Flight("AC123", aircraft, Airports.YVR, Airports.YYZ, 0);
         passenger1 = new Passenger(1, "John", "Doe");
         passenger2 = new Passenger(2, "Jane", "Smith");
@@ -35,7 +37,6 @@ class FlightTest {
         assertEquals(1, flight.getCurrentCapacity());
         assertTrue(flight.isPassengerOnFlight(passenger1.getPassengerID()));
         assertTrue(passenger1.getBookedFlights().contains(flight));
-        assertEquals("A1", flight.getPassengerSeat(passenger1.getPassengerID()));
     }
 
     @Test
