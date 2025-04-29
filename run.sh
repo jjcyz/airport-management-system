@@ -49,7 +49,7 @@ test() {
 # Function to run the application
 run() {
     echo -e "${GREEN}Running application...${NC}"
-    java -cp build/classes/java/main:build/libs/* ui.Main
+    java -cp build/classes/java/main:build/libs/*:json-20231013.jar ui.Main
 }
 
 # Function to clean build artifacts
