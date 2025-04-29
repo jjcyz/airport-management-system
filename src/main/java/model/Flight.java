@@ -174,16 +174,8 @@ public class Flight implements Writable {
     // EFFECTS: return the flight string
     @Override
     public String toString() {
-        return "Flight ID: "
-                + flightID
-                + " Aircraft: "
-                + aircraft
-                + " Origin: "
-                + origin
-                + " Destination: "
-                + destination
-                + " Duration: "
-                + duration;
+        return String.format("Flight ID: %s Aircraft: %s Origin: %s Destination: %s Duration: %d",
+                flightID, aircraft, origin, destination, duration);
     }
 
     // EFFECTS: returns the json object

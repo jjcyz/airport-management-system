@@ -7,6 +7,11 @@ public class Seat {
     private boolean isBooked;
     private Passenger passenger;
 
+    private static final double DEFAULT_DEMAND_FACTOR = 4.5;
+    private static final double DEFAULT_DURATION_FACTOR = 3.2;
+    private static final double DEFAULT_CABIN_FACTOR = 2.8;
+    private static final double[] DEFAULT_WEIGHTS = {0.2, 0.3, 0.5};
+
     public enum CabinType {
         BUSINESS, ECONOMY, FIRST_CLASS
     }
@@ -41,18 +46,17 @@ public class Seat {
 
     // WISHLIST ITEM: calculate the cost that a plan ticket should be
     public double calculateCost() {
-        double demandFactor = 4.5;  // (determine by analyzing list of flights that were purchased)
-        double durationFactor = 3.2; // location and destination of flight
-        double cabinFactor = 2.8; // cabin type
-
-        double[] weights = { 0.2, 0.3, 0.5 }; // respective to factors
-        double[] values = {demandFactor, durationFactor, cabinFactor};
+        double[] factors = {
+            DEFAULT_DEMAND_FACTOR,  // demand factor
+            DEFAULT_DURATION_FACTOR, // duration factor
+            DEFAULT_CABIN_FACTOR    // cabin factor
+        };
 
         double weightedSum = 0.0;
         double totalWeight = 0.0;
-        for (int i = 0; i < values.length; i++) {
-            weightedSum += values[i] * weights[i];
-            totalWeight += weights[i];
+        for (int i = 0; i < factors.length; i++) {
+            weightedSum += factors[i] * DEFAULT_WEIGHTS[i];
+            totalWeight += DEFAULT_WEIGHTS[i];
         }
         return totalWeight / weightedSum;
     }
