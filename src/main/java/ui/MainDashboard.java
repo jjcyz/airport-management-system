@@ -135,14 +135,7 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
     private void initializeButtons() {
         JPanel buttons = new JPanel();
         buttons.setLayout(new FlowLayout());
-
         addNewObjectsButtons(buttons);
-
-        JButton viewFlights = new JButton("View flights");  // wishlist feature
-        viewFlights.setActionCommand("4. View flights");
-        viewFlights.addActionListener(new ButtonListener());
-
-        buttons.add(viewFlights);
         add(buttons, BorderLayout.PAGE_END);
     }
 
@@ -155,37 +148,27 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
     }
 
     // EFFECTS: adds buttons that create new objects
-    public void addNewObjectsButtons(JPanel buttons) {
-        JButton addNewPassenger = createButton("Add new passenger",
-                "1. Add new passenger", new ButtonListener());
-        JButton addNewAircraft = createButton("Add new aircraft",
-                "2. Add new aircraft", new ButtonListener());
-        JButton createNewFlight = createButton("Create new flight",
-                "3. Create new flight", new ButtonListener());
-        JButton saveDatabaseToFile = createButton("Save database to file",
-                "5. Save", new ButtonListener());
-        JButton viewFlights = createButton("View flights",
-                "4. View flights", new ButtonListener());
-        JButton log = createButton("Log",
-                "6. Log", new ButtonListener());
-        JButton searchFlights = createButton("Search Flights",
-                "7. Search Flight", new ButtonListener());
+    private void addNewObjectsButtons(JPanel buttons) {
+        ButtonListener buttonListener = new ButtonListener();
 
-        buttons.add(addNewPassenger);
-        buttons.add(addNewAircraft);
-        buttons.add(createNewFlight);
-        buttons.add(saveDatabaseToFile);
-        buttons.add(log);
-        buttons.add(searchFlights);
+        buttons.add(createButton("Add new passenger", "1. Add new passenger", buttonListener));
+        buttons.add(createButton("Add new aircraft", "2. Add new aircraft", buttonListener));
+        buttons.add(createButton("Create new flight", "3. Create new flight", buttonListener));
+        buttons.add(createButton("View flights", "4. View flights", buttonListener));
+        buttons.add(createButton("Save database to file", "5. Save", buttonListener));
+        buttons.add(createButton("Log", "6. Log", buttonListener));
+        buttons.add(createButton("Search Flights", "7. Search Flight", buttonListener));
     }
 
     // creates Action Listener for button presses
-    class ButtonListener implements ActionListener {
-
-        // EFFECTS: processes button clicks and runs appropriate methods
+    private class ButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            switch (actionEvent.getActionCommand()) {
+            handleButtonAction(actionEvent.getActionCommand());
+        }
+
+        private void handleButtonAction(String actionCommand) {
+            switch (actionCommand) {
                 case "1. Add new passenger":
                     addNewPassenger();
                     break;
@@ -197,14 +180,16 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
                     break;
                 case "4. View flights":
                     visualizer = new WorldVisualizer(listOfFlights);
+                    break;
                 case "5. Save":
                     save();
                     break;
                 case "6. Log":
                     logActionWindow();
+                    break;
                 case "7. Search Flights":
                     searchFlights = new SearchFlights(listOfFlights);
-
+                    break;
             }
         }
     }

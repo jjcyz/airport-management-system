@@ -1,43 +1,63 @@
 package model;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
 public class TestRunner {
-    public static void main(String[] args) {
-        AircraftFactory factory = new ConcreteAircraftFactory();
+    private AircraftFactory factory;
+    private Aircraft boeing737;
+    private Aircraft boeing777;
+    private Aircraft boeing787;
 
-        // Create aircraft once
-        Aircraft boeing737 = factory.createAircraft(AircraftType.PASSENGER_AIRLINE, "Boeing737", 150);
-        Aircraft boeing777 = factory.createAircraft(AircraftType.PASSENGER_AIRLINE, "Boeing777", 300);
-        Aircraft boeing787 = factory.createAircraft(AircraftType.PASSENGER_AIRLINE, "Boeing787", 250);
+    @BeforeEach
+    void setUp() {
+        factory = new ConcreteAircraftFactory();
+        boeing737 = factory.createAircraft(AircraftType.PASSENGER_AIRLINE, "Boeing737", 150);
+        boeing777 = factory.createAircraft(AircraftType.PASSENGER_AIRLINE, "Boeing777", 300);
+        boeing787 = factory.createAircraft(AircraftType.PASSENGER_AIRLINE, "Boeing787", 250);
+    }
 
-        // Test short flight (Vancouver to Toronto)
-        Flight shortFlight = new Flight("AC123", boeing737, Airports.YVR, Airports.YYZ, 0);
-        shortFlight.setDestination(Airports.YYZ);
-        System.out.println("Short flight duration: " + shortFlight.getDuration() + " hours");
+    @Test
+    void testShortFlightDuration() {
+        Flight flight = createFlight("AC123", boeing737, Airports.YVR, Airports.YYZ);
+        assertTrue(flight.getDuration() >= 4 && flight.getDuration() <= 5,
+                "Vancouver to Toronto flight duration should be approximately 4-5 hours");
+    }
 
-        // Test long flight (New York to Hong Kong)
-        Flight longFlight = new Flight("CX123", boeing777, Airports.JFK, Airports.HKG, 0);
-        longFlight.setDestination(Airports.HKG);
-        System.out.println("Long flight duration: " + longFlight.getDuration() + " hours");
+    @Test
+    void testLongFlightDuration() {
+        Flight flight = createFlight("CX123", boeing777, Airports.JFK, Airports.HKG);
+        assertTrue(flight.getDuration() >= 15 && flight.getDuration() <= 16,
+                "New York to Hong Kong flight duration should be approximately 15-16 hours");
+    }
 
-        // Test same airport
-        Flight sameAirport = new Flight("TEST123", boeing737, Airports.YVR, Airports.YVR, 0);
-        sameAirport.setDestination(Airports.YVR);
-        System.out.println("Same airport duration: " + sameAirport.getDuration() + " hours");
+    @Test
+    void testSameAirportDuration() {
+        Flight flight = createFlight("TEST123", boeing737, Airports.YVR, Airports.YVR);
+        assertEquals(0, flight.getDuration(),
+                "Flight duration should be 0 when origin and destination are the same");
+    }
 
-        // Test transatlantic flight (London to New York)
-        Flight transatlantic = new Flight("BA123", boeing787, Airports.LHR, Airports.JFK, 0);
-        transatlantic.setDestination(Airports.JFK);
-        System.out.println("Transatlantic flight duration: " + transatlantic.getDuration() + " hours");
+    @Test
+    void testTransatlanticFlightDuration() {
+        Flight flight = createFlight("BA123", boeing787, Airports.LHR, Airports.JFK);
+        assertTrue(flight.getDuration() >= 7 && flight.getDuration() <= 8,
+                "London to New York flight duration should be approximately 7-8 hours");
+    }
 
-        // Test multiple flights same route
-        Flight flight1 = new Flight("AC123", boeing737, Airports.YVR, Airports.YYZ, 0);
-        Flight flight2 = new Flight("AC456", boeing737, Airports.YVR, Airports.YYZ, 0);
+    @Test
+    void testMultipleFlightsSameRoute() {
+        Flight flight1 = createFlight("AC123", boeing737, Airports.YVR, Airports.YYZ);
+        Flight flight2 = createFlight("AC456", boeing737, Airports.YVR, Airports.YYZ);
 
-        flight1.setDestination(Airports.YYZ);
-        flight2.setDestination(Airports.YYZ);
+        assertEquals(flight1.getDuration(), flight2.getDuration(),
+                "Same route should have consistent duration");
+    }
 
-        System.out.println("Flight 1 duration: " + flight1.getDuration() + " hours");
-        System.out.println("Flight 2 duration: " + flight2.getDuration() + " hours");
-        System.out.println("Durations match: " + (flight1.getDuration() == flight2.getDuration()));
+    private Flight createFlight(String flightNumber, Aircraft aircraft, Airports origin, Airports destination) {
+        Flight flight = new Flight(flightNumber, aircraft, origin, destination, 0);
+        flight.setDestination(destination);
+        return flight;
     }
 }
