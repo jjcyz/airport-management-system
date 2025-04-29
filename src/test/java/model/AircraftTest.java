@@ -33,7 +33,7 @@ public class AircraftTest {
 
     @Test
     void toStringTest() {
-        assertEquals("Identifier: ABC Max Capacity: 60", testAircraft1.toString());
+        assertEquals("Identifier: ABC, Max Capacity: 60", testAircraft1.toString());
     }
 
     @Test
