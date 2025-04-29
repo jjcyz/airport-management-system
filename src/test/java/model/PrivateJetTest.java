@@ -14,7 +14,7 @@ public class PrivateJetTest {
 
     @Test
     void getMaxCapacityTest() {
-        assertEquals(60, pj.getMaxCapacity());
+        assertEquals(10, pj.getMaxCapacity());
     }
 
     @Test

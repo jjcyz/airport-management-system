@@ -12,17 +12,25 @@ import java.util.ArrayList;
 public class Aircraft implements Writable  {  // make aircraft abstract later
 
     protected final String identifier;
-    protected final int maxCapacity; // total seats
+    protected final int maxCapacity;
     private Seat[][] seats;
-    private int rows = 10;
-    private int columns = 6;
+    private int rows;
+    private int columns;
     private ArrayList<Cargo> cargoOnBoard;
 
-    // Creates a new aircraft
     public Aircraft(String identifier) {
+        this(identifier, 60); // Default to 60 seats for backward compatibility
+    }
+
+    public Aircraft(String identifier, int maxCapacity) {
         this.identifier = identifier;
-        this.maxCapacity = rows * columns;
+        this.maxCapacity = maxCapacity;
         this.cargoOnBoard = new ArrayList<>();
+
+        // Calculate rows and columns to fit maxCapacity
+        // Assuming we want roughly 6 seats per row
+        this.columns = 6;
+        this.rows = (int) Math.ceil((double) maxCapacity / columns);
         this.seats = new Seat[rows][columns];
 
         // Generates the seats

@@ -504,14 +504,14 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
             String aircraftIdentifier = ((JTextField) fields[1]).getText();
             int maxCapacity = Integer.parseInt(((JTextField) fields[3]).getText());
             String aircraftType = (String) aircraftTypesComboBox.getSelectedItem();
-            switch (Objects.requireNonNull(aircraftType)) {
-                case "Passenger Aircraft":
-                    listOfAircraft.addElement(new PassengerAirline(aircraftIdentifier, maxCapacity));
-                    break;
-                case "Private Jet":
-                    listOfAircraft.addElement(new PrivateJet(aircraftIdentifier, maxCapacity));
-                    break;
-            }
+
+            // Factory Pattern
+            AircraftFactory factory = new ConcreteAircraftFactory();
+            AircraftType type = aircraftType.equals("Passenger Aircraft") ?
+                AircraftType.PASSENGER_AIRLINE : AircraftType.PRIVATE_JET;
+
+            Aircraft passengerPlane = factory.createAircraft(type, aircraftIdentifier, maxCapacity);
+            listOfAircraft.addElement(passengerPlane);
             updateAircraftWindow();
         }
     }

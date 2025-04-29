@@ -12,7 +12,7 @@ class FlightTest {
 
     @BeforeEach
     void setUp() {
-        aircraft = new Aircraft("Boeing737");
+        aircraft = new Aircraft("Boeing737", 150); // Create aircraft with 150 seats for flight tests
         flight = new Flight("AC123", aircraft, Airports.YVR, Airports.YYZ, 0);
         passenger1 = new Passenger(1, "John", "Doe");
         passenger2 = new Passenger(2, "Jane", "Smith");
@@ -60,13 +60,22 @@ class FlightTest {
     @Test
     void testAddPassengerFullCapacity() {
         // Fill up the flight
+        int seatNumber = 1;
+        char seatLetter = 'A';
         for (int i = 0; i < aircraft.getMaxCapacity(); i++) {
             Passenger p = new Passenger(i + 100, "Test", "Passenger" + i);
-            String seatId = "A" + (i + 1);
+            String seatId = String.valueOf(seatLetter) + seatNumber;
             flight.addPassenger(p, seatId);
+
+            // Move to next seat
+            seatNumber++;
+            if (seatNumber > 6) {  // After 6 seats, move to next row
+                seatNumber = 1;
+                seatLetter++;
+            }
         }
 
-        String result = flight.addPassenger(passenger1, "B1");
+        String result = flight.addPassenger(passenger1, "Z1");
         assertEquals("The aircraft for this flight is at maximum capacity.", result);
         assertEquals(aircraft.getMaxCapacity(), flight.getCurrentCapacity());
     }
