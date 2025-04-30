@@ -236,11 +236,28 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
 
     // EFFECTS: updates the passenger panel with new the entry
     private void updatePassengersWindow() {
-        JList<Passenger> passengerList = (JList<Passenger>) mainMenu.getViewport().getView();
-        if (passengerList != null) {
-            passengerList.setModel(listOfPassengers);
-            passengerList.repaint();
-        }
+        // Find the passenger scroll pane in the main panel
+        JPanel mainPanel = (JPanel) getContentPane().getComponent(1);
+        JScrollPane passengerScrollPane = (JScrollPane) mainPanel.getComponent(0);
+
+        // Create a new list with the updated model
+        JList<Passenger> passengerList = new JList<>(listOfPassengers);
+        passengerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        passengerList.addListSelectionListener(this);
+        passengerList.setCellRenderer(new CellRenderer());
+
+        // Create a new panel with the title border
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Passengers"));
+        panel.add(passengerList, BorderLayout.CENTER);
+
+        // Update the scroll pane's view
+        passengerScrollPane.setViewportView(panel);
+        passengerScrollPane.revalidate();
+        passengerScrollPane.repaint();
+
+        // Update the header count
+        totalPassengers.setText("Total Passengers: " + listOfPassengers.size());
     }
 
     private JScrollPane createScrollPane(JList<?> list) {
@@ -250,27 +267,44 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
         return scrollPane;
     }
 
-    private void updatePanel(JScrollPane scrollPane, int index) {
-        for (Component component : mainMenu.getComponents()) {
-            if (component instanceof JScrollPane) {
-                mainMenu.remove(component);
-            }
-        }
-        mainMenu.add(scrollPane, index);
-        mainMenu.revalidate();
-        mainMenu.repaint();
-    }
-
     private void updateAircraftWindow() {
+        // Find the aircraft scroll pane in the main panel
+        JPanel mainPanel = (JPanel) getContentPane().getComponent(1);
+        JScrollPane aircraftScrollPane = (JScrollPane) mainPanel.getComponent(1);
+
+        // Create a new list with the updated model
         JList<Aircraft> aircraftList = new JList<>(listOfAircraft);
-        JScrollPane aircraftScrollPane = createScrollPane(aircraftList);
-        updatePanel(aircraftScrollPane, 1);
+        aircraftList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        aircraftList.addListSelectionListener(this);
+        aircraftList.setCellRenderer(new CellRenderer());
+
+        // Update the scroll pane's view
+        aircraftScrollPane.setViewportView(aircraftList);
+        aircraftScrollPane.revalidate();
+        aircraftScrollPane.repaint();
+
+        // Update the header count
+        totalAircraft.setText("Total Aircraft: " + listOfAircraft.size());
     }
 
     private void updateFlightsWindow() {
+        // Find the flights scroll pane in the main panel
+        JPanel mainPanel = (JPanel) getContentPane().getComponent(1);
+        JScrollPane flightsScrollPane = (JScrollPane) mainPanel.getComponent(2);
+
+        // Create a new list with the updated model
         JList<Flight> flightList = new JList<>(listOfFlights);
-        JScrollPane flightScrollPane = createScrollPane(flightList);
-        updatePanel(flightScrollPane, 2);
+        flightList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        flightList.addListSelectionListener(this);
+        flightList.setCellRenderer(new CellRenderer());
+
+        // Update the scroll pane's view
+        flightsScrollPane.setViewportView(flightList);
+        flightsScrollPane.revalidate();
+        flightsScrollPane.repaint();
+
+        // Update the header count
+        totalFlights.setText("Total Flights: " + listOfFlights.size());
     }
 
 
@@ -446,7 +480,22 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
                 listOfPassengers = jsonReader.readPassengerList(listOfPassengers);
                 listOfAircraft = jsonReader.readAircraftList(listOfAircraft);
                 listOfFlights = jsonReader.readFlightList(listOfFlights);
+
+                // Remove the existing main panel
+                Component[] components = getContentPane().getComponents();
+                for (Component component : components) {
+                    if (component instanceof JPanel) {
+                        getContentPane().remove(component);
+                    }
+                }
+
+                // Reinitialize the UI with loaded data
+                initializeHeader();
                 initializeMainScreen();
+                initializeButtons();
+                revalidate();
+                repaint();
+
                 System.out.println("Data from " + JSON_STORE + " is loaded");
             } catch (IOException e) {
                 System.out.println("Unable to read from file: " + JSON_STORE);
