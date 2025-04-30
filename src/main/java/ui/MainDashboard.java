@@ -43,40 +43,58 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
     // Makes a new JFrame with different attributes
     public MainDashboard() {
         super("Airport Management System");
-        // Set FlatLaf look and feel
+
         try {
+            // Set FlatLaf look and feel
             UIManager.setLookAndFeel(new FlatLightLaf());
+
+            // Configure window properties
+            setLayout(new BorderLayout());
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            setPreferredSize(new Dimension(1200, 800));
+            setMinimumSize(new Dimension(800, 600));
+
+            // Initialize components
+            initializeBackend();
+            initializeHeader();
+            initializeMainScreen();
+            initializeButtons();
+
+            // Finalize window setup
+            pack();
+            setLocationRelativeTo(null);
+            setResizable(true);
+
+            // Setup save/load functionality
+            startLoadPrompt();
+            exitSavePrompt();
+
+            setVisible(true);
         } catch (Exception ex) {
-            System.err.println("Failed to initialize FlatLaf");
+            JOptionPane.showMessageDialog(null,
+                "Error initializing application: " + ex.getMessage(),
+                "Initialization Error",
+                JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
         }
-
-        setLayout(new BorderLayout());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setPreferredSize(new Dimension(1200, 800));
-
-        initializeBackend();
-        initializeHeader();
-        initializeMainScreen();
-        initializeButtons();
-        pack();
-        setLocationRelativeTo(null);
-        startLoadPrompt();
-        exitSavePrompt();
-        setVisible(true);
     }
 
     // MODIFIES: this
-    // EFFECTS: initiates the system
+    // EFFECTS: initializes the system
     private void initializeBackend() {
-        input = new Scanner(System.in);
-        jsonWriter = new JsonWriter(JSON_STORE);
-        jsonReader = new JsonReader(JSON_STORE);
-        listOfPassengers = new DefaultListModel<>();
-        listOfAircraft = new DefaultListModel<>();
-        listOfFlights = new DefaultListModel<>();
-        mainMenu = new JScrollPane();
-        desktop = new JDesktopPane();
-        desktop.addMouseListener(new DesktopFocusAction());
+        try {
+            input = new Scanner(System.in);
+            jsonWriter = new JsonWriter(JSON_STORE);
+            jsonReader = new JsonReader(JSON_STORE);
+            listOfPassengers = new DefaultListModel<>();
+            listOfAircraft = new DefaultListModel<>();
+            listOfFlights = new DefaultListModel<>();
+            mainMenu = new JScrollPane();
+            desktop = new JDesktopPane();
+            desktop.addMouseListener(new DesktopFocusAction());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to initialize backend: " + e.getMessage());
+        }
     }
 
     // MODIFIES: this
@@ -141,7 +159,6 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
 
         JList<T> list = new JList<>(items);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.setSelectedIndex(0);
         list.addListSelectionListener(this);
         list.setVisibleRowCount(15);
         list.setCellRenderer(new CellRenderer());
@@ -156,33 +173,30 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
     // MODIFIES: this
     // EFFECTS: initializes buttons
     private void initializeButtons() {
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 4, 10, 10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        String[] buttonLabels = {
-            "Add new passenger",
-            "Add new aircraft",
-            "Create new flight",
-            "View flights",
-            "Save database",
-            "View log",
-            "Search Flights"
+        // Group buttons by functionality
+        JButton[] managementButtons = {
+            createStyledButton("Add Passenger", "1. Add new passenger", new ButtonListener()),
+            createStyledButton("Add Aircraft", "2. Add new aircraft", new ButtonListener()),
+            createStyledButton("Create Flight", "3. Create new flight", new ButtonListener()),
+            createStyledButton("View Flights", "4. View flights", new ButtonListener())
         };
 
-        String[] commands = {
-            "1. Add new passenger",
-            "2. Add new aircraft",
-            "3. Create new flight",
-            "4. View flights",
-            "5. Save",
-            "6. Log",
-            "7. Search Flight"
+        JButton[] systemButtons = {
+            createStyledButton("Save Database", "5. Save", new ButtonListener()),
+            createStyledButton("View Log", "6. Log", new ButtonListener()),
+            createStyledButton("Search Flights", "7. Search Flight", new ButtonListener())
         };
 
-        ButtonListener buttonListener = new ButtonListener();
+        // Add management buttons
+        for (JButton button : managementButtons) {
+            buttonPanel.add(button);
+        }
 
-        for (int i = 0; i < buttonLabels.length; i++) {
-            JButton button = createStyledButton(buttonLabels[i], commands[i], buttonListener);
+        // Add system buttons
+        for (JButton button : systemButtons) {
             buttonPanel.add(button);
         }
 
@@ -196,8 +210,20 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
         button.setFocusPainted(false);
         button.setBackground(new Color(0, 120, 215));
         button.setForeground(Color.WHITE);
-        button.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        button.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+        button.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        button.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(0, 90, 180), 1),
+            BorderFactory.createEmptyBorder(8, 16, 8, 16)
+        ));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(0, 90, 180));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(0, 120, 215));
+            }
+        });
         return button;
     }
 
@@ -228,96 +254,48 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
                 case "6. Log":
                     logActionWindow();
                     break;
-                case "7. Search Flights":
+                case "7. Search Flight":
                     searchFlights = new SearchFlights(listOfFlights);
                     break;
             }
         }
     }
 
-    // EFFECTS: updates the passenger panel with new the entry
-    private void updatePassengersWindow() {
-        // Find the passenger scroll pane in the main panel
+    // EFFECTS: updates any panel with new entries
+    private <T> void updateWindow(DefaultListModel<T> model, int panelIndex, String title, JLabel countLabel) {
         JPanel mainPanel = (JPanel) getContentPane().getComponent(1);
-        JScrollPane passengerScrollPane = (JScrollPane) mainPanel.getComponent(0);
+        JScrollPane scrollPane = (JScrollPane) mainPanel.getComponent(panelIndex);
 
-        // Create a new list with the updated model
-        JList<Passenger> passengerList = new JList<>(listOfPassengers);
-        passengerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        passengerList.addListSelectionListener(this);
-        passengerList.setCellRenderer(new CellRenderer());
+        JList<T> list = new JList<>(model);
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.addListSelectionListener(this);
+        list.setCellRenderer(new CellRenderer());
 
-        // Create a new panel with the title border
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Passengers"));
-        panel.add(passengerList, BorderLayout.CENTER);
+        panel.setBorder(BorderFactory.createTitledBorder(title));
+        panel.add(list, BorderLayout.CENTER);
 
-        // Update the scroll pane's view
-        passengerScrollPane.setViewportView(panel);
-        passengerScrollPane.revalidate();
-        passengerScrollPane.repaint();
+        scrollPane.setViewportView(panel);
+        scrollPane.revalidate();
+        scrollPane.repaint();
 
-        // Update the header count
-        totalPassengers.setText("Total Passengers: " + listOfPassengers.size());
+        if (countLabel != null) {
+            countLabel.setText(title + ": " + model.size());
+        }
     }
 
-    private JScrollPane createScrollPane(JList<?> list) {
-        JScrollPane scrollPane = new JScrollPane(list);
-        scrollPane.createVerticalScrollBar();
-        list.setCellRenderer(new CellRenderer());
-        return scrollPane;
+    // EFFECTS: updates the passenger panel with new the entry
+    private void updatePassengersWindow() {
+        updateWindow(listOfPassengers, 0, "Passengers", totalPassengers);
     }
 
     private void updateAircraftWindow() {
-        // Find the aircraft scroll pane in the main panel
-        JPanel mainPanel = (JPanel) getContentPane().getComponent(1);
-        JScrollPane aircraftScrollPane = (JScrollPane) mainPanel.getComponent(1);
-
-        // Create a new list with the updated model
-        JList<Aircraft> aircraftList = new JList<>(listOfAircraft);
-        aircraftList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        aircraftList.addListSelectionListener(this);
-        aircraftList.setCellRenderer(new CellRenderer());
-
-        // Create a new panel with the title border
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Aircraft"));
-        panel.add(aircraftList, BorderLayout.CENTER);
-
-        // Update the scroll pane's view
-        aircraftScrollPane.setViewportView(panel);
-        aircraftScrollPane.revalidate();
-        aircraftScrollPane.repaint();
-
-        // Update the header count
-        totalAircraft.setText("Total Aircraft: " + listOfAircraft.size());
+        updateWindow(listOfAircraft, 1, "Aircraft", totalAircraft);
     }
 
     private void updateFlightsWindow() {
-        // Find the flights scroll pane in the main panel
-        JPanel mainPanel = (JPanel) getContentPane().getComponent(1);
-        JScrollPane flightsScrollPane = (JScrollPane) mainPanel.getComponent(2);
-
-        // Create a new list with the updated model
-        JList<Flight> flightList = new JList<>(listOfFlights);
-        flightList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        flightList.addListSelectionListener(this);
-        flightList.setCellRenderer(new CellRenderer());
-
-        // Create a new panel with the title border
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Flights"));
-        panel.add(flightList, BorderLayout.CENTER);
-
-        // Update the scroll pane's view
-        flightsScrollPane.setViewportView(panel);
-        flightsScrollPane.revalidate();
-        flightsScrollPane.repaint();
-
-        // Update the header count
-        totalFlights.setText("Total Flights: " + listOfFlights.size());
+        updateWindow(listOfFlights, 2, "Flights", totalFlights);
     }
-
 
     // EFFECTS: Makes the popup window when cells are clicked
     public void valueChanged(ListSelectionEvent e) {
@@ -333,69 +311,103 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
                 Passenger passenger = (Passenger) selectedObject;
                 passengerDashboard(passenger, popupPanel, list);
             } else if (selectedObject.getClass().equals(Aircraft.class)) {
-                Aircraft aircraft = (Aircraft)  selectedObject;
+                Aircraft aircraft = (Aircraft) selectedObject;
                 aircraftDashboard(aircraft, popupPanel, list);
             } else if (selectedObject.getClass().equals(Flight.class)) {
                 Flight flight = (Flight) selectedObject;
                 flightDashboard(flight, popupPanel, list);
             }
+            list.clearSelection();  // Clear the selection after handling the click
         }
     }
 
     // EFFECTS: creates passenger popup window
     private void passengerDashboard(Passenger passenger, JPanel popupPanel, JList list) {
-        String[] options = {"Edit", "Delete"};
-        int choice = JOptionPane.showOptionDialog(null, popupPanel,
-                "Edit or Delete " + passenger.getPassengerID(),
-                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-        if (choice == 0) {
-            // Edit object code here
-        } else if (choice == 1) {
-            int confirmDelete = JOptionPane.showConfirmDialog(null,
-                    "Are you sure you want to delete this " + passenger.getPassengerID() + "?",
-                    "Confirm Delete", JOptionPane.YES_NO_OPTION);
-            if (confirmDelete == JOptionPane.YES_OPTION) {
-                removeObjectFromSystem(list, passenger);
+        try {
+            String[] options = {"Edit", "Delete"};
+            int choice = JOptionPane.showOptionDialog(null, popupPanel,
+                    "Edit or Delete " + passenger.getPassengerID(),
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+            if (choice == 0) {
+                editPassenger(passenger);
+            } else if (choice == 1) {
+                int confirmDelete = JOptionPane.showConfirmDialog(null,
+                        "Are you sure you want to delete passenger " + passenger.getPassengerID() + "?",
+                        "Confirm Delete", JOptionPane.YES_NO_OPTION);
+                if (confirmDelete == JOptionPane.YES_OPTION) {
+                    removeObjectFromSystem(list, passenger);
+                    JOptionPane.showMessageDialog(null, "Passenger deleted successfully!");
+                }
             }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error handling passenger: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     // EFFECTS: creates aircraft popup window
     private void aircraftDashboard(Aircraft aircraft, JPanel popupPanel, JList list) {
-        String[] options = {"Edit", "Delete"};
-        int choice = JOptionPane.showOptionDialog(null, popupPanel,
-                "Edit or Delete " + aircraft.getIdentifier(),
-                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-        if (choice == 0) {
-            // Edit object code here
-        } else if (choice == 1) {
-            int confirmDelete = JOptionPane.showConfirmDialog(null,
-                    "Are you sure you want to delete aircraft " + aircraft.getIdentifier() + "?",
-                    "Confirm Delete", JOptionPane.YES_NO_OPTION);
-            if (confirmDelete == JOptionPane.YES_OPTION) {
-                removeObjectFromSystem(list, aircraft);
+        try {
+            String[] options = {"Edit", "Delete"};
+            int choice = JOptionPane.showOptionDialog(null, popupPanel,
+                    "Edit or Delete " + aircraft.getIdentifier(),
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+            if (choice == 0) {
+                editAircraft(aircraft);
+            } else if (choice == 1) {
+                int confirmDelete = JOptionPane.showConfirmDialog(null,
+                        "Are you sure you want to delete aircraft " + aircraft.getIdentifier() + "?",
+                        "Confirm Delete", JOptionPane.YES_NO_OPTION);
+                if (confirmDelete == JOptionPane.YES_OPTION) {
+                    removeObjectFromSystem(list, aircraft);
+                    JOptionPane.showMessageDialog(null, "Aircraft deleted successfully!");
+                }
             }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error handling aircraft: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     // EFFECTS: creates flight popup window
     private void flightDashboard(Flight flight, JPanel popupPanel, JList list) {
-        String[] options = {"Add Passenger", "Remove Passenger", "Delete"};
-        int choice = JOptionPane.showOptionDialog(null, popupPanel,
-                "Edit or Delete " + flight.getFlightID(),
-                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-        if (choice == 0) {
-            addPassengerToFlight(flight);
-        } else if (choice == 1) {
-            removePassengerFromFlight(flight);
-        } else if (choice == 2) {
-            int confirmDelete = JOptionPane.showConfirmDialog(null,
-                    "Are you sure you want to delete this " + flight.getFlightID() + "?",
-                    "Confirm Delete", JOptionPane.YES_NO_OPTION);
-            if (confirmDelete == JOptionPane.YES_OPTION) {
-                removeObjectFromSystem(list, flight);
+        try {
+            String[] options = {"Add Passenger", "Remove Passenger", "Delete"};
+            int choice = JOptionPane.showOptionDialog(null, popupPanel,
+                    "Edit or Delete " + flight.getFlightID(),
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+            if (choice == 0) {
+                addPassengerToFlight(flight);
+            } else if (choice == 1) {
+                removePassengerFromFlight(flight);
+            } else if (choice == 2) {
+                int confirmDelete = JOptionPane.showConfirmDialog(null,
+                        "Are you sure you want to delete flight " + flight.getFlightID() + "?",
+                        "Confirm Delete", JOptionPane.YES_NO_OPTION);
+                if (confirmDelete == JOptionPane.YES_OPTION) {
+                    removeObjectFromSystem(list, flight);
+                    JOptionPane.showMessageDialog(null, "Flight deleted successfully!");
+                }
             }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error handling flight: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    // EFFECTS: edits passenger details
+    private void editPassenger(Passenger passenger) {
+        // TODO: Implement passenger editing functionality
+        JOptionPane.showMessageDialog(null, "Passenger editing feature coming soon!");
+    }
+
+    // EFFECTS: edits aircraft details
+    private void editAircraft(Aircraft aircraft) {
+        // TODO: Implement aircraft editing functionality
+        JOptionPane.showMessageDialog(null, "Aircraft editing feature coming soon!");
     }
 
     // EFFECTS: creates a dropdown window to add a passenger on a flight

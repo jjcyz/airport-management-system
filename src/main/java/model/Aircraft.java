@@ -11,6 +11,7 @@ import persistence.Writable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public abstract class Aircraft implements Writable {
     protected final String identifier;
@@ -85,6 +86,7 @@ public abstract class Aircraft implements Writable {
         json.put("identifier", identifier);
         json.put("maxCapacity", maxCapacity);
         json.put("cargo", cargoManager.toJsonArray());
+        json.put("type", getClass().getSimpleName());
         return json;
     }
 

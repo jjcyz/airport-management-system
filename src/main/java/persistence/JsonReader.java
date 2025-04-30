@@ -99,6 +99,7 @@ public class JsonReader {
         String identifier = jsonObject.getString("identifier");
         int maxCapacity = jsonObject.getInt("maxCapacity");
         // Default to PASSENGER_AIRLINE for backward compatibility
+        // TODO: Fix the type of aircraft being saved
         return aircraftFactory.createAircraft(AircraftType.PASSENGER_AIRLINE, identifier, maxCapacity);
     }
 
