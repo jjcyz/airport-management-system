@@ -16,6 +16,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -278,8 +279,13 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
         aircraftList.addListSelectionListener(this);
         aircraftList.setCellRenderer(new CellRenderer());
 
+        // Create a new panel with the title border
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Aircraft"));
+        panel.add(aircraftList, BorderLayout.CENTER);
+
         // Update the scroll pane's view
-        aircraftScrollPane.setViewportView(aircraftList);
+        aircraftScrollPane.setViewportView(panel);
         aircraftScrollPane.revalidate();
         aircraftScrollPane.repaint();
 
@@ -298,8 +304,13 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
         flightList.addListSelectionListener(this);
         flightList.setCellRenderer(new CellRenderer());
 
+        // Create a new panel with the title border
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Flights"));
+        panel.add(flightList, BorderLayout.CENTER);
+
         // Update the scroll pane's view
-        flightsScrollPane.setViewportView(flightList);
+        flightsScrollPane.setViewportView(panel);
         flightsScrollPane.revalidate();
         flightsScrollPane.repaint();
 
@@ -359,7 +370,7 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
             // Edit object code here
         } else if (choice == 1) {
             int confirmDelete = JOptionPane.showConfirmDialog(null,
-                    "Are you sure you want to delete this " + aircraft.getIdentifier() + "?",
+                    "Are you sure you want to delete aircraft " + aircraft.getIdentifier() + "?",
                     "Confirm Delete", JOptionPane.YES_NO_OPTION);
             if (confirmDelete == JOptionPane.YES_OPTION) {
                 removeObjectFromSystem(list, aircraft);
@@ -461,8 +472,24 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
             listOfPassengers.remove(selectedIndex);
             updatePassengersWindow();
         } else if (selectedObject instanceof Aircraft) {
+            Aircraft aircraftToRemove = (Aircraft) selectedObject;
+            // First remove this aircraft from any flights that use it
+            for (int i = listOfFlights.getSize() - 1; i >= 0; i--) {
+                Flight flight = listOfFlights.getElementAt(i);
+                if (flight.getAircraft().equals(aircraftToRemove)) {
+                    // Remove all passengers from this flight first
+                    ArrayList<Passenger> passengers = flight.getPassengersOnFlight();
+                    for (int j = passengers.size() - 1; j >= 0; j--) {
+                        Passenger passenger = passengers.get(j);
+                        flight.removePassenger(passenger.getPassengerID());
+                    }
+                    listOfFlights.remove(i);
+                }
+            }
+            // Then remove the aircraft itself
             listOfAircraft.remove(selectedIndex);
             updateAircraftWindow();
+            updateFlightsWindow();
         } else if (selectedObject instanceof Flight) {
             listOfFlights.remove(selectedIndex);
             updateFlightsWindow();
@@ -493,6 +520,12 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
                 initializeHeader();
                 initializeMainScreen();
                 initializeButtons();
+
+                // Force update all windows to ensure proper event handling
+                updatePassengersWindow();
+                updateAircraftWindow();
+                updateFlightsWindow();
+
                 revalidate();
                 repaint();
 
