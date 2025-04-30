@@ -559,7 +559,14 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
     // MODIFIES: this
     // EFFECTS: generates a popup window that adds a new aircraft into the system
     private void addNewAircraft() {
-        JComboBox<String> aircraftTypesComboBox = new JComboBox<>(new String[]{"Passenger Aircraft", "Private Jet"});
+        JComboBox<String> aircraftTypesComboBox = new JComboBox<>(new String[]{
+            "Passenger Aircraft",
+            "Private Jet",
+            "Cargo Aircraft",
+            "Helicopter",
+            "Business Jet",
+            "Regional Jet"
+        });
         Object[] fields = { "Aircraft Identifier:", new JTextField(), "Maximum Capacity:",
                 new JTextField(), "Aircraft Type:", aircraftTypesComboBox };
         int result = JOptionPane.showConfirmDialog(null, fields,
@@ -571,11 +578,32 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
 
             // Factory Pattern
             AircraftFactory factory = new ConcreteAircraftFactory();
-            AircraftType type = aircraftType.equals("Passenger Aircraft") ?
-                AircraftType.PASSENGER_AIRLINE : AircraftType.PRIVATE_JET;
+            AircraftType type;
+            switch (aircraftType) {
+                case "Passenger Aircraft":
+                    type = AircraftType.PASSENGER_AIRLINE;
+                    break;
+                case "Private Jet":
+                    type = AircraftType.PRIVATE_JET;
+                    break;
+                case "Cargo Aircraft":
+                    type = AircraftType.CARGO_AIRCRAFT;
+                    break;
+                case "Helicopter":
+                    type = AircraftType.HELICOPTER;
+                    break;
+                case "Business Jet":
+                    type = AircraftType.BUSINESS_JET;
+                    break;
+                case "Regional Jet":
+                    type = AircraftType.REGIONAL_JET;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid aircraft type: " + aircraftType);
+            }
 
-            Aircraft passengerPlane = factory.createAircraft(type, aircraftIdentifier, maxCapacity);
-            listOfAircraft.addElement(passengerPlane);
+            Aircraft aircraft = factory.createAircraft(type, aircraftIdentifier, maxCapacity);
+            listOfAircraft.addElement(aircraft);
             updateAircraftWindow();
         }
     }
