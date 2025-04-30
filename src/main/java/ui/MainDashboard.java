@@ -121,6 +121,16 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
         mainPanel.add(aircraftScrollPane);
         mainPanel.add(flightsScrollPane);
 
+        // Add pagination controls
+        JPanel paginationPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton nextPage = new JButton("Next");
+        JButton prevPage = new JButton("Previous");
+        paginationPanel.add(prevPage);
+        paginationPanel.add(nextPage);
+
+        // Add to your main panel
+        mainPanel.add(paginationPanel, BorderLayout.SOUTH);
+
         add(mainPanel, BorderLayout.CENTER);
     }
 
@@ -226,21 +236,11 @@ public class MainDashboard extends JFrame implements Writable, ListSelectionList
 
     // EFFECTS: updates the passenger panel with new the entry
     private void updatePassengersWindow() {
-        JList<Passenger> passengerList = new JList<>(listOfPassengers);
-        passengerList.setCellRenderer(new CellRenderer());
-        JScrollPane passengerScrollPane = new JScrollPane(passengerList);
-        passengerScrollPane.createVerticalScrollBar();
-        for (Component component : mainMenu.getComponents()) {
-            if (component instanceof JScrollPane) {
-                JScrollPane scrollPane = (JScrollPane) component;
-                mainMenu.remove(scrollPane);
-            } else {
-                // handle non-JScrollPane components here, if needed
-            }
+        JList<Passenger> passengerList = (JList<Passenger>) mainMenu.getViewport().getView();
+        if (passengerList != null) {
+            passengerList.setModel(listOfPassengers);
+            passengerList.repaint();
         }
-        mainMenu.add(passengerScrollPane, 0);
-        mainMenu.revalidate();
-        mainMenu.repaint();
     }
 
     private JScrollPane createScrollPane(JList<?> list) {
